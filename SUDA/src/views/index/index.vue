@@ -7,29 +7,18 @@
  * @Description:
 -->
 <template>
-    <router-view />
-    <van-tabbar placeholder z-index="9999" v-model="active" active-color="#333333" inactive-color="#999999" route v-if="dataSource.tabbarList.length"
-        safe-area-inset-bottom>
-        <van-tabbar-item replace :class="{ tabbaritem: true }" :to="itemRouter.routerPath"
-            v-for="itemRouter in dataSource.tabbarList" :key="itemRouter.routerPath">
-            <span>{{ itemRouter.name }}</span>
-            <template #icon="props">
-                <img :src="props.active ? itemRouter.activeIcon : itemRouter.disActiveIcon" />
-            </template>
-        </van-tabbar-item>
-    </van-tabbar>
+	<router-view />
+	<van-tabbar v-model="active">
+		<van-tabbar-item icon="home-o">标签</van-tabbar-item>
+		<van-tabbar-item icon="search">标签</van-tabbar-item>
+		<van-tabbar-item icon="friends-o">标签</van-tabbar-item>
+		<van-tabbar-item icon="setting-o">标签</van-tabbar-item>
+	</van-tabbar>
 </template>
 
 <script setup>
-import { Tabbar, TabbarItem } from 'vant'
-import { getMobileTypeConfigList } from "@/utils/globalConfiguration"
-const active = ref(0)
-//获取tabbar配置列表
-const dataSource = reactive({
-    tabbarList: []
-})
-dataSource.tabbarList = getMobileTypeConfigList().getTabbarList
+import { Tabbar, TabbarItem } from 'vant';
+const active = ref(0);
 </script>
 
-<style lang="less" scoped>
-</style>
+<style lang="less" scoped></style>

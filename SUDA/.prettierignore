@@ -1,0 +1,16 @@
+dist
+node_modules
+public
+plop-templates
+.husky
+.vscode
+.idea
+*.sh
+*.md
+
+src/assets
+
+# 忽略所有 html 文件
+*.html
+.prettierrc.cjs
+.eslintrc.cjs

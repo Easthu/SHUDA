@@ -1,0 +1,18 @@
+{
+    "compilerOptions": {
+        "target": "es2017",
+        "allowSyntheticDefaultImports": false,
+        "jsx":"react",
+        "baseUrl": "./",
+        "paths": {
+            "@/*": ["src/*"],
+            "assets/*": ["src/assets/*"],
+            "api/*": ["src/api/*"],
+            "utils/*": ["src/utils/*"],
+            "store/*": ["src/store/*"],
+            "components/*": ["src/components/*"]
+
+        }
+    },
+    "exclude": ["node_modules", "dist", "dist-test"]
+}

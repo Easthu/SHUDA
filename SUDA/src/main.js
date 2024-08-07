@@ -6,9 +6,7 @@ import { createPinia } from 'pinia'
 import VConsole from 'vconsole';
 import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
 
-// if (import.meta.env.MODE == "development") {
-const vConsole = new VConsole();
-// }
+new VConsole();
 
 const app = createApp(App)
 
@@ -16,11 +14,6 @@ const pinia = createPinia()
 pinia.use(piniaPluginPersistedstate)
 // 计算设置rem的基准值，即html的font-size
 import 'amfe-flexible'
-
-// import {
-//     vant
-// } from './pulgins/vant.js'
-// vant(app)
 
 // 引入懒加载组件 VantResolver()不会自动引入
 import { Lazyload } from 'vant';

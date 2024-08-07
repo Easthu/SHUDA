@@ -1,6 +1,5 @@
 import { defineStore } from 'pinia'
 import { piniaStore } from '@/store'
-import { displacingYunnanToken } from 'api/yunnan';
 
 export const useUserStore = defineStore(
   'User',

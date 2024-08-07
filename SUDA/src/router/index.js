@@ -8,14 +8,37 @@
  */
 // index.js
 import { createRouter, createWebHistory, createWebHashHistory } from 'vue-router'
-import App from '@/App.vue'
 import { useUserStore } from 'store/modules/user'
-
-
+const routes = [
+  {
+    path: '/',
+    // 懒加载路由
+    component: () => import('@/views/index/index.vue'),
+    redirect: '/home',
+    children: [
+      {
+        path: '/home',
+        name: 'home',
+        component: () => import('@/views/home/home.vue'),
+        meta: {
+          title: '首页',
+        },
+      },
+      {
+        path: '/mine',
+        name: 'mine',
+        component: () => import('@/views/mine/index.vue'),
+        meta: {
+          title: '个人中心',
+        },
+      },
+    ],
+  },
+]
 const router = createRouter({
   // vueRouter@3版本的mode改成了history，hash模式配置createWebHashHistory，history模式配置createWebHistory
-  history: createWebHistory(`/${getMobileTypeConfigList().urlNamePrefix}/`),
-  routes: '/',
+  history: createWebHistory('/'),
+  routes,
 })
 // 全局路由守卫
 router.beforeEach((to, from, next) => {
