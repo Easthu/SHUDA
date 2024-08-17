@@ -13,7 +13,7 @@
 					<div class="done-make-btn">
 						<span>4.3</span>
 						<div class="done-num">已完成43单</div>
-						<div class="make-right">立即预约</div>
+						<div class="make-right" @click="handleLinkMakeDetail">立即预约</div>
 					</div>
 				</div>
 			</van-list>
@@ -22,6 +22,7 @@
 </template>
 
 <script setup>
+const router = useRouter();
 const refreshing = ref(false);
 const loading = ref(false);
 const finished = ref(false);
@@ -33,6 +34,7 @@ const onRefresh = () => {
 	loading.value = true;
 	// 重新加载数据
 	onLoad();
+	refreshing.value = false;
 };
 const onLoad = () => {
 	// 异步更新数据
@@ -48,6 +50,10 @@ const onLoad = () => {
 			finished.value = true;
 		}
 	}, 1000);
+};
+const handleLinkMakeDetail = () => {
+	console.log('立即预约');
+	router.push('/makeDetail');
 };
 const goodsList = ref([1, 2, 3]);
 </script>
