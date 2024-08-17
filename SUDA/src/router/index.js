@@ -1,12 +1,3 @@
-/*
- * @Author: Est
- * @Date: 2023-03-28 18:57:27
- * @LastEditors: Est
- * @LastEditTime: 2023-04-27 17:53:05
- * @FilePath: \public-zone美食专区\src\router\index.js
- * @Description:
- */
-// index.js
 import { createRouter, createWebHistory, createWebHashHistory } from 'vue-router'
 import { useUserStore } from 'store/modules/user'
 const routes = [
@@ -25,14 +16,55 @@ const routes = [
         },
       },
       {
+        path: '/make',
+        name: 'make',
+        component: () => import('@/views/make/index.vue'),
+        meta: {
+          title: '预约',
+        },
+      },
+      {
+        path: '/order',
+        name: 'order',
+        component: () => import('@/views/order/index.vue'),
+        meta: {
+          title: '订单',
+        },
+      },
+      {
         path: '/mine',
         name: 'mine',
-        component: () => import('@/views/mine/index.vue'),
+        component: () => import('@/views/mine/mine.vue'),
         meta: {
           title: '个人中心',
         },
       },
+
     ],
+  },
+  {
+    path: '/recommend',
+    name: 'recommend',
+    component: () => import('@/views/recommend/index.vue'),
+    meta: {
+      title: '推荐',
+    },
+  },
+  {
+    path: '/recommendDetail',
+    name: 'recommendDetail',
+    component: () => import('@/views/recommend/recommendDetail.vue'),
+    meta: {
+      title: '推荐详情',
+    },
+  },
+  {
+    path: '/makeDetail',
+    name: 'makeDetail',
+    component: () => import('@/views/make/makeDetail.vue'),
+    meta: {
+      title: '预约详情',
+    },
   },
 ]
 const router = createRouter({
