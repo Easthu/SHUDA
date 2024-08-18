@@ -11,16 +11,17 @@
 				<div class="user-name">用户姓名：钟基佬</div>
 				<div class="user-id">id:122344556654654</div>
 			</div>
-			<van-button type="primary" size="small">修改资料</van-button>
+			<!-- <van-button type="primary" size="small">修改资料</van-button> -->
 		</div>
 		<div class="menu-list">
-			<van-cell title="我的订单" is-link to="/order" />
-			<van-cell title="我的收藏" is-link to="/collect" />
-			<van-cell title="我的地址" is-link to="/address" />
-			<van-cell title="我的优惠券" is-link to="/coupon" />
-			<van-cell title="我的积分" is-link to="/integral" />
-			<van-cell title="我的客服" is-link to="/customer" />
-			<van-cell title="设置" is-link to="/setting" />
+			<!-- <van-cell title="我的收藏" is-link to="/collect" /> -->
+			<!-- <van-cell title="我的优惠券" is-link to="/coupon" /> -->
+			<van-cell title="预约考证" is-link to="/makeTextualResearch" />
+			<van-cell title="用户协议" is-link to="/userAgreement" />
+			<van-cell title="代理申请" is-link to="/agents" />
+			<van-cell title="兼职入住" is-link to="/partTime" />
+			<van-cell title="联系客服" is-link to="" />
+			<van-cell title="关于我们" is-link to="/aboutUs" />
 		</div>
 	</div>
 </template>
@@ -36,7 +37,6 @@
 .user-info {
 	display: flex;
 	align-items: center;
-	justify-content: space-between;
 	padding: 24px;
 	background-color: #fff;
 	border-radius: 8px;
@@ -49,6 +49,7 @@
 		align-items: flex-start;
 		justify-content: space-around;
 		height: 100%;
+		margin-left: 20px;
 		.user-name {
 			font-size: 24px;
 			color: #333;

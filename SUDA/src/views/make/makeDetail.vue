@@ -40,7 +40,7 @@
 		</div>
 		<div class="bottom-btn">
 			<div class="bottom-btn-left">至少选择三个景点，已选择2个</div>
-			<div class="bottom-btn-right">结算</div>
+			<div class="bottom-btn-right" @click="handleLinkOrderConfirm">结算</div>
 		</div>
 	</div>
 </template>
@@ -50,6 +50,9 @@ const checked = ref(false);
 const router = useRouter();
 const hanldeBack = () => {
 	router.back();
+};
+const handleLinkOrderConfirm = () => {
+	router.push('/orderConfirm');
 };
 </script>
 

@@ -1,5 +1,5 @@
 <template>
-	<div class="order-detail">
+	<div class="order-confirm">
 		<NavBar showLeftBack />
 		<div class="make-info">
 			<img src="https://picsum.photos/80" alt="" />
@@ -21,59 +21,38 @@
 			</div>
 		</div>
 		<div class="prcie-detail">
+			<!-- <div class="price-title">费用明细</div> -->
 			<div class="detail-item">
-				<p>实付款</p>
-				<p>￥120</p>
+				<span> 费用明细 </span>
+				<span>￥120</span>
 			</div>
 			<div class="detail-item">
-				<p>订单编号</p>
-				<p>
-					968423123123123132
-					<span @click="handleClipboard('复制')" style="color: red">复制</span>
-				</p>
-			</div>
-			<div class="detail-item">
-				<p>创建时间</p>
-				<p>2024-08-08 15:00：00</p>
-			</div>
-			<div class="detail-item">
-				<p>付款时间</p>
-				<p>2024-08-08 15:00：00</p>
-			</div>
-			<div class="detail-item">
-				<p>备注</p>
-				<p>564123123123132123</p>
+				<span> 备注 </span>
+				<van-field
+					v-model="message"
+					rows="2"
+					autosize
+					type="textarea"
+					maxlength="50"
+					placeholder="请输入备注"
+					show-word-limit
+				/>
 			</div>
 		</div>
 		<div class="bottom-btn">
-			<div>联系客服</div>
-			<div>扫码服务</div>
-			<div @click="handleCancelOrder">取消订单</div>
+			<span>合计</span>
+			<span class="price">￥120</span>
+			<div>去支付</div>
 		</div>
 	</div>
 </template>
 
 <script setup>
-import handleClipboard from '@/utils/clipboard';
-import { showConfirmDialog } from 'vant';
-const handleCancelOrder = () => {
-	console.log('取消订单');
-	showConfirmDialog({
-		title: '取消订单',
-		message: '是否取消订单，取消订单需要平台审核',
-		confirmButtonColor: 'red',
-	})
-		.then(() => {
-			// on confirm
-		})
-		.catch(() => {
-			// on cancel
-		});
-};
+const message = ref('');
 </script>
 
 <style lang="less" scoped>
-.order-detail {
+.order-confirm {
 	min-height: 100vh;
 	width: 100vw;
 	background: #fff;
@@ -172,7 +151,7 @@ const handleCancelOrder = () => {
 			display: flex;
 			justify-content: space-between;
 			padding: 10px 0;
-			p {
+			span {
 				font-size: 24px;
 			}
 			.van-cell {
@@ -183,24 +162,35 @@ const handleCancelOrder = () => {
 		}
 	}
 	.bottom-btn {
+		position: fixed;
+		bottom: 0;
+		left: 0;
+		width: 100%;
+		height: 100px;
 		display: flex;
-		justify-content: space-around;
+		align-items: center;
+		padding: 0 20px;
+		box-sizing: border-box;
+		border-top: 2px solid #f5f5f5;
+		padding-bottom: constant(safe-area-inset-bottom);
+		padding-bottom: env(safe-area-inset-bottom);
+		span {
+			font-size: 24px;
+		}
+		.price {
+			font-size: 28px;
+			font-weight: 600;
+		}
 		div {
-			width: 25%;
-			height: 80px;
-			line-height: 80px;
-			text-align: center;
-			font-size: 26px;
-			border-radius: 10px;
-			color: #fff;
-			background: #999;
-			float: left;
-		}
-		:nth-child(2) {
+			margin-left: auto;
+			width: 200px;
+			height: 60px;
 			background: #ff9900;
-		}
-		:nth-child(3) {
-			background: #ff0000;
+			color: #fff;
+			text-align: center;
+			line-height: 50px;
+			border-radius: 10px;
+			font-size: 28px;
 		}
 	}
 }

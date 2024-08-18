@@ -53,6 +53,7 @@ const {
 	min-width: 100vw;
 	min-height: 100vh;
 	background-color: #fff;
+	padding-top: 0;
 	padding-bottom: 130px;
 	bottom: calc(130px + constant(safe-area-inset-bottom));
 	bottom: calc(130px + env(safe-area-inset-bottom));

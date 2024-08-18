@@ -66,6 +66,114 @@ const routes = [
       title: '预约详情',
     },
   },
+  {
+    path: '/detailedServices',
+    name: 'detailedServices',
+    component: () => import('@/views/make/detailedServices.vue'),
+    meta: {
+      title: '详情服务',
+    },
+  },
+  {
+    path: '/orderConfirm',
+    name: 'orderConfirm',
+    component: () => import('@/views/order/orderConfirm.vue'),
+    meta: {
+      title: '确认详情',
+    },
+  },
+  {
+    path: '/orderDetail',
+    name: 'orderDetail',
+    component: () => import('@/views/order/orderDetail.vue'),
+    meta: {
+      title: '确认详情',
+    },
+  },
+  {
+    path: '/makeTextualResearch',
+    name: 'makeTextualResearch',
+    component: () => import('@/views/mine/makeTextualResearch.vue'),
+    meta: {
+      title: '预约考证',
+    },
+  },
+  {
+    path: '/userAgreement',
+    name: 'userAgreement',
+    component: () => import('@/views/mine/userAgreement.vue'),
+    meta: {
+      title: '用户协议',
+    },
+  },
+  {
+    path: '/aboutUs',
+    name: 'aboutUs',
+    component: () => import('@/views/mine/aboutUs.vue'),
+    meta: {
+      title: '关于我们',
+    },
+  },
+  {
+    path: '/agents',
+    name: 'agents',
+    component: () => import('@/views/agentsAndParttime/agents.vue'),
+    meta: {
+      title: '代理',
+    },
+  },
+  {
+    path: '/agents',
+    name: 'agents',
+    component: () => import('@/views/agentsAndParttime/agents.vue'),
+    meta: {
+      title: '代理',
+    },
+  },
+  {
+    path: '/partTime',
+    name: 'partTime',
+    component: () => import('@/views/agentsAndParttime/partTime.vue'),
+    meta: {
+      title: '兼职',
+    },
+  },
+  {
+    path: '/partTimeNumber',
+    name: 'partTimeNumber',
+    component: () => import('@/views/agentsAndParttime/partTimeNumber.vue'),
+    meta: {
+      title: '兼职数量',
+    },
+  },
+  {
+    path: '/canPayouts',
+    name: 'canPayouts',
+    component: () => import('@/views/agentsAndParttime/canPayouts.vue'),
+    meta: {
+      title: '佣金可提现',
+    },
+  },
+  {
+    path: '/payoutsRecords',
+    name: 'payoutsRecords',
+    component: () => import('@/views/agentsAndParttime/payoutsRecords.vue'),
+    meta: {
+      title: '提现记录',
+    },
+  },
+  {
+    path: '/partOrderList',
+    name: 'partOrderList',
+    component: () => import('@/views/agentsAndParttime/partOrderList.vue'),
+    meta: {
+      title: '订单记录',
+    },
+  },
+
+
+
+
 ]
 const router = createRouter({
   // vueRouter@3版本的mode改成了history，hash模式配置createWebHashHistory，history模式配置createWebHistory

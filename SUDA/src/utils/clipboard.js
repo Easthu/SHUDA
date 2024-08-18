@@ -1,12 +1,3 @@
-/*
- * @Author: Est
- * @Date: 2023-03-29 20:04:04
- * @LastEditors: Est
- * @LastEditTime: 2023-04-06 16:26:04
- * @FilePath: \common-zone北京美食专区\src\utils\clipboard.js
- * @Description: 
- */
-
 import { showToast } from "vant";
 
 import useClipboard from 'vue-clipboard3';
