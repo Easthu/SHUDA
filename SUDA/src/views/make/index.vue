@@ -1,44 +1,68 @@
 <template>
 	<div class="make-layout">
-		<van-tabs
-			v-model:active="active"
-			title-active-color="#fff"
-			color="#1989fa"
-			:duration="0"
-			title-inactive-color="#1989fa"
-		>
-			<van-tab title="本地向导"></van-tab>
-			<van-tab title="陪诊就医"></van-tab>
-		</van-tabs>
+		<img :src="homeBg" alt="" class="home-bg-fix" />
+
 		<div class="make-search">
-			<van-search
-				v-model="searchValue"
-				placeholder="请输入向导/陪诊名称或者目的地"
-				clearable
-				left-icon=""
-				@click="hanldeSearch"
-			/>
+			<div class="search-box">
+				<i class="iconfont">&#xe65f;</i>
+				<input type="text" placeholder="搜索兼职 / 向导" />
+				<div class="search-submit">搜索</div>
+			</div>
 			<div class="sift" @click="showSiftbBox = true">
-				<van-icon name="filter-o" size="20" />筛选
+				<i class="iconfont">&#xe60d;</i>
+				筛选
+			</div>
+		</div>
+		<div class="make-category">
+			<div
+				class="category-item"
+				@click="active = 'wizard'"
+				:class="{ active: active == 'wizard' }"
+			>
+				<span>本地向导</span>
+			</div>
+			<div
+				class="category-item"
+				@click="active = 'medical'"
+				:class="{ active: active == 'medical' }"
+			>
+				<span> 陪诊就医 </span>
 			</div>
 		</div>
 		<GoodsList />
 		<!-- 筛选 -->
-		<van-overlay :show="showSiftbBox">
+		<van-overlay :show="showSiftbBox" z-index="9999">
 			<div class="sift-wrapper" @click.stop>
 				<div class="sift-content">
 					<div class="sift-title">性别</div>
 					<div class="sift-sex">
-						<van-radio-group v-model="siftSex" direction="horizontal">
-							<van-radio name="1">男</van-radio>
-							<van-radio name="2">女</van-radio>
-						</van-radio-group>
+						<div
+							class="sex"
+							@click="siftSex = 'man'"
+							:class="{ activeSex: siftSex == 'man' }"
+						>
+							<i class="iconfont color-man">&#xe60f;</i>男
+						</div>
+						<div
+							class="sex"
+							@click="siftSex = 'woman'"
+							:class="{ activeSex: siftSex == 'woman' }"
+						>
+							<i class="iconfont color-woman">&#xe618;</i>女
+						</div>
 					</div>
 				</div>
 				<div class="sift-content">
 					<div class="sift-title">年龄</div>
 					<div class="sift-age">
-						<van-slider v-model="siftAge" range :min="0" :max="100" bar-height="5px">
+						<van-slider
+							v-model="siftAge"
+							range
+							:min="0"
+							:max="100"
+							bar-height="5px"
+							active-color="#E0E0E0"
+						>
 							<template #left-button>
 								<div class="custom-button">{{ siftAge[0] }}</div>
 							</template>
@@ -54,30 +78,49 @@
 						<van-collapse v-model="activeNames">
 							<van-collapse-item name="1">
 								<template #title>
-									<div><van-icon name="wap-home-o" />渝中区3</div>
+									<div class="collapse active-collapse">
+										<i class="iconfont">&#xe71f;</i>渝中区4
+									</div>
 								</template>
-								代码是写出来给人看的，附带能在机器上运行。
+								<div class="place-list">
+									<p class="active">临江门附二院</p>
+									<p>七星岗妇幼保健院</p>
+									<p>中山医院</p>
+									<p>儿童医院</p>
+								</div>
 							</van-collapse-item>
 							<van-collapse-item name="2">
 								<template #title>
-									<div><van-icon name="wap-home-o" />渝中区3</div>
+									<div class="collapse">
+										<i class="iconfont">&#xe71f;</i>江北区
+									</div>
 								</template>
-								技术无非就是那些开发它的人的共同灵魂。
+								<div class="place-list">
+									<p>临江门附二院</p>
+									<p>七星岗妇幼保健院</p>
+									<p>中山医院</p>
+									<p>儿童医院</p>
+								</div>
 							</van-collapse-item>
 							<van-collapse-item name="3">
 								<template #title>
-									<div><van-icon name="wap-home-o" />渝中区3</div>
+									<div class="collapse">
+										<i class="iconfont">&#xe71f;</i>南岸区
+									</div>
 								</template>
-								在代码阅读过程中人们说脏话的频率是衡量代码质量的唯一标准。
+								<div class="place-list">
+									<p>临江门附二院</p>
+									<p>七星岗妇幼保健院</p>
+									<p>中山医院</p>
+									<p>儿童医院</p>
+								</div>
 							</van-collapse-item>
 						</van-collapse>
 					</div>
 				</div>
 				<div class="sift-btn">
-					<van-button type="primary" block size="small" @click="handleConfirmSift"
-						>确定</van-button
-					>
-					<van-button type="default" block size="small">重置</van-button>
+					<div class="reset">重置</div>
+					<div class="confirm" @click="handleConfirmSift">确认</div>
 				</div>
 			</div>
 		</van-overlay>
@@ -85,17 +128,18 @@
 </template>
 
 <script setup>
+import homeBg from '@/assets/images/home/home-bg.png';
 import GoodsList from '@/components/goodsList.vue';
 
-const active = ref(0);
+const active = ref('wizard');
 const searchValue = ref('');
 const hanldeSearch = () => {
 	console.log(searchValue.value);
 };
 const showSiftbBox = ref(false);
 const activeNames = ref([]);
-const siftSex = ref('');
-const siftAge = ref([20, 40]);
+const siftSex = ref('man');
+const siftAge = ref([18, 30]);
 const handleConfirmSift = () => {
 	showSiftbBox.value = false;
 };
@@ -111,18 +155,75 @@ const handleConfirmSift = () => {
 	padding-bottom: 130px;
 	bottom: calc(130px + constant(safe-area-inset-bottom));
 	bottom: calc(130px + env(safe-area-inset-bottom));
+	position: relative;
+	top: 0;
+	.home-bg-fix {
+		position: absolute;
+		z-index: 0;
+		left: 0;
+		top: 0;
+		width: 100vw;
+		height: 100vh;
+	}
 }
 .make-search {
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
 	margin-top: 20px;
-	.van-search {
-		width: 600px;
+	position: relative;
+	z-index: 2;
+	margin-bottom: 44px;
+	.search-box {
+		display: flex;
+		align-items: center;
+		width: 528px;
+		height: 74px;
+		background: #ffffff;
+		border-radius: 40px;
+		border: 4px solid #000000;
+		box-sizing: border-box;
+		.iconfont {
+			font-size: 28px;
+			opacity: 0.47;
+			margin-right: 20px;
+			margin-left: 25px;
+		}
+		input {
+			flex: 1;
+			font-weight: bold;
+			font-size: 24px;
+			color: #061710;
+			color: #999;
+			background: #fff;
+			border: none;
+			outline: none;
+		}
+		.search-submit {
+			width: 114px;
+			height: 49px;
+			background: #93f582;
+			border-radius: 25px;
+			font-family: Source Han Sans CN;
+			font-weight: bold;
+			font-size: 26px;
+			color: #061710;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			margin-right: 10px;
+		}
 	}
 	.sift {
-		font-size: 28px;
-		color: #3a3a3a;
+		display: flex;
+		align-items: center;
+		font-weight: bold;
+		font-size: 30px;
+		color: #061710;
+		.iconfont {
+			font-size: 40px;
+			color: #061710;
+		}
 	}
 }
 .van-overlay {
@@ -134,7 +235,7 @@ const handleConfirmSift = () => {
 	height: 100vh;
 	background-color: #fff;
 	font-size: 28px;
-	padding: 20px;
+	padding-top: 102px;
 	box-sizing: border-box;
 	display: flex;
 	flex-direction: column;
@@ -142,22 +243,87 @@ const handleConfirmSift = () => {
 	bottom: calc(130px + constant(safe-area-inset-bottom));
 	bottom: calc(130px + env(safe-area-inset-bottom));
 	.sift-content {
-		margin-bottom: 20px;
+		margin-bottom: 30px;
 		.sift-title {
-			font-size: 32px;
-			margin-bottom: 16px;
+			font-weight: 500;
+			font-size: 26px;
+			color: #010000;
+			margin-bottom: 30px;
+			margin-left: 39px;
+		}
+		.sift-sex {
+			display: flex;
+			margin-left: 39px;
+			.sex {
+				width: 152px;
+				height: 53px;
+				font-weight: 400;
+				font-size: 26px;
+				color: #010000;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				.iconfont {
+					font-size: 30px;
+					margin-right: 15px;
+				}
+				.color-man {
+					color: #0a95ff;
+				}
+				.color-woman {
+					color: #fe0c5e;
+				}
+			}
+			.activeSex {
+				background: #e9e9e9;
+			}
 		}
 		.sift-age {
 			height: 50px;
 			display: flex;
 			align-items: center;
+
 			.custom-button {
 				width: 50px;
-				color: #fff;
-				font-size: 26px;
+				font-weight: 500;
+				font-size: 24px;
+				color: #00be12;
 				text-align: center;
-				background-color: var(--van-primary-color);
-				border-radius: 100px;
+				background: #defcd9;
+			}
+		}
+		.collapse {
+			display: flex;
+			align-items: center;
+			font-weight: 500;
+			font-size: 26px;
+			color: #010000;
+			.iconfont {
+				font-size: 30px;
+				margin-right: 14px;
+			}
+		}
+		.active-collapse {
+			color: #93f582;
+			.iconfont {
+				color: #93f582;
+			}
+		}
+		::v-deep(.van-collapse-item__content) {
+			padding: 0;
+		}
+		.place-list {
+			font-weight: 400;
+			font-size: 26px;
+			color: #010000;
+
+			p {
+				padding: 27px 0;
+				text-align: center;
+				background: #f1f1f1;
+			}
+			.active {
+				background: #93f582;
 			}
 		}
 	}
@@ -165,21 +331,55 @@ const handleConfirmSift = () => {
 		margin-top: auto;
 		display: flex;
 		justify-content: space-around;
+		div {
+			width: 196px;
+			height: 65px;
+			border-radius: 11px;
+			font-weight: 500;
+			font-size: 34px;
+			color: #000000;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+		}
+		.reset {
+			background: #66c0f8;
+		}
+		.confirm {
+			background: #93f582;
+		}
 	}
 }
-.van-tabs {
-	width: 100%;
-	border: 2px solid #1989fa;
-	border-radius: 20px;
-	box-sizing: border-box;
-	overflow: hidden;
-	.van-tabs__nav--card {
-		margin: 0;
+.make-category {
+	display: flex;
+	align-items: center;
+	position: relative;
+	margin-bottom: 34px;
+	.category-item {
+		font-weight: 500;
+		font-size: 29px;
+		color: #010000;
+		margin-left: 22px;
+		margin-right: 56px;
+		position: relative;
+		z-index: 3;
+		span {
+			position: relative;
+			z-index: 3;
+		}
 	}
-	:deep(.van-tab--active) {
-		background: #1989fa;
-		color: #fff;
-		font-weight: normal;
+	.active {
+		&::after {
+			content: '';
+			width: 120px;
+			height: 16px;
+			background: #93f582;
+			border-radius: 8px;
+			position: absolute;
+			left: 0;
+			bottom: -11px;
+			z-index: 2;
+		}
 	}
 }
 </style>

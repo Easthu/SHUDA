@@ -1,94 +1,226 @@
 <template>
 	<div class="order-layout">
-		<van-tabs v-model:active="active" title-active-color="#1989fa" color="#1989fa">
-			<van-tab title="全部"></van-tab>
-			<van-tab title="待支付"></van-tab>
-			<van-tab title="待取消"></van-tab>
-			<van-tab title="已取消"></van-tab>
-			<van-tab title="服务中"></van-tab>
-			<van-tab title="已完成"></van-tab>
-			<div class="order-list">
-				<div class="order-list-item" v-for="i in 10" :key="i">
-					<div class="item-top">
-						<div class="shop-name">商家名称</div>
-						<div class="order-status">待支付</div>
+		<div class="state-list">
+			<div
+				class="state-item"
+				@click="active = item.value"
+				:class="{ active: active == item.value }"
+				v-for="item in stateList"
+				:key="item.value"
+			>
+				<span>{{ item.name }}</span>
+			</div>
+		</div>
+		<div class="order-list">
+			<div class="order-list-item" v-for="(item, index) in orderListData" :key="index">
+				<div class="item-top">
+					<div class="shop-name">
+						{{ item.goodsName }}
+						<i class="iconfont">&#xe618;</i>
+						<span class="age">25岁</span>
 					</div>
-					<div class="item-content" @click="router.push('/orderDetail')">
-						<img src="https://img.yzcdn.cn/vant/cat.jpeg" alt="" class="shop-img" />
-						<div class="shop-info">
-							<div class="goods-name">陪诊就医</div>
-							<div class="order-id">订单编号：4564654654564564564654</div>
-							<div class="order-time">下单时间：2024-8-8 19:44:41</div>
-							<div class="order-price">实付：￥360.00</div>
+					<div class="order-status">{{ item.orderState }}</div>
+				</div>
+				<div class="item-content" @click="router.push('/orderDetail')">
+					<img :src="item.img" alt="" class="shop-img" />
+					<div class="shop-info">
+						<div class="goods-name">{{ item.type }}</div>
+						<div class="order-id">订单编号：4564654654564564564654</div>
+						<div class="order-time">下单时间：2024-8-8 19:44:41</div>
+						<div class="order-price">实付：￥360.00</div>
+						<div class="item-btn">
+							<div v-if="item.orderState == '待服务'">扫码服务</div>
+							<div v-if="item.orderState == '待服务'">取消订单</div>
+							<div v-if="item.orderState == '服务中'">联系客服</div>
+							<div v-if="item.orderState == '服务中'">扫码结束</div>
+							<div v-if="item.orderState == '服务中'">续单</div>
+							<div v-if="item.orderState == '已完成'">评价</div>
 						</div>
-					</div>
-					<div class="item-btn">
-						<van-button type="primary" size="small">扫码服务</van-button>
-						<van-button type="danger" size="small">取消订单</van-button>
 					</div>
 				</div>
 			</div>
-		</van-tabs>
+		</div>
 	</div>
 </template>
 
 <script setup>
-const active = ref(0);
+const active = ref('all');
 const router = useRouter();
+import orderImg from '@/assets/images/order/order-img.png';
+import zhouxingle from '@/assets/images/home/zhouxingle.png';
+import zhaoheng from '@/assets/images/home/zhaoheng.png';
+const stateList = [
+	{
+		name: '全部',
+		value: 'all',
+	},
+	{
+		name: '待支付',
+		value: 'toBePaid',
+	},
+	{
+		name: '待服务',
+		value: 'toBeServed',
+	},
+	{
+		name: '取消中',
+		value: 'canceling',
+	},
+	{
+		name: '已取消',
+		value: 'cancelled',
+	},
+	{
+		name: '服务中',
+		value: 'serveing',
+	},
+	{
+		name: '已完成',
+		value: 'completed',
+	},
+];
+const orderListData = [
+	{
+		img: zhouxingle,
+		goodsName: '周兴乐',
+		orderState: '待服务',
+		type: '本地向导',
+	},
+	{
+		img: zhaoheng,
+		goodsName: '周奕航',
+		orderState: '服务中',
+		type: '本地向导',
+	},
+	{
+		img: orderImg,
+		goodsName: '重庆市西南医院',
+		orderState: '已完成',
+		type: '陪诊就医',
+	},
+];
 </script>
 
 <style lang="less" scoped>
-.order-list {
-	padding: 20px;
-	box-sizing: border-box;
-	width: 100vw;
+.state-list {
+	display: flex;
+	align-items: center;
+	position: relative;
+	margin-bottom: 22px;
+	justify-content: space-around;
+	margin-top: 60px;
+	margin-bottom: 50px;
+	.state-item {
+		font-weight: 500;
+		font-size: 26px;
+		color: #010000;
+		position: relative;
+		z-index: 3;
+		span {
+			position: relative;
+			z-index: 3;
+		}
+	}
+	.active {
+		&::after {
+			content: '';
+			height: 16px;
+			background: #93f582;
+			border-radius: 8px;
+			position: absolute;
+			left: 0;
+			right: 0;
+			bottom: -11px;
+			z-index: 2;
+		}
+	}
 }
+.order-list {
+	width: 715px;
+	height: 271px;
+	background: #ffffff;
+	display: flex;
+	flex-direction: column;
+	margin: 0 auto 10px;
+}
+
 .order-list-item {
 	background-color: #fff;
 	border-radius: 10px;
-	padding: 20px;
+	padding: 14px 20px;
 	box-sizing: border-box;
 	margin-bottom: 20px;
 	width: 100%;
-}
-.item-top {
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-	margin-bottom: 20px;
-}
-.shop-name {
-	font-size: 30px;
-	font-weight: bold;
-}
-.order-status {
-	font-size: 28px;
-	color: #999;
-}
-.item-content {
-	display: flex;
-	align-items: center;
-	height: 200px;
-	.shop-img {
-		width: 200px;
-		height: 200px;
-		border-radius: 10px;
-		margin-right: 24px;
-	}
-	.shop-info {
+	.item-top {
 		display: flex;
-		flex-direction: column;
-		font-size: 28px;
-		justify-content: space-around;
-		height: 100%;
+		justify-content: space-between;
+		align-items: center;
+		margin-bottom: 16px;
+		.shop-name {
+			font-size: 30px;
+			font-weight: bold;
+			display: flex;
+			align-items: center;
+			font-weight: 500;
+			font-size: 30px;
+			color: #010000;
+			.iconfont {
+				font-size: 30px;
+				color: #f03589;
+				margin: 0 10px;
+			}
+		}
+		.order-status {
+			font-weight: 400;
+			font-size: 22px;
+			color: #000000;
+		}
 	}
-}
-.item-btn {
-	display: flex;
-	justify-content: flex-end;
-	margin-top: 20px;
-	.van-button {
-		margin-left: 24px;
+
+	.item-content {
+		display: flex;
+		align-items: center;
+		height: 200px;
+		.shop-img {
+			width: 200px;
+			height: 200px;
+			border-radius: 10px;
+			margin-right: 24px;
+		}
+		.shop-info {
+			display: flex;
+			flex-direction: column;
+			font-weight: 400;
+			font-size: 18px;
+			color: #010000;
+			justify-content: space-around;
+			height: 100%;
+			.goods-name {
+				font-weight: 500;
+				font-size: 26px;
+				color: #010000;
+			}
+			.item-btn {
+				display: flex;
+				justify-content: flex-end;
+				margin-top: 20px;
+				width: 454px;
+
+				div {
+					width: 119px;
+					height: 48px;
+					background: #93f582;
+					border-radius: 24px;
+					font-weight: 500;
+					font-size: 23px;
+					color: #061710;
+					display: flex;
+					align-items: center;
+					justify-content: center;
+					margin-left: 20px;
+				}
+			}
+		}
 	}
 }
 </style>

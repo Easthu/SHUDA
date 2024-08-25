@@ -1,6 +1,8 @@
 import { createApp } from 'vue'
 import App from './App.vue'
 import 'assets/style/global.css'
+import 'assets/style/global.less'
+
 import router from '@/router'
 import { createPinia } from 'pinia'
 import VConsole from 'vconsole';

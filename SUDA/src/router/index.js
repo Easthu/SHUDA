@@ -177,7 +177,7 @@ const routes = [
 ]
 const router = createRouter({
   // vueRouter@3版本的mode改成了history，hash模式配置createWebHashHistory，history模式配置createWebHistory
-  history: createWebHistory('/'),
+  history: createWebHistory('/momoda/'),
   routes,
 })
 // 全局路由守卫

@@ -88,9 +88,8 @@ video {
     padding: 0;
     border: 0;
     font-size: 100%;
-    /* font: inherit; */
     vertical-align: baseline;
-    font-family: 'PingFang SC', 'Noto Sans SC', 'vant-icon', 'iconfont' !important;
+    font-family: Source Han Sans CN;
 }
 
 /* HTML5 display-role reset for older browsers */

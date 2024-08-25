@@ -1,62 +1,229 @@
 <template>
 	<div class="mine-layout">
+		<img :src="homeBg" alt="" class="home-bg-fix" />
 		<div class="user-info">
 			<van-image
 				round
-				width="2rem"
-				height="2rem"
+				class="avatar-img"
 				src="https://fastly.jsdelivr.net/npm/@vant/assets/cat.jpeg"
 			/>
 			<div class="user-name-id">
-				<div class="user-name">用户姓名：钟基佬</div>
-				<div class="user-id">id:122344556654654</div>
+				<div class="user-name">陌搭陪伴</div>
+				<div class="user-id">ID:122344556654654</div>
 			</div>
-			<!-- <van-button type="primary" size="small">修改资料</van-button> -->
 		</div>
+		<div class="mine-btn">
+			<div
+				class="partTime"
+				:style="{
+					backgroundImage: `url(${partTimeBtn})`,
+				}"
+				@click="handleLinkPartTime"
+			>
+				<p>兼职入职</p>
+				<span>给你恰到好处的陪伴</span>
+			</div>
+			<div
+				class="agents"
+				:style="{
+					backgroundImage: `url(${agentsBtn})`,
+				}"
+				@click="handleLinkAgents"
+			>
+				<p>代理申请</p>
+				<span>给你恰到好处的陪伴</span>
+			</div>
+		</div>
+
 		<div class="menu-list">
-			<!-- <van-cell title="我的收藏" is-link to="/collect" /> -->
-			<!-- <van-cell title="我的优惠券" is-link to="/coupon" /> -->
-			<van-cell title="预约考证" is-link to="/makeTextualResearch" />
+			<!-- <van-cell title="预约考证" is-link to="/makeTextualResearch" />
 			<van-cell title="用户协议" is-link to="/userAgreement" />
-			<van-cell title="代理申请" is-link to="/agents" />
-			<van-cell title="兼职入住" is-link to="/partTime" />
 			<van-cell title="联系客服" is-link to="" />
-			<van-cell title="关于我们" is-link to="/aboutUs" />
+			<van-cell title="关于我们" is-link to="/aboutUs" /> -->
+			<div
+				class="menu-item"
+				v-for="item in menuList"
+				:key="item.name"
+				@click="handleLinkMenu(item)"
+			>
+				<i class="iconfont" :style="{ color: item.color }" v-html="item.icon"></i>
+				<div class="name">{{ item.name }}</div>
+				<div class="arrow">
+					<img :src="arrow" alt="" />
+				</div>
+			</div>
 		</div>
 	</div>
 </template>
-<script setup name="mine"></script>
+<script setup name="mine">
+import homeBg from '@/assets/images/home/home-bg.png';
+import partTimeBtn from '@/assets/images/icons/partTime-btn.png';
+import agentsBtn from '@/assets/images/icons/agents-btn.png';
+import arrow from '@/assets/images/icons/arrow.png';
+
+const router = useRouter();
+const handleLinkPartTime = () => {
+	router.push('/partTime');
+};
+const handleLinkAgents = () => {
+	router.push('/agents');
+};
+
+const menuList = ref([
+	{
+		name: '我的收藏',
+		icon: '&#xe604;',
+		color: '#93F582',
+	},
+	{
+		name: '我的卡券',
+		icon: '&#xe606;',
+		color: '#FFA030',
+	},
+	{
+		name: '预约考证',
+		icon: '&#xe609;',
+		color: '#1691E8',
+		path: '/makeTextualResearch',
+	},
+	{
+		name: '用户协议',
+		icon: '&#xe60a;',
+		color: '#93F582',
+		path: '/userAgreement',
+	},
+	{
+		name: '联系客服',
+		icon: '&#xe60c;',
+		color: '#F05B65',
+	},
+	{
+		name: '关于我们',
+		icon: '&#xe608;',
+		color: '#33D1FF',
+		path: '/aboutUs',
+	},
+]);
+const handleLinkMenu = (item) => {
+	if (item.path) {
+		router.push(item.path);
+	}
+};
+</script>
 <style lang="less" scoped>
 .mine-layout {
-	padding: 24px;
 	min-width: 100vw;
 	min-height: 100vh;
-	background-color: #f5f5f5;
+	background: #f7f7f7;
 	box-sizing: border-box;
+	position: relative;
+	padding-top: 40px;
+	top: 0;
+	.home-bg-fix {
+		position: absolute;
+		z-index: 0;
+		left: 0;
+		top: 0;
+		width: 100vw;
+		height: 100vh;
+	}
 }
 .user-info {
 	display: flex;
 	align-items: center;
-	padding: 24px;
-	background-color: #fff;
 	border-radius: 8px;
-	height: 100px;
+	height: 158px;
+	position: relative;
+	z-index: 2;
+	margin: 0 0 40px 40px;
+	.avatar-img {
+		width: 158px;
+		height: 158px;
+	}
 
 	.user-name-id {
 		display: flex;
 		flex-direction: column;
 		justify-content: center;
 		align-items: flex-start;
-		justify-content: space-around;
 		height: 100%;
 		margin-left: 20px;
 		.user-name {
-			font-size: 24px;
-			color: #333;
+			font-weight: 500;
+			font-size: 34px;
+			color: #010000;
+			margin-bottom: 16px;
 		}
 		.user-id {
-			font-size: 24px;
-			color: #999;
+			font-weight: 500;
+			font-size: 34px;
+			color: #010000;
+		}
+	}
+}
+.mine-btn {
+	position: relative;
+	z-index: 2;
+	display: flex;
+	justify-content: space-between;
+	margin: 0 40px;
+
+	margin-bottom: 42px;
+	.partTime,
+	.agents {
+		width: 318px;
+		height: 107px;
+		border-radius: 8px;
+		display: flex;
+		flex-direction: column;
+		padding: 24px;
+		box-sizing: border-box;
+		background-size: 100%;
+		background-repeat: no-repeat;
+		p {
+			font-weight: bold;
+			font-size: 36px;
+			color: #fefefe;
+			margin-bottom: 8px;
+		}
+		span {
+			font-weight: bold;
+			font-size: 14px;
+			color: #ffffff;
+		}
+	}
+}
+.menu-list {
+	display: flex;
+	flex-direction: column;
+	margin: 0 47px;
+	position: relative;
+	z-index: 2;
+	width: 669px;
+	border-radius: 31px;
+	background: #fff;
+	padding-bottom: 40px;
+	.menu-item {
+		display: flex;
+		align-items: center;
+		margin-top: 30px;
+		.iconfont {
+			font-size: 50px;
+			margin-right: 35px;
+			margin-left: 26px;
+		}
+		.name {
+			font-weight: 500;
+			font-size: 30px;
+			color: #000000;
+		}
+		.arrow {
+			margin-left: auto;
+			margin-right: 30px;
+			img {
+				width: 19px;
+				height: 29px;
+			}
 		}
 	}
 }

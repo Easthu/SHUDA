@@ -1,84 +1,106 @@
 <template>
 	<div class="makeTextualResearch">
-		<van-form @submit="handleSubmit">
-			<van-cell-group inset>
-				<van-field
-					v-model="makeForm.project"
-					is-link
-					readonly
-					name="picker"
-					placeholder="报考项目"
-					@click="showProject = true"
-				/>
-				<van-popup v-model:show="showProject" position="bottom">
-					<van-picker
-						:columns="columns"
-						@confirm="onConfirm"
-						@cancel="showPicker = false"
-					/>
-				</van-popup>
-				<van-field
-					v-model="makeForm.username"
-					name="姓名"
-					label="姓名"
-					placeholder="姓名"
-					:rules="[{ required: true, message: '请填写姓名' }]"
-				/>
-				<van-field name="radio" label="性别">
-					<template #input>
-						<van-radio-group v-model="makeForm.sex" direction="horizontal">
-							<van-radio name="1">男</van-radio>
-							<van-radio name="2">女</van-radio>
-						</van-radio-group>
-					</template>
-				</van-field>
-				<van-field name="stepper" label="年龄">
-					<template #input>
-						<van-stepper v-model="makeForm.age" />
-					</template>
-				</van-field>
-				<van-field v-model="makeForm.tel" type="tel" label="手机号" />
-				<van-field
-					v-model="makeForm.sms"
-					center
-					clearable
-					label="验证码"
-					placeholder="请输入验证码"
-				>
-					<template #button>
-						<van-button size="small" type="primary">发送验证码</van-button>
-					</template>
-				</van-field>
-			</van-cell-group>
-			<div class="bottom-btn">
-				<van-button round block @click="hanldeBack"> 返回 </van-button>
-				<van-button round block type="primary" native-type="submit"> 提交 </van-button>
+		<div class="form-item">
+			<div class="item-left">报考项目</div>
+			<div class="item-sel" @click="showProject = true">
+				{{ makeForm.project }} <van-icon name="arrow-down" />
 			</div>
-		</van-form>
+		</div>
+		<van-popup v-model:show="showProject" position="bottom">
+			<van-picker :columns="columns" @confirm="onConfirm" @cancel="showProject = false" />
+		</van-popup>
+		<div class="form-item">
+			<div class="item-left">姓名</div>
+			<div class="item-input">
+				<input v-model="makeForm.username" />
+			</div>
+		</div>
+		<div class="form-item">
+			<div class="item-left">性别</div>
+			<div class="item-sel" @click="showSex = true">
+				{{ makeForm.sex }}<van-icon name="arrow-down" />
+			</div>
+		</div>
+		<van-popup v-model:show="showSex" position="bottom">
+			<van-picker :columns="sexColumns" @confirm="onSexConfirm" @cancel="showSex = false" />
+		</van-popup>
+		<div class="form-item">
+			<div class="item-left">年龄</div>
+			<div class="item-sel" @click="showAge = true">
+				{{ makeForm.age }}<van-icon name="arrow-down" />
+			</div>
+		</div>
+		<van-popup v-model:show="showAge" position="bottom">
+			<van-picker :columns="ageColumns" @confirm="onAgeConfirm" @cancel="showAge = false" />
+		</van-popup>
+
+		<div class="form-item mat130">
+			<div class="item-left">
+				<i class="iconfont">&#xe62a;</i>
+				手机号
+			</div>
+			<div class="item-input">
+				<input v-model="makeForm.tel" type="tel" />
+			</div>
+		</div>
+		<div class="form-item">
+			<div class="item-left">
+				<i class="iconfont">&#xe600;</i>
+				验证码
+			</div>
+			<div class="item-input wid200">
+				<input v-model="makeForm.sms" type="tel" />
+			</div>
+			<div class="item-sms">获取验证码</div>
+		</div>
+
+		<div class="bottom-btn mat130">
+			<div class="confirm" :style="{ backgroundImage: `url(${confirm})` }">提交申请</div>
+		</div>
 	</div>
 </template>
 
 <script setup>
+import confirm from '@/assets/images/icons/confirm.png';
 const makeForm = reactive({
 	username: '',
 	sex: '',
 	project: '',
-	age: 0,
+	age: '',
 	tel: '',
 	makeForm: '',
 });
 const showProject = ref(false);
+const showSex = ref(false);
+const showAge = ref(false);
+
 const onConfirm = (value) => {
-	makeForm.project = value.text;
+	makeForm.project = value['selectedOptions'][0].text;
 	showProject.value = false;
 };
+const onSexConfirm = (value) => {
+	makeForm.sex = value['selectedOptions'][0].text;
+	showSex.value = false;
+};
+const onAgeConfirm = (value) => {
+	makeForm.age = value['selectedOptions'][0].text;
+	showAge.value = false;
+};
 const columns = [
-	{ text: '杭州', value: 'Hangzhou' },
-	{ text: '宁波', value: 'Ningbo' },
-	{ text: '温州', value: 'Wenzhou' },
-	{ text: '绍兴', value: 'Shaoxing' },
-	{ text: '湖州', value: 'Huzhou' },
+	{ text: '考证1', value: '1' },
+	{ text: '考证2', value: '2' },
+	{ text: '考证3', value: '3' },
+	{ text: '考证4', value: '4' },
+	{ text: '考证5', value: '5' },
 ];
+const sexColumns = [
+	{ text: '男', value: '1' },
+	{ text: '女', value: '2' },
+];
+const ageColumns = ref([]);
+for (let i = 1; i < 100; i++) {
+	ageColumns.value.push({ text: i, value: i });
+}
 
 const handleSubmit = () => {
 	console.log('提交');
@@ -93,16 +115,79 @@ const hanldeBack = () => {
 .makeTextualResearch {
 	min-height: 100vh;
 	width: 100vw;
-	background-color: #f5f5f5;
+	background: #f2f3f7;
 	padding: 20px;
 	box-sizing: border-box;
 	font-size: 26px;
-	.bottom-btn {
+	padding-top: 150px;
+
+	.form-item {
+		width: 656px;
+		height: 86px;
+		background: #ffffff;
+		border-radius: 10px;
+		margin: auto;
+		margin-bottom: 24px;
 		display: flex;
-		justify-content: space-around;
-		margin-top: 50px;
-		.van-button {
-			width: 40%;
+		align-items: center;
+		justify-content: space-between;
+		padding: 0 35px;
+		font-weight: 500;
+		font-size: 30px;
+		color: #000000;
+		box-sizing: border-box;
+		.item-left {
+			flex-shrink: 0;
+			margin-right: 24px;
+		}
+		.item-input {
+			flex: 1;
+			input {
+				flex: 1;
+				border: none;
+				outline: none;
+			}
+		}
+		.item-sel {
+			.van-icon {
+				margin-left: 24px;
+				font-weight: 500;
+				font-size: 30px;
+				color: #000000;
+			}
+		}
+
+		.iconfont {
+			font-size: 30px;
+		}
+		.item-sms {
+			font-weight: 500;
+			font-size: 24px;
+			color: #84d39c;
+			flex-shrink: 0;
+			margin-right: 30px;
+		}
+	}
+	.mat130 {
+		margin-top: 130px;
+	}
+	.wid200 {
+		width: 200px;
+	}
+	.bottom-btn {
+		div {
+			background-size: 100%;
+			width: 318px;
+			height: 107px;
+			background-repeat: no-repeat;
+			// border-radius: 20px;
+			margin: auto;
+			font-weight: bold;
+			font-size: 38px;
+			color: #fefefe;
+			display: flex;
+			align-items: center;
+			justify-content: center;
 		}
 	}
 }
