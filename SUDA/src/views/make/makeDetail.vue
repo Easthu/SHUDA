@@ -12,15 +12,21 @@
 			<div class="person-left">
 				<div class="name-score">
 					<div class="name">张丹琼</div>
-					<div class="score"><i class="iconfont">&#xe64b;</i>4.9</div>
+					<div class="score">
+						<img src="@/assets/images/icons/make-star.png" alt="" />4.9
+					</div>
 				</div>
 				<div class="done-list">已完成43单</div>
 			</div>
-			<div class="person-right"><i class="iconfont">&#xe60b;</i>个人营业执照</div>
+			<div class="person-right" @click="router.push('/personalBusinessLicense')">
+				<img src="@/assets/images/icons/make-detail-license.png" alt="" />个人营业执照
+			</div>
 		</div>
 		<div class="comments-like">
-			<span class="border-line"><i class="iconfont">&#xe607;</i>178</span>
-			<span><i class="iconfont">&#xe85c;</i>293</span>
+			<span class="border-line"
+				><img src="@/assets/images/icons/make-detail-message.png" alt="" /> 178</span
+			>
+			<span><img src="@/assets/images/icons/make-like.png" alt="" />293</span>
 		</div>
 		<div class="specification-list">
 			<div class="specification-item" v-for="(item, index) in goodsList" :key="index">
@@ -28,9 +34,15 @@
 				<div class="specification-info">
 					<div class="spe-name">{{ item.name }}</div>
 					<div class="spe-suggestion">
-						<i class="iconfont">&#xe605;</i> {{ item.suggestion }}
+						<img src="@/assets/images/icons/make-detail-time.png" alt="" />{{
+							item.suggestion
+						}}
 					</div>
-					<div class="spe-time"><i class="iconfont">&#xe605;</i>{{ item.time }}</div>
+					<div class="spe-time">
+						<img src="@/assets/images/icons/make-detail-diamond.png" alt="" />{{
+							item.time
+						}}
+					</div>
 				</div>
 				<div class="item-right">
 					<div class="spe-price">￥{{ item.price }}</div>
@@ -153,10 +165,11 @@ const goodsList = ref([
 					color: #000000;
 					display: flex;
 					align-items: center;
-					.iconfont {
-						font-size: 20px;
-						color: #f9ca02;
-						margin-right: 10px;
+					justify-content: center;
+					img {
+						width: 34px;
+						height: 32px;
+						margin-right: 13px;
 					}
 				}
 			}
@@ -167,18 +180,20 @@ const goodsList = ref([
 			}
 		}
 		.person-right {
-			width: 144px;
-			height: 33px;
+			width: 172px;
+			height: 41px;
 			background: #ffc886;
 			border-radius: 17px;
-			font-weight: 500;
-			font-size: 16px;
+			font-weight: 400;
+			font-size: 20px;
 			color: #000000;
 			display: flex;
 			justify-content: center;
 			align-items: center;
-			.iconfont {
-				font-size: 28px;
+			img {
+				width: 15px;
+				height: 23px;
+				margin-right: 8px;
 			}
 		}
 	}
@@ -194,16 +209,18 @@ const goodsList = ref([
 			display: flex;
 			align-items: center;
 			justify-content: center;
-			.iconfont {
-				font-size: 24px;
-				margin-right: 14px;
-				color: #f6585e;
+			img {
+				width: 52px;
+				height: 44px;
+				margin-right: 15px;
 			}
 		}
 		.border-line {
-			border-right: 2px solid #000;
-			.iconfont {
-				color: #a6a6a6;
+			border-right: 2px solid #bbbbbc;
+			img {
+				margin-right: 6px;
+				width: 47px;
+				height: 44px;
 			}
 		}
 	}
@@ -242,10 +259,10 @@ const goodsList = ref([
 				display: flex;
 				align-items: center;
 				margin-bottom: 30px;
-				.iconfont {
-					font-size: 40px;
-					color: #93f582;
-					margin-right: 10px;
+				img {
+					width: 28px;
+					height: 27px;
+					margin-right: 11px;
 				}
 			}
 		}
@@ -254,11 +271,12 @@ const goodsList = ref([
 			flex-direction: column;
 			align-items: flex-end;
 			margin-right: 30px;
+			height: 100%;
 			.spe-price {
 				font-weight: 500;
 				font-size: 28px;
 				color: #000000;
-				margin-bottom: 20px;
+				margin: 20px 0;
 			}
 			.spe-sel {
 				img {

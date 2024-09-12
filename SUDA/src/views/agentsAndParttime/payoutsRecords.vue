@@ -1,6 +1,11 @@
 <template>
 	<div class="payouts-records">
-		<NavBar showLeftBack />
+		<img
+			src="@/assets/images/icons/back.png"
+			alt=""
+			class="back-icon"
+			@click="$router.go(-1)"
+		/>
 		<van-pull-refresh v-model="refreshing" @refresh="onRefresh">
 			<van-list v-model:loading="loading" :finished="finished" @load="onLoad">
 				<div v-for="item in listData" :key="item" class="list-item">
@@ -17,6 +22,7 @@
 </template>
 
 <script setup>
+const router = useRouter();
 const listData = ref([]);
 const loading = ref(false);
 const finished = ref(false);
@@ -61,29 +67,46 @@ const onRefresh = () => {
 .payouts-records {
 	width: 100vw;
 	min-height: 100vh;
-	padding: 0 20px;
+	padding: 53px 37px;
 	box-sizing: border-box;
-	background-color: #fff;
+	background: #f2f3f7;
+	.back-icon {
+		width: 53px;
+		height: 53px;
+		margin-bottom: 30px;
+	}
+	.van-list {
+		background: #fefeff;
+		border-radius: 10px;
+		padding: 40px;
+	}
 	.list-item {
-		width: 710px;
 		margin: 12px 0;
-		padding: 20px;
-		border-bottom: 2px solid #ccc;
+		padding-bottom: 20px;
+		border-bottom: 2px solid #f2f3f7;
 		box-sizing: border-box;
 		display: flex;
-
+		margin-bottom: 38px;
 		.list-info {
 			display: flex;
 			flex-direction: column;
 			height: 80px;
 			flex: 1;
 			.list-time {
+				font-weight: 300;
 				font-size: 24px;
-				margin-bottom: 30px;
+				color: #010000;
 			}
 			.list-price {
 				font-size: 28px;
 				color: #999;
+				margin-top: 18px;
+				span {
+					font-weight: 400;
+					font-size: 30px;
+					color: #fc1616;
+					margin-left: 33px;
+				}
 			}
 		}
 	}

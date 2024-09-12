@@ -46,7 +46,7 @@
 				:key="item.name"
 				@click="handleLinkMenu(item)"
 			>
-				<i class="iconfont" :style="{ color: item.color }" v-html="item.icon"></i>
+				<img :src="item.icon" alt="" />
 				<div class="name">{{ item.name }}</div>
 				<div class="arrow">
 					<img :src="arrow" alt="" />
@@ -61,6 +61,13 @@ import partTimeBtn from '@/assets/images/icons/partTime-btn.png';
 import agentsBtn from '@/assets/images/icons/agents-btn.png';
 import arrow from '@/assets/images/icons/arrow.png';
 
+import collection from '@/assets/images/icons/my-collection.png';
+import conpon from '@/assets/images/icons/my-conpon.png';
+import examination from '@/assets/images/icons/my-examination.png';
+import agreement from '@/assets/images/icons/my-agreement.png';
+import customer from '@/assets/images/icons/my-customer.png';
+import about from '@/assets/images/icons/my-about.png';
+
 const router = useRouter();
 const handleLinkPartTime = () => {
 	router.push('/partTime');
@@ -72,35 +79,29 @@ const handleLinkAgents = () => {
 const menuList = ref([
 	{
 		name: '我的收藏',
-		icon: '&#xe604;',
-		color: '#93F582',
+		icon: collection,
 	},
 	{
 		name: '我的卡券',
-		icon: '&#xe606;',
-		color: '#FFA030',
+		icon: conpon,
 	},
 	{
 		name: '预约考证',
-		icon: '&#xe609;',
-		color: '#1691E8',
+		icon: examination,
 		path: '/makeTextualResearch',
 	},
 	{
 		name: '用户协议',
-		icon: '&#xe60a;',
-		color: '#93F582',
+		icon: agreement,
 		path: '/userAgreement',
 	},
 	{
 		name: '联系客服',
-		icon: '&#xe60c;',
-		color: '#F05B65',
+		icon: customer,
 	},
 	{
 		name: '关于我们',
-		icon: '&#xe608;',
-		color: '#33D1FF',
+		icon: about,
 		path: '/aboutUs',
 	},
 ]);
@@ -207,10 +208,11 @@ const handleLinkMenu = (item) => {
 		display: flex;
 		align-items: center;
 		margin-top: 30px;
-		.iconfont {
-			font-size: 50px;
-			margin-right: 35px;
-			margin-left: 26px;
+		img {
+			width: 40px;
+			height: 40px;
+			margin-left: 22px;
+			margin-right: 30px;
 		}
 		.name {
 			font-weight: 500;

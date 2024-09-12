@@ -228,11 +228,12 @@ const handleCancelOrder = () => {
 				height: 212px;
 				padding-top: 25px;
 				box-sizing: border-box;
+				height: 100%;
 				.spe-price {
 					font-weight: 500;
 					font-size: 28px;
 					color: #000000;
-					margin-bottom: 20px;
+					margin: 20px 0;
 				}
 			}
 		}

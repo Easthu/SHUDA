@@ -12,28 +12,34 @@ const {
 	recommendList,
 	tabsTitleClass,
 	handleLinkRecommend,
+	getHomeInfo,
+	bannerList,
+	staffInfoList,
+	handleChangeNav,
 } = useHome();
+onMounted(() => {
+	getHomeInfo.value();
+});
 </script>
 <!-- 首页 -->
 <template>
 	<div class="homeLayout">
-		<!-- <NavBar :showRight="true" showLeftText="给你恰到好处的陪伴" /> -->
 		<img :src="homeBg" alt="" class="home-bg-fix" />
 		<div class="home-search">
 			<div class="city-choose">
-				<i class="iconfont">&#xe602;</i>
+				<img src="@/assets/images/icons/home-position.png" alt="" />
 				<span>重庆</span>
 			</div>
 			<div class="search-box">
-				<i class="iconfont">&#xe65f;</i>
+				<img src="@/assets/images/icons/home-search.png" alt="" />
 				<input type="text" placeholder="搜索兼职 / 向导" />
 				<div class="search-submit">搜索</div>
 			</div>
 		</div>
 		<div class="home-swiper">
 			<van-swipe class="my-swipe" :autoplay="3000" indicator-color="white">
-				<van-swipe-item v-for="image in images" :key="image">
-					<img :src="image" />
+				<van-swipe-item v-for="item in bannerList" :key="item.id">
+					<img :src="item.banner" />
 				</van-swipe-item>
 			</van-swipe>
 		</div>
@@ -50,20 +56,20 @@ const {
 		<div class="make-category">
 			<div
 				class="category-item"
-				@click="active = 'wizard'"
+				@click="handleChangeNav('wizard')"
 				:class="{ active: active == 'wizard' }"
 			>
 				<span>本地向导</span>
 			</div>
 			<div
 				class="category-item"
-				@click="active = 'medical'"
+				@click="handleChangeNav('medical')"
 				:class="{ active: active == 'medical' }"
 			>
 				<span> 陪诊就医 </span>
 			</div>
 		</div>
-		<GoodsList />
+		<GoodsList :staffInfoList="staffInfoList" />
 	</div>
 </template>
 <style lang="less" scoped>
@@ -103,8 +109,9 @@ const {
 				font-size: 30px;
 				color: #061710;
 			}
-			.iconfont {
-				font-size: 42px;
+			img {
+				width: 31px;
+				height: 30px;
 				margin-right: 14px;
 				margin-left: 20px;
 				display: flex;
@@ -120,9 +127,9 @@ const {
 			border-radius: 40px;
 			border: 4px solid #000000;
 			box-sizing: border-box;
-			.iconfont {
-				font-size: 28px;
-				opacity: 0.47;
+			img {
+				width: 29px;
+				height: 28px;
 				margin-right: 20px;
 				margin-left: 25px;
 			}

@@ -1,37 +1,45 @@
 <template>
 	<div class="goods-loyout">
-		<van-pull-refresh v-model="refreshing" @refresh="onRefresh">
-			<van-list v-model:loading="loading" :finished="finished" @load="onLoad">
-				<div v-for="item in goodsList" :key="item" class="goods-item">
-					<img :src="item.img" alt="" class="goods-img" />
-					<div class="goods-info">
-						<div class="goods-name">
-							<span class="name">
-								{{ item.name }}
-							</span>
-							<i class="iconfont">&#xe618;</i>
-							<span class="age">25岁</span>
-						</div>
-						<div class="goods-license">
-							<i class="iconfont">&#xe60b;</i> 个人营业执照
-						</div>
-						<div class="goods-project">{{ item.project }}</div>
-						<div class="goods-comments-like">
-							<span class="comments"
-								><i class="iconfont">&#xe607;</i>{{ item.comments }}</span
-							><span class="like"
-								><i class="iconfont">&#xe85c;</i>{{ item.like }}</span
-							>
-						</div>
-					</div>
-					<div class="done-make-btn">
-						<span class="score"><i class="iconfont">&#xe64b;</i> {{ item.score }}</span>
-						<div class="done-num">已完成{{ item.doneNum }}单</div>
-						<div class="make-right" @click="handleLinkMakeDetail">立即预约</div>
+		<!-- <van-pull-refresh v-model="refreshing" @refresh="onRefresh"> -->
+		<!-- <van-list v-model:loading="loading" :finished="finished" @load="onLoad"> -->
+		<div v-for="item in staffInfoList" :key="item" class="goods-item">
+			<img :src="item.picture" alt="" class="goods-img" />
+			<div class="goods-info">
+				<div class="goods-name">
+					<span class="name">
+						{{ item.name }}
+					</span>
+					<img src="@/assets/images/icons/make-man.png" alt="" v-if="item.Sex == 1" />
+					<img src="@/assets/images/icons/make-women.png" alt="" v-if="item.Sex == 2" />
+					<span class="age">{{ item.age }}岁</span>
+				</div>
+				<div class="goods-license" v-if="item.ifbusiness">
+					<i class="iconfont">&#xe60b;</i> 个人营业执照
+				</div>
+				<div class="goods-project" v-if="item.scenicspot.length > 0 && item.nature == 1">
+					{{ item.scenicspot.map((item) => item.name).join(',') }}
+				</div>
+				<div class="goods-project" v-if="item.hospital.length > 0 && item.nature == 2">
+					{{ item.hospital.map((item) => item.name).join(',') }}
+				</div>
+				<div class="goods-comments-like">
+					<div class="comments"><i class="iconfont">&#xe607;</i>{{ item.appraise }}</div>
+					<div class="like">
+						<img src="@/assets/images/icons/make-like.png" alt="" />{{ item.lovesum }}
 					</div>
 				</div>
-			</van-list>
-		</van-pull-refresh>
+			</div>
+			<div class="done-make-btn">
+				<div class="score">
+					<img src="@/assets/images/icons/make-star.png" alt="" />
+					{{ item.Score }}
+				</div>
+				<div class="done-num">已完成{{ item.odersum }}单</div>
+				<div class="make-right" @click="handleLinkMakeDetail">立即预约</div>
+			</div>
+		</div>
+		<!-- </van-list> -->
+		<!-- </van-pull-refresh> -->
 	</div>
 </template>
 
@@ -47,6 +55,14 @@ import tuliaoning from '@/assets/images/home/tuliaoning.png';
 import wangli from '@/assets/images/home/wangli.png';
 import xiezhirong from '@/assets/images/home/xiezhirong.png';
 import qinhuilin from '@/assets/images/home/qinhuilin.png';
+
+const props = defineProps({
+	staffInfoList: {
+		type: Array,
+		default: () => [],
+	},
+});
+
 const personList = [
 	{
 		img: zhouxingle,
@@ -186,9 +202,9 @@ const handleLinkMakeDetail = () => {
 					font-size: 30px;
 					color: #010000;
 				}
-				.iconfont {
-					font-size: 30px;
-					color: #f03589;
+				img {
+					width: 22px;
+					height: 30px;
 				}
 				.age {
 					font-weight: 500;
@@ -218,12 +234,12 @@ const handleLinkMakeDetail = () => {
 			.goods-comments-like {
 				display: flex;
 				align-items: center;
-				span {
+				div {
 					margin-right: 55px;
 					display: flex;
 					align-items: center;
 					font-weight: 500;
-					font-size: 16px;
+					font-size: 26px;
 					color: #010000;
 					.iconfont {
 						font-size: 22px;
@@ -236,8 +252,10 @@ const handleLinkMakeDetail = () => {
 					}
 				}
 				.like {
-					.iconfont {
-						color: #f6585e;
+					img {
+						width: 31px;
+						height: 26px;
+						margin-right: 7px;
 					}
 				}
 			}
@@ -253,9 +271,9 @@ const handleLinkMakeDetail = () => {
 				font-size: 22px;
 				color: #010000;
 				margin-top: 22px;
-				.iconfont {
-					font-size: 20px;
-					color: #f9ca02;
+				img {
+					width: 22px;
+					height: 21px;
 				}
 			}
 			.done-num {
@@ -265,17 +283,18 @@ const handleLinkMakeDetail = () => {
 				margin-top: 30px;
 			}
 			.make-right {
-				width: 165px;
-				height: 61px;
+				width: 142px;
+				height: 52px;
 				background: #93f582;
-				border-radius: 29px;
-				font-weight: bold;
-				font-size: 28px;
+				border-radius: 26px;
+				font-weight: 400;
+				font-size: 24px;
 				color: #061710;
 				display: flex;
 				justify-content: center;
 				align-items: center;
 				margin-top: 46px;
+				padding-top: 4px;
 			}
 		}
 	}

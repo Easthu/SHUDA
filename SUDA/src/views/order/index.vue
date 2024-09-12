@@ -16,7 +16,7 @@
 				<div class="item-top">
 					<div class="shop-name">
 						{{ item.goodsName }}
-						<i class="iconfont">&#xe618;</i>
+						<img src="@/assets/images/icons/make-women.png" alt="" />
 						<span class="age">25岁</span>
 					</div>
 					<div class="order-status">{{ item.orderState }}</div>
@@ -164,9 +164,9 @@ const orderListData = [
 			font-weight: 500;
 			font-size: 30px;
 			color: #010000;
-			.iconfont {
-				font-size: 30px;
-				color: #f03589;
+			img {
+				width: 22px;
+				height: 30px;
 				margin: 0 10px;
 			}
 		}
@@ -186,6 +186,7 @@ const orderListData = [
 			height: 200px;
 			border-radius: 10px;
 			margin-right: 24px;
+			margin-top: 4px;
 		}
 		.shop-info {
 			display: flex;
@@ -196,9 +197,27 @@ const orderListData = [
 			justify-content: space-around;
 			height: 100%;
 			.goods-name {
-				font-weight: 500;
+				font-weight: 400;
 				font-size: 26px;
 				color: #010000;
+			}
+			.order-id {
+				font-weight: 300;
+				font-size: 22px;
+				color: #010000;
+				margin-top: 11px;
+			}
+			.order-time {
+				font-weight: 300;
+				font-size: 22px;
+				color: #010000;
+				margin-top: 15px;
+			}
+			.order-price {
+				font-weight: 300;
+				font-size: 22px;
+				color: #010000;
+				margin-top: 16px;
 			}
 			.item-btn {
 				display: flex;

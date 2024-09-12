@@ -13,7 +13,7 @@ import router from '@/router'
 
 // 配置新建一个 axios 实例	
 const service = axios.create({
-	baseURL: import.meta.env.VITE_APP_BASE_API, //接口地址
+	baseURL: import.meta.env.VITE_NODE_ENV === 'dev' ? '/api' : import.meta.env.VITE_APP_BASE, //接口地址
 	timeout: 100000,
 	headers: {
 		'Content-Type': 'application/json'
@@ -48,18 +48,10 @@ service.interceptors.response.use(
 			let showDialogState = Object.keys(apiUrl).some(url => {
 				return response.request.responseURL.includes(url)
 			})
-			// 使用unescape解密页面路径的url
-			let currentPageUrl = unescape(window.location.href)
-			let isHaveOpenid = currentPageUrl.indexOf('?openid') === -1
+
 			setTimeout(() => {
 				showToast(res.errorMsg)
 			}, 1000);
-			if (!showDialogState && isHaveOpenid) { //showDialogState为false并且当前页面url链接不存在openid才提示
-				Promise.reject(res);
-				return res;
-			} else {
-				return res;
-			}
 
 		} else {
 			return res;
@@ -67,7 +59,6 @@ service.interceptors.response.use(
 	},
 	(error) => {
 		closeToast()
-		showFailToast('系统升级中')
 		return Promise.reject(error);
 	}
 )

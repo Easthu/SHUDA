@@ -1,11 +1,10 @@
 <template>
 	<div class="agents-layout">
-		<NavBar showLeftBack />
+		<img :src="agentsBg" alt="" class="home-bg-fix" />
 		<div class="agents-info">
 			<van-image
 				round
-				width="2rem"
-				height="2rem"
+				class="agents-avatar"
 				src="https://fastly.jsdelivr.net/npm/@vant/assets/cat.jpeg"
 			/>
 			<div class="agents-name-place">
@@ -17,42 +16,43 @@
 		<div class="payouts-detail">
 			<div class="can-payouts-records">
 				<div class="can-payouts" @click="handleLinkCanPayouts">
-					<p>佣金可提现(元) ></p>
-					<p>999.00</p>
+					<p>佣金可提现(元) <img src="@/assets/images/icons/arrow.png" alt="" /></p>
+					<p class="money">999.00</p>
 				</div>
 				<div class="payouts-records" @click="handleLinkPayoutsRecords">提现记录</div>
 			</div>
 			<div class="payouts-type">
 				<div>
 					<p>积累佣金(元)</p>
-					<p>999.00</p>
+					<p class="money">999.00</p>
 				</div>
 				<div>
 					<p>提现中(元)</p>
-					<p>999.00</p>
+					<p class="money">999.00</p>
 				</div>
 				<div>
 					<p>已经提现(元)</p>
-					<p>999.00</p>
+					<p class="money">999.00</p>
 				</div>
 			</div>
 			<div class="payouts-btn">
-				<van-button type="primary" block round>立即提现</van-button>
+				<!-- <van-button type="primary" block round>立即提现</van-button> -->
+				立即提现
 			</div>
 		</div>
 		<div class="order-number">
 			<div @click="handleLinkPartTimeOrderList">
-				<img src="https://picsum.photos/80" alt="" />
+				<img src="@/assets/images/icons/part-time-order.png" alt="" />
 				<div class="name-number">
 					<p>兼职订单</p>
-					<p>120笔</p>
+					<p class="number">120笔</p>
 				</div>
 			</div>
 			<div @click="handleLinkPartTimeNumber">
-				<img src="https://picsum.photos/80" alt="" />
+				<img src="@/assets/images/icons/part-time-number.png" alt="" />
 				<div class="name-number">
 					<p>兼职人数</p>
-					<p>120人</p>
+					<p class="number">120人</p>
 				</div>
 			</div>
 		</div>
@@ -60,6 +60,8 @@
 </template>
 
 <script setup>
+import agentsBg from '@/assets/images/home/agents-bg.png';
+
 const router = useRouter();
 const handleLinkPartTimeOrderList = () => {
 	console.log('跳转兼职订单列表');
@@ -87,55 +89,82 @@ const handleLinkPartTimeNumber = () => {
 	background-color: #fff;
 	box-sizing: border-box;
 	padding-top: 0;
-
+	position: relative;
+	padding-top: 94px;
+	.home-bg-fix {
+		position: absolute;
+		z-index: 0;
+		left: 0;
+		top: 0;
+		width: 100vw;
+		height: 100vh;
+	}
 	.agents-info {
 		display: flex;
-		align-items: center;
-		padding: 24px;
-		background-color: #fff;
-		border-radius: 8px;
-		height: 100px;
+		height: 158px;
+		position: relative;
+		padding-left: 55px;
+		.agents-avatar {
+			width: 158px;
+			height: 158px;
+			margin-right: 20px;
+		}
 		.agents-name-place {
+			padding-top: 60px;
 			display: flex;
 			flex-direction: column;
-			justify-content: center;
-			align-items: flex-start;
-			justify-content: space-around;
-			height: 100%;
-			margin-left: 20px;
+			height: 158px;
 			.agents-name {
-				font-size: 24px;
-				color: #333;
+				font-weight: 300;
+				font-size: 34px;
+				color: #010000;
 			}
 			.agents-place {
+				font-weight: 300;
 				font-size: 24px;
-				color: #999;
+				color: #010000;
+				margin-top: 12px;
 			}
 		}
 	}
 	.payouts-detail {
-		border: 2px solid #f5f5f5;
+		position: relative;
 		border-radius: 8px;
-		padding: 24px;
-		margin: 24px 0;
+		padding: 43px 21px;
+		margin: 42px auto 0;
+		background: #fff;
+		width: 679px;
+		height: 422px;
+		box-sizing: border-box;
 		.can-payouts-records {
 			display: flex;
 			justify-content: space-between;
 			.can-payouts {
 				display: flex;
 				flex-direction: column;
-				justify-content: space-between;
-				align-items: flex-start;
-				height: 80px;
 				p {
-					font-size: 28px;
-					color: #333;
-					margin: 0;
+					font-weight: 300;
+					font-size: 24px;
+					color: #010000;
+					display: flex;
+					align-items: center;
+					img {
+						margin-left: 19px;
+						width: 16px;
+						height: 22px;
+					}
+				}
+				.money {
+					font-weight: 400;
+					font-size: 36px;
+					color: #010000;
+					margin-top: 9px;
 				}
 			}
 			.payouts-records {
-				font-size: 28px;
-				color: #999;
+				font-weight: 300;
+				font-size: 24px;
+				color: #bababa;
 			}
 		}
 		.payouts-type {
@@ -146,48 +175,70 @@ const handleLinkPartTimeNumber = () => {
 			div {
 				display: flex;
 				flex-direction: column;
-				justify-content: space-between;
-				align-items: flex-start;
-				height: 80px;
-
 				p {
-					font-size: 28px;
-					color: #333;
-					margin: 0;
+					font-weight: 300;
+					font-size: 24px;
+					color: #010000;
+				}
+				.money {
+					font-weight: 400;
+					font-size: 36px;
+					color: #010000;
+					margin-top: 9px;
 				}
 			}
+		}
+		.payouts-btn {
+			width: 338px;
+			height: 88px;
+			background: #fee405;
+			border-radius: 44px;
+			font-weight: 400;
+			font-size: 36px;
+			color: #010000;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			margin: 60px auto 0;
 		}
 	}
 	.order-number {
 		display: flex;
 		justify-content: space-around;
 		align-items: center;
-		border: 2px solid #f5f5f5;
-		border-radius: 8px;
-		padding: 24px;
-		margin: 24px 0;
+		position: relative;
+		width: 677px;
+		height: 116px;
+		background: #fefeff;
+		border-radius: 15px;
+		margin-top: 42px;
 		div {
 			display: flex;
 			justify-content: center;
 			align-items: center;
+			width: 50%;
+			margin-left: 50px;
 			img {
-				width: 80px;
-				height: 80px;
-				border-radius: 10px;
+				width: 76px;
+				height: 73px;
 			}
 			.name-number {
 				display: flex;
 				flex-direction: column;
 				justify-content: center;
 				align-items: flex-start;
-				margin-left: 20px;
+				margin-left: 24px;
 				p {
-					font-size: 28px;
-					color: #333;
-					margin: 0;
+					font-weight: 300;
+					font-size: 24px;
+					color: #010000;
+					margin-top: 10px;
 				}
-				&:nth-child(2) {
-					color: #999;
+				.number {
+					font-weight: 400;
+					font-size: 24px;
+					color: #010000;
+					margin-top: 14px;
 				}
 			}
 		}

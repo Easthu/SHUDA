@@ -44,7 +44,7 @@
 					</div>
 				</div>
 				<div class="skilled">
-					<div class="skilled-left">擅长</div>
+					<div class="skilled-left"><span>擅</span><span>长</span></div>
 					<div class="skilled-right">
 						<div class="skilled-item">{{ item.skilled }}</div>
 					</div>
@@ -263,26 +263,25 @@ const handleLinkDetail = () => {
 				align-content: center;
 				span {
 					width: 76px;
-					height: 33px;
-					background: #00c68f;
+					height: 34px;
+					background: #33d1ff;
 					border-radius: 17px;
-					font-weight: bold;
+					font-weight: 400;
 					font-size: 25px;
 					color: #000000;
 					display: flex;
-					align-content: center;
+					align-items: center;
 					justify-content: center;
-					margin-left: 40px;
+					margin-left: 43px;
 				}
 			}
 			.secondary-name {
-				font-weight: bold;
+				font-weight: 300;
 				font-size: 18px;
 				color: #061710;
 			}
 			.ranking {
 				display: flex;
-				margin-bottom: 14px;
 				.ranking-left {
 					background: #93f582;
 					border-radius: 10px;
@@ -309,11 +308,12 @@ const handleLinkDetail = () => {
 				display: flex;
 
 				.skilled-left {
-					font-weight: 500;
+					font-weight: 400;
 					font-size: 26px;
 					color: #000000;
-					text-align: justify;
-					width: 100px;
+					width: 92px;
+					display: flex;
+					justify-content: space-between;
 				}
 				.skilled-right {
 					font-weight: 500;
@@ -328,6 +328,7 @@ const handleLinkDetail = () => {
 				font-weight: 500;
 				font-size: 22px;
 				color: #000000;
+				margin-bottom: 13px;
 				span {
 					display: inline-block;
 					margin-left: 26px;

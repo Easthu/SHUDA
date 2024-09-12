@@ -61,7 +61,15 @@ export default defineConfig({
     open: true,
     port: '8000',
     // strictPort: false,
-    hmr: true
+    hmr: true,
+    proxy: {
+      '/api': {
+        target: 'http://h.cqhyjr.com',    // 接口域名,接口服务器地止
+        changeOrigin: true,
+        secure: false,
+        rewrite: (path) => path.replace(/^\/api/, '')
+      },
+    }
   },
   css: {
     preprocessorOptions: {

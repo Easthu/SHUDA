@@ -4,12 +4,12 @@
 
 		<div class="make-search">
 			<div class="search-box">
-				<i class="iconfont">&#xe65f;</i>
+				<img src="@/assets/images/icons/home-search.png" alt="" />
 				<input type="text" placeholder="搜索兼职 / 向导" />
 				<div class="search-submit">搜索</div>
 			</div>
 			<div class="sift" @click="showSiftbBox = true">
-				<i class="iconfont">&#xe60d;</i>
+				<img src="@/assets/images/icons/make-sift.png" alt="" />
 				筛选
 			</div>
 		</div>
@@ -41,35 +41,23 @@
 							@click="siftSex = 'man'"
 							:class="{ activeSex: siftSex == 'man' }"
 						>
-							<i class="iconfont color-man">&#xe60f;</i>男
+							<img src="@/assets/images/icons/make-man.png" alt="" /> 男
 						</div>
 						<div
 							class="sex"
 							@click="siftSex = 'woman'"
 							:class="{ activeSex: siftSex == 'woman' }"
 						>
-							<i class="iconfont color-woman">&#xe618;</i>女
+							<img src="@/assets/images/icons/make-women.png" alt="" />女
 						</div>
 					</div>
 				</div>
 				<div class="sift-content">
 					<div class="sift-title">年龄</div>
 					<div class="sift-age">
-						<van-slider
-							v-model="siftAge"
-							range
-							:min="0"
-							:max="100"
-							bar-height="5px"
-							active-color="#E0E0E0"
-						>
-							<template #left-button>
-								<div class="custom-button">{{ siftAge[0] }}</div>
-							</template>
-							<template #right-button>
-								<div class="custom-button">{{ siftAge[1] }}</div>
-							</template>
-						</van-slider>
+						<input type="tel" v-model="siftAge[0]" placeholder="最小" />
+						<div class="border-line"></div>
+						<input type="tel" v-model="siftAge[1]" placeholder="最大" />
 					</div>
 				</div>
 				<div class="sift-content">
@@ -79,7 +67,8 @@
 							<van-collapse-item name="1">
 								<template #title>
 									<div class="collapse active-collapse">
-										<i class="iconfont">&#xe71f;</i>渝中区4
+										<img src="@/assets/images/icons/make-position.png" alt="" />
+										渝中区4
 									</div>
 								</template>
 								<div class="place-list">
@@ -92,7 +81,8 @@
 							<van-collapse-item name="2">
 								<template #title>
 									<div class="collapse">
-										<i class="iconfont">&#xe71f;</i>江北区
+										<img src="@/assets/images/icons/make-position.png" alt="" />
+										江北区
 									</div>
 								</template>
 								<div class="place-list">
@@ -105,7 +95,8 @@
 							<van-collapse-item name="3">
 								<template #title>
 									<div class="collapse">
-										<i class="iconfont">&#xe71f;</i>南岸区
+										<img src="@/assets/images/icons/make-position.png" alt="" />
+										南岸区
 									</div>
 								</template>
 								<div class="place-list">
@@ -139,7 +130,7 @@ const hanldeSearch = () => {
 const showSiftbBox = ref(false);
 const activeNames = ref([]);
 const siftSex = ref('man');
-const siftAge = ref([18, 30]);
+const siftAge = ref([null, null]);
 const handleConfirmSift = () => {
 	showSiftbBox.value = false;
 };
@@ -178,26 +169,28 @@ const handleConfirmSift = () => {
 		display: flex;
 		align-items: center;
 		width: 528px;
-		height: 74px;
+		height: 66px;
 		background: #ffffff;
-		border-radius: 40px;
+		border-radius: 33px;
 		border: 4px solid #000000;
 		box-sizing: border-box;
-		.iconfont {
-			font-size: 28px;
-			opacity: 0.47;
-			margin-right: 20px;
-			margin-left: 25px;
+		img {
+			width: 29px;
+			height: 28px;
+			margin-right: 11px;
+			margin-left: 28px;
 		}
 		input {
 			flex: 1;
-			font-weight: bold;
+			font-weight: 300;
 			font-size: 24px;
 			color: #061710;
-			color: #999;
 			background: #fff;
 			border: none;
 			outline: none;
+			&::placeholder {
+				color: #000;
+			}
 		}
 		.search-submit {
 			width: 114px;
@@ -205,7 +198,7 @@ const handleConfirmSift = () => {
 			background: #93f582;
 			border-radius: 25px;
 			font-family: Source Han Sans CN;
-			font-weight: bold;
+			font-weight: 400;
 			font-size: 26px;
 			color: #061710;
 			display: flex;
@@ -217,12 +210,14 @@ const handleConfirmSift = () => {
 	.sift {
 		display: flex;
 		align-items: center;
-		font-weight: bold;
+		font-weight: 400;
 		font-size: 30px;
 		color: #061710;
-		.iconfont {
-			font-size: 40px;
+		img {
+			width: 42px;
+			height: 31px;
 			color: #061710;
+			margin-right: 11px;
 		}
 	}
 }
@@ -263,15 +258,10 @@ const handleConfirmSift = () => {
 				display: flex;
 				align-items: center;
 				justify-content: center;
-				.iconfont {
-					font-size: 30px;
-					margin-right: 15px;
-				}
-				.color-man {
-					color: #0a95ff;
-				}
-				.color-woman {
-					color: #fe0c5e;
+				img {
+					width: 18px;
+					height: 18px;
+					margin-right: 18px;
 				}
 			}
 			.activeSex {
@@ -282,6 +272,24 @@ const handleConfirmSift = () => {
 			height: 50px;
 			display: flex;
 			align-items: center;
+			justify-content: center;
+			input {
+				width: 118px;
+				height: 48px;
+				background: #defcd9;
+				font-weight: 400;
+				font-size: 24px;
+				color: #00be12;
+				border: none;
+				outline: none;
+				text-align: center;
+			}
+			.border-line {
+				width: 68px;
+				height: 3px;
+				background: #e0e0e0;
+				margin: 0 5px;
+			}
 
 			.custom-button {
 				width: 50px;
@@ -295,11 +303,12 @@ const handleConfirmSift = () => {
 		.collapse {
 			display: flex;
 			align-items: center;
-			font-weight: 500;
+			font-weight: 600;
 			font-size: 26px;
 			color: #010000;
-			.iconfont {
-				font-size: 30px;
+			img {
+				width: 22px;
+				height: 31px;
 				margin-right: 14px;
 			}
 		}
@@ -318,12 +327,12 @@ const handleConfirmSift = () => {
 			color: #010000;
 
 			p {
-				padding: 27px 0;
-				text-align: center;
+				padding: 20px 81px;
+				text-align: left;
 				background: #f1f1f1;
 			}
 			.active {
-				background: #93f582;
+				background: rgba(147, 245, 130, 0.3);
 			}
 		}
 	}
@@ -356,7 +365,7 @@ const handleConfirmSift = () => {
 	position: relative;
 	margin-bottom: 34px;
 	.category-item {
-		font-weight: 500;
+		font-weight: 600;
 		font-size: 29px;
 		color: #010000;
 		margin-left: 22px;

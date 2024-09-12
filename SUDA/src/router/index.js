@@ -155,6 +155,14 @@ const routes = [
     },
   },
   {
+    path: '/partTimeOrderList',
+    name: 'partTimeOrderList',
+    component: () => import('@/views/agentsAndParttime/partTimeOrderList.vue'),
+    meta: {
+      title: '销售额',
+    },
+  },
+  {
     path: '/payoutsRecords',
     name: 'payoutsRecords',
     component: () => import('@/views/agentsAndParttime/payoutsRecords.vue'),
@@ -168,6 +176,14 @@ const routes = [
     component: () => import('@/views/agentsAndParttime/partOrderList.vue'),
     meta: {
       title: '订单记录',
+    },
+  },
+  {
+    path: '/personalBusinessLicense',
+    name: 'personalBusinessLicense',
+    component: () => import('@/views/make/personalBusinessLicense.vue'),
+    meta: {
+      title: '营业执照',
     },
   },
 

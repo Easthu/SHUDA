@@ -5,7 +5,7 @@
 			<img :src="zhouxingle" alt="" />
 			<div class="name-score">
 				<div class="name">
-					张丹琼 <span><i class="iconfont">&#xe64b;</i>4.3</span>
+					张丹琼 <span><img src="@/assets/images/icons/make-star.png" alt="" />4.3</span>
 				</div>
 				<div class="done">已完成43单</div>
 			</div>
@@ -17,9 +17,14 @@
 				<div class="specification-info">
 					<div class="spe-name">{{ item.name }}</div>
 					<div class="spe-suggestion">
-						<i class="iconfont">&#xe605;</i> {{ item.suggestion }}
+						<img src="@/assets/images/icons/make-detail-time.png" alt="" />
+						{{ item.suggestion }}
 					</div>
-					<div class="spe-time"><i class="iconfont">&#xe605;</i>{{ item.time }}</div>
+					<div class="spe-time">
+						<img src="@/assets/images/icons/make-detail-diamond.png" alt="" />{{
+							item.time
+						}}
+					</div>
 				</div>
 				<div class="item-right">
 					<div class="spe-price">￥{{ item.price }}</div>
@@ -42,6 +47,7 @@
 					maxlength="50"
 					placeholder="请输入备注"
 					show-word-limit
+					style="background: #fff; padding: 0"
 				/>
 			</div>
 		</div>
@@ -140,10 +146,9 @@ const goodsList = ref([
 					margin-left: 30px;
 					display: flex;
 					align-items: center;
-					.iconfont {
-						margin-right: 10px;
-						font-size: 24px;
-						color: #f9ca02;
+					img {
+						width: 26px;
+						height: 25px;
 					}
 				}
 			}
@@ -154,9 +159,10 @@ const goodsList = ref([
 			}
 		}
 		.order-state {
-			font-weight: bold;
+			font-weight: 400;
 			font-size: 28px;
 			color: #061710;
+			margin-right: 35px;
 			margin-left: auto;
 		}
 	}
@@ -196,9 +202,9 @@ const goodsList = ref([
 					display: flex;
 					align-items: center;
 					margin-bottom: 30px;
-					.iconfont {
-						font-size: 40px;
-						color: #93f582;
+					img {
+						width: 28px;
+						height: 27px;
 						margin-right: 10px;
 					}
 				}
@@ -209,11 +215,12 @@ const goodsList = ref([
 				height: 212px;
 				padding-top: 25px;
 				box-sizing: border-box;
+				height: 100%;
 				.spe-price {
 					font-weight: 500;
 					font-size: 28px;
 					color: #000000;
-					margin-bottom: 20px;
+					margin: 20px 0;
 				}
 			}
 		}
@@ -242,7 +249,7 @@ const goodsList = ref([
 			}
 
 			.van-cell {
-				width: 70%;
+				width: 80%;
 				background: #f5f5f5;
 				border-radius: 10px;
 			}
