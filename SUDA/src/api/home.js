@@ -1,13 +1,15 @@
 import request from "@/utils/request";
+import qs from "qs";
 
-
-function homeInfo(params) {
+function requestApi(params) {
   return request({
-    url: "/MoMo/WeiXin?op=home&nature=" + params,
-    method: "post",
+    url: "/MoMo/WeiXin",
+    method: "get",
+    data: qs.stringify(params),
   });
 }
 
+
 export {
-  homeInfo
+  requestApi
 }

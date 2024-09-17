@@ -7,18 +7,16 @@ const router = useRouter();
 const {
 	position,
 	positionList,
-	images,
 	active,
 	recommendList,
-	tabsTitleClass,
 	handleLinkRecommend,
-	getHomeInfo,
+	init,
 	bannerList,
-	staffInfoList,
+	homeMakeList,
 	handleChangeNav,
 } = useHome();
 onMounted(() => {
-	getHomeInfo.value();
+	init.value();
 });
 </script>
 <!-- 首页 -->
@@ -54,22 +52,14 @@ onMounted(() => {
 			</div>
 		</div>
 		<div class="make-category">
-			<div
-				class="category-item"
-				@click="handleChangeNav('wizard')"
-				:class="{ active: active == 'wizard' }"
-			>
+			<div class="category-item" @click="handleChangeNav(1)" :class="{ active: active == 1 }">
 				<span>本地向导</span>
 			</div>
-			<div
-				class="category-item"
-				@click="handleChangeNav('medical')"
-				:class="{ active: active == 'medical' }"
-			>
+			<div class="category-item" @click="handleChangeNav(2)" :class="{ active: active == 2 }">
 				<span> 陪诊就医 </span>
 			</div>
 		</div>
-		<GoodsList :staffInfoList="staffInfoList" />
+		<GoodsList :makeList="homeMakeList" />
 	</div>
 </template>
 <style lang="less" scoped>

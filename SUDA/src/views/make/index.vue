@@ -5,8 +5,8 @@
 		<div class="make-search">
 			<div class="search-box">
 				<img src="@/assets/images/icons/home-search.png" alt="" />
-				<input type="text" placeholder="搜索兼职 / 向导" />
-				<div class="search-submit">搜索</div>
+				<input type="text" placeholder="搜索兼职 / 向导" v-model="searchForm.name" />
+				<div class="search-submit" @click="hanldeSearch">搜索</div>
 			</div>
 			<div class="sift" @click="showSiftbBox = true">
 				<img src="@/assets/images/icons/make-sift.png" alt="" />
@@ -16,20 +16,20 @@
 		<div class="make-category">
 			<div
 				class="category-item"
-				@click="active = 'wizard'"
-				:class="{ active: active == 'wizard' }"
+				@click="handleTypeChange(1)"
+				:class="{ active: searchForm.type == 1 }"
 			>
 				<span>本地向导</span>
 			</div>
 			<div
 				class="category-item"
-				@click="active = 'medical'"
-				:class="{ active: active == 'medical' }"
+				@click="handleTypeChange(2)"
+				:class="{ active: searchForm.type == 2 }"
 			>
 				<span> 陪诊就医 </span>
 			</div>
 		</div>
-		<GoodsList />
+		<GoodsList :makeList="makeList" />
 		<!-- 筛选 -->
 		<van-overlay :show="showSiftbBox" z-index="9999">
 			<div class="sift-wrapper" @click.stop>
@@ -38,15 +38,15 @@
 					<div class="sift-sex">
 						<div
 							class="sex"
-							@click="siftSex = 'man'"
-							:class="{ activeSex: siftSex == 'man' }"
+							@click="searchForm.sex = 1"
+							:class="{ activeSex: searchForm.sex == 1 }"
 						>
 							<img src="@/assets/images/icons/make-man.png" alt="" /> 男
 						</div>
 						<div
 							class="sex"
-							@click="siftSex = 'woman'"
-							:class="{ activeSex: siftSex == 'woman' }"
+							@click="searchForm.sex = 2"
+							:class="{ activeSex: searchForm.sex == 2 }"
 						>
 							<img src="@/assets/images/icons/make-women.png" alt="" />女
 						</div>
@@ -55,9 +55,9 @@
 				<div class="sift-content">
 					<div class="sift-title">年龄</div>
 					<div class="sift-age">
-						<input type="tel" v-model="siftAge[0]" placeholder="最小" />
+						<input type="tel" v-model="searchForm.agemin" placeholder="最小" />
 						<div class="border-line"></div>
-						<input type="tel" v-model="siftAge[1]" placeholder="最大" />
+						<input type="tel" v-model="searchForm.agemax" placeholder="最大" />
 					</div>
 				</div>
 				<div class="sift-content">
@@ -110,7 +110,7 @@
 					</div>
 				</div>
 				<div class="sift-btn">
-					<div class="reset">重置</div>
+					<div class="reset" @click="handleReset">重置</div>
 					<div class="confirm" @click="handleConfirmSift">确认</div>
 				</div>
 			</div>
@@ -121,19 +121,79 @@
 <script setup>
 import homeBg from '@/assets/images/home/home-bg.png';
 import GoodsList from '@/components/goodsList.vue';
+import { requestApi } from 'api/home';
+import { showLoadingToast, closeToast } from 'vant';
 
-const active = ref('wizard');
-const searchValue = ref('');
+const searchForm = ref({
+	name: '', //名字查询
+	sex: null, //性别性别 1男 2女
+	agemin: '', //最小年龄
+	agemax: '', //最大年龄
+	sys: '', //医院或者景区名字查询
+	type: 1, // 2陪诊就医        1本地向导
+	currentPage: 1,
+	op: 'yuyue',
+});
+
+// 顶部搜索
 const hanldeSearch = () => {
-	console.log(searchValue.value);
+	searchForm.currentPage = 1;
+	handleApiMakeList();
 };
+
+// 筛选框
 const showSiftbBox = ref(false);
+// 选择景点或者以医院
 const activeNames = ref([]);
-const siftSex = ref('man');
-const siftAge = ref([null, null]);
+// 筛选确认
 const handleConfirmSift = () => {
 	showSiftbBox.value = false;
+	handleApiMakeList();
 };
+// 筛选重置
+const handleReset = () => {
+	searchForm.value = {
+		name: '',
+		sex: null,
+		agemin: '',
+		agemax: '',
+		sys: '',
+		type: 1,
+		currentPage: 1,
+	};
+};
+
+// 切换预约类型
+const handleTypeChange = (type) => {
+	searchForm.value.type = type;
+	handleApiMakeList();
+};
+
+// 向导/陪诊人员数量数据
+const makeList = ref([]);
+// 获取向导/陪诊人员数量
+const handleApiMakeList = async () => {
+	const res = await requestApi(searchForm.value);
+	console.log(res);
+	makeList.value = res.people;
+};
+
+const requestRecommendList = async () => {
+	showLoadingToast();
+	const res = await requestApi({
+		op: 'h4',
+		type: 4, //1酒店 2餐饮 3景点 4医院
+	}).finally(() => {
+		closeToast();
+	});
+	// recommendList.value = res.hotel;
+	console.log('res :>> ', res);
+};
+
+onMounted(() => {
+	handleApiMakeList();
+	// requestRecommendList();
+});
 </script>
 
 <style lang="less" scoped>

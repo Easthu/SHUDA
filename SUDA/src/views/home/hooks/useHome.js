@@ -3,7 +3,7 @@ import cateing from '@/assets/images/icons/recom-cateing.png'
 import attractions from '@/assets/images/icons/recom-attractions.png'
 import hotel from '@/assets/images/icons/recom-hotel.png'
 
-import { homeInfo } from 'api/home';
+import { requestApi } from 'api/home';
 import { showLoadingToast, closeToast } from 'vant';
 export default function useHome(params) {
     const { proxy } = getCurrentInstance()
@@ -17,44 +17,65 @@ export default function useHome(params) {
             { text: '贵州', value: '贵州' },
         ],
 
+        // 推荐列表
         recommendList: [
-            { text: '推荐酒店', src: hotel },
-            { text: '推荐餐饮', src: cateing },
-            { text: '推荐景点', src: attractions },
-            { text: '推荐医院', src: hospitals },
+            { text: '推荐酒店', src: hotel, classify: 1 },
+            { text: '推荐餐饮', src: cateing, classify: 2 },
+            { text: '推荐景点', src: attractions, classify: 3 },
+            { text: '推荐医院', src: hospitals, classify: 4 },
 
         ],
-        active: 'wizard',
+        active: 1,//1:本地向导2陪诊就医
         bannerList: [],
-        staffInfoList: []
+        homeMakeList: []
     })
 
 
     const handle = reactive({
         handleLinkRecommend: (item) => {
-            router.push('/recommend')
+            router.push(`/recommend?classify=${item.classify}`)
         }
 
     })
 
     const request = reactive({
-        getHomeInfo: async (nature = 1) => {
-            showLoadingToast()
-            const res = await homeInfo(nature)
-            closeToast()
-            console.log(res)
-            dataSource.bannerList = res.banner
-            dataSource.staffInfoList = res.staff.map((item) => {
-                item.scenicspot = JSON.parse(item.scenicspot)
-                item.hospital = JSON.parse(item.hospital)
-                return item
+        // 获取首页推荐信息
+        handleApiMakeInfoList: async (nature = 1) => {
+            const res = await requestApi({
+                op: 'home',
+                nature
             })
-            console.log('dataSource.staffInfoList :>> ', dataSource.staffInfoList);
+            console.log(res)
+            dataSource.homeMakeList = res.staff
+            // dataSource.staffInfoList = res.staff.map((item) => {
+            //     item.scenicspot = JSON.parse(item.scenicspot)
+            //     item.hospital = JSON.parse(item.hospital)
+            //     return item
+            // })
         },
+        // 分类切换
         handleChangeNav: (active) => {
-            console.log('active :>> ', active);
             dataSource.active = active
-            request.getHomeInfo(active == 'wizard' ? 1 : 2)
+            request.getHomeInfo(active)
+        },
+        // 获取首页轮播图
+        handleApiBanner: async () => {
+            const res = await requestApi({
+                op: 'banner',
+            })
+            console.log('res :>> ', res);
+            dataSource.bannerList = res.banner
+        },
+        init: () => {
+            showLoadingToast()
+            Promise.all([
+                request.handleApiBanner(),
+                request.handleApiMakeInfoList(),
+
+            ])
+                .finally(() => {
+                    closeToast()
+                })
         }
 
     })

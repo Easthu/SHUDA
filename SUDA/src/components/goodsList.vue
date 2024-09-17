@@ -2,7 +2,7 @@
 	<div class="goods-loyout">
 		<!-- <van-pull-refresh v-model="refreshing" @refresh="onRefresh"> -->
 		<!-- <van-list v-model:loading="loading" :finished="finished" @load="onLoad"> -->
-		<div v-for="item in staffInfoList" :key="item" class="goods-item">
+		<div v-for="item in makeList" :key="item" class="goods-item">
 			<img :src="item.picture" alt="" class="goods-img" />
 			<div class="goods-info">
 				<div class="goods-name">
@@ -14,16 +14,29 @@
 					<span class="age">{{ item.age }}岁</span>
 				</div>
 				<div class="goods-license" v-if="item.ifbusiness">
-					<i class="iconfont">&#xe60b;</i> 个人营业执照
+					<img src="@/assets/images/icons/home-detail-license.png" alt="" />
+					营业执照个人营业执照
 				</div>
-				<div class="goods-project" v-if="item.scenicspot.length > 0 && item.nature == 1">
-					{{ item.scenicspot.map((item) => item.name).join(',') }}
+				<div class="goods-project" v-if="item.scenicspot && item.nature == 1">
+					{{
+						JSON.parse(item.scenicspot)
+							.map((item) => item.name)
+							.join(',')
+					}}
 				</div>
-				<div class="goods-project" v-if="item.hospital.length > 0 && item.nature == 2">
-					{{ item.hospital.map((item) => item.name).join(',') }}
+				<div class="goods-project" v-if="item.hospital && item.nature == 2">
+					{{
+						JSON.parse(item.hospital)
+							.map((item) => item.name)
+							.join(',')
+					}}
 				</div>
 				<div class="goods-comments-like">
-					<div class="comments"><i class="iconfont">&#xe607;</i>{{ item.appraise }}</div>
+					<div class="comments">
+						<img src="@/assets/images/icons/home-comments.png" alt="" />{{
+							item.appraise
+						}}
+					</div>
 					<div class="like">
 						<img src="@/assets/images/icons/make-like.png" alt="" />{{ item.lovesum }}
 					</div>
@@ -35,7 +48,7 @@
 					{{ item.Score }}
 				</div>
 				<div class="done-num">已完成{{ item.odersum }}单</div>
-				<div class="make-right" @click="handleLinkMakeDetail">立即预约</div>
+				<div class="make-right" @click="handleLinkMakeDetail(item)">立即预约</div>
 			</div>
 		</div>
 		<!-- </van-list> -->
@@ -57,7 +70,7 @@ import xiezhirong from '@/assets/images/home/xiezhirong.png';
 import qinhuilin from '@/assets/images/home/qinhuilin.png';
 
 const props = defineProps({
-	staffInfoList: {
+	makeList: {
 		type: Array,
 		default: () => [],
 	},
@@ -162,7 +175,9 @@ const onLoad = () => {
 		}
 	}, 1000);
 };
-const handleLinkMakeDetail = () => {
+const handleLinkMakeDetail = (item) => {
+	console.log('item :>> ', item);
+	sessionStorage.setItem('makeDetailJson', JSON.stringify(item));
 	console.log('立即预约');
 	router.push('/makeDetail');
 };
@@ -176,7 +191,8 @@ const handleLinkMakeDetail = () => {
 	z-index: 2;
 	.goods-item {
 		width: 715px;
-		height: 212px;
+		height: 254px;
+		background: #ffffff;
 		background: #ffffff;
 		margin-bottom: 8px;
 		padding: 6px 20px 6px 14px;
@@ -184,9 +200,9 @@ const handleLinkMakeDetail = () => {
 		display: flex;
 		align-items: center;
 		.goods-img {
-			height: 200px;
-			width: 200px;
-			margin-right: 32px;
+			width: 232px;
+			height: 231px;
+			margin-right: 20px;
 		}
 		.goods-info {
 			display: flex;
@@ -220,9 +236,10 @@ const handleLinkMakeDetail = () => {
 				margin-bottom: 14px;
 				display: flex;
 				align-items: center;
-				.iconfont {
-					font-size: 30px;
-					color: #a9f79b;
+				img {
+					width: 19px;
+					height: 30px;
+					margin-right: 10px;
 				}
 			}
 			.goods-project {
@@ -247,8 +264,10 @@ const handleLinkMakeDetail = () => {
 					}
 				}
 				.comments {
-					.iconfont {
-						color: #93f582;
+					img {
+						width: 28px;
+						height: 29px;
+						margin-right: 13px;
 					}
 				}
 				.like {

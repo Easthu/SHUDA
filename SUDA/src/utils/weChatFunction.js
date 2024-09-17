@@ -65,7 +65,6 @@ function fetchWeChatShare(shareData = {}) {
 // 获取微信定位的能力
 function fetchWeChatLocation() {
   return new Promise(async (resolve, reject) => {
-
     getWeChatGetSignature().then((res) => {
       if (res.status == 'OK') {
         wxFun.config({

@@ -1,5 +1,10 @@
 <script setup>
-// import { getUrlKey } from '@/utils/toolsValidate.js';
+// // import { getUrlKey } from '@/utils/toolsValidate.js';
+// import { isWx } from '@/utils/weChatFunction';
+// const isWeChat = isWx();
+// if(isWeChat == 'wx'){
+
+// }
 </script>
 
 <template>

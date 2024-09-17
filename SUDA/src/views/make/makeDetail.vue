@@ -1,6 +1,6 @@
 <template>
-	<div class="make-detail-layout">
-		<img src="https://picsum.photos/750/550" alt="" class="detail-big-img" />
+	<div class="make-detail-layout" v-if="makeDetailInfo">
+		<img :src="makeDetailInfo.picture" alt="" class="detail-big-img" />
 		<img :src="back" alt="" class="back-icon" @click="router.back()" />
 		<div class="make-detail-content-title">
 			<span>绝对绿色</span>
@@ -11,22 +11,32 @@
 		<div class="make-detail-content-person">
 			<div class="person-left">
 				<div class="name-score">
-					<div class="name">张丹琼</div>
+					<div class="name">{{ makeDetailInfo.name }}</div>
 					<div class="score">
 						<img src="@/assets/images/icons/make-star.png" alt="" />4.9
 					</div>
 				</div>
-				<div class="done-list">已完成43单</div>
+				<div class="done-list">已完成{{ makeDetailInfo.odersum }}单</div>
 			</div>
-			<div class="person-right" @click="router.push('/personalBusinessLicense')">
+			<div
+				class="person-right"
+				@click="router.push('/personalBusinessLicense')"
+				v-if="makeDetailInfo.ifbusiness"
+			>
 				<img src="@/assets/images/icons/make-detail-license.png" alt="" />个人营业执照
 			</div>
 		</div>
 		<div class="comments-like">
 			<span class="border-line"
-				><img src="@/assets/images/icons/make-detail-message.png" alt="" /> 178</span
+				><img src="@/assets/images/icons/make-detail-message.png" alt="" />{{
+					makeDetailInfo.appraise
+				}}</span
 			>
-			<span><img src="@/assets/images/icons/make-like.png" alt="" />293</span>
+			<span
+				><img src="@/assets/images/icons/make-like.png" alt="" />{{
+					makeDetailInfo.lovesum
+				}}</span
+			>
 		</div>
 		<div class="specification-list">
 			<div class="specification-item" v-for="(item, index) in goodsList" :key="index">
@@ -73,6 +83,8 @@ const handleLinkOrderConfirm = () => {
 	router.push('/orderConfirm');
 };
 
+const makeDetailInfo = ref(null);
+
 const goodsList = ref([
 	{
 		name: '洪崖洞',
@@ -99,6 +111,16 @@ const goodsList = ref([
 		checked: false,
 	},
 ]);
+
+onMounted(() => {
+	const info = sessionStorage.getItem('makeDetailJson');
+	try {
+		makeDetailInfo.value = JSON.parse(info);
+		console.log('makeDetailInfo.value :>> ', makeDetailInfo.value);
+	} catch (error) {
+		router.go('/home');
+	}
+});
 </script>
 
 <style lang="less" scoped>

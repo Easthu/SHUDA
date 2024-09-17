@@ -1,9 +1,13 @@
 <template>
 	<div class="recommend-layout">
 		<img :src="homeBg" alt="" class="home-bg-fix" />
-		<div class="page-title">推荐医院</div>
+		<div class="page-title" v-if="route.query.classify == 1">推荐酒店</div>
+		<div class="page-title" v-if="route.query.classify == 2">推荐餐饮</div>
+		<div class="page-title" v-if="route.query.classify == 2">推荐景点</div>
+		<div class="page-title" v-if="route.query.classify == 3">推荐医院</div>
+
 		<div class="search-box">
-			<i class="iconfont">&#xe65f;</i>
+			<img src="@/assets/images/icons/home-search.png" alt="" />
 			<input type="text" placeholder="搜索兼职 / 向导" />
 			<div class="search-submit">搜索</div>
 		</div>
@@ -11,13 +15,13 @@
 			<div class="nav-list-content">
 				<div
 					class="list-item"
-					v-for="(item, index) in navList"
+					v-for="(item, index) in areaList"
 					:key="index"
 					@click="handleActiveRecommend(item)"
-					:class="{ active: active === item }"
+					:class="{ active: areaId === item.id }"
 				>
 					<span>
-						{{ item }}
+						{{ item.area }}
 					</span>
 				</div>
 			</div>
@@ -28,7 +32,7 @@
 			:key="index"
 			@click="handleLinkDetail"
 		>
-			<img :src="item.img" alt="" class="recommend-img" />
+			<img :src="item.url" alt="" class="recommend-img" />
 			<div class="recommend-info">
 				<div class="recommend-name">
 					{{ item.name }} <span>{{ item.title }}</span>
@@ -62,59 +66,50 @@ import homeBg from '@/assets/images/home/home-bg.png';
 import recommendXinqiao from '@/assets/images/recommend/recommend-xinqiao.png';
 import recommendXinan from '@/assets/images/recommend/recommend-xinan.png';
 import recommendDaping from '@/assets/images/recommend/recommend-daping.png';
+import { requestApi } from 'api/home';
 
 const router = useRouter();
-const navList = ref([
-	'渝北区',
-	'沙坪坝区',
-	'九龙坡区',
-	'渝中区',
-	'南岸区',
-	'大渡口区',
-	'巴南区',
-	'北碚区',
-]);
-const active = ref('');
+const route = useRoute();
+const areaId = ref('');
 const handleActiveRecommend = (item) => {
-	console.log(item);
-	active.value = item;
+	areaId.value = item.id;
+	requestRecommendList();
 };
 
-const recommendList = [
-	{
-		img: recommendXinan,
-		name: '重庆西南医院',
-		title: '三甲',
-		secondaryName: '陆军军医大学第一附属医院',
-		ranking1: '全国医院综合排名：27',
-		ranking2: '西南地区医院声誉排名：3',
-		skilled: '消化内科、中医与风湿免疫科、感染病科、心血管内科、肝胆外科',
-		time: '上午8:00-12:00 下午13:00-14:30',
-	},
-	{
-		img: recommendXinqiao,
-		name: '重庆新桥医院',
-		title: '三甲',
-		secondaryName: '陆军军医大学第二附属医院',
-		ranking1: '全国医院综合排名：97',
-		ranking2: '西南地区医院声誉排名：7',
-		skilled: '血液科、医学工程科、呼吸内科、整形外科、消化内科、眼科',
-		time: '上午8:00-12:00 下午13:00-14:30',
-	},
-	{
-		img: recommendDaping,
-		name: '重庆大坪医院',
-		title: '三甲',
-		secondaryName: '陆军特色医学中心',
-		ranking1: '西南地区医院声誉排名：9',
-		ranking2: '',
-		skilled: '血液科、医学工程科、呼吸内科、整形外科、消化内科、眼科',
-		time: '上午8:00-12:00 下午13:00-14:30',
-	},
-];
+const recommendList = ref([]);
 const handleLinkDetail = () => {
 	router.push('/recommendDetail');
 };
+
+// 区域选择
+const areaList = ref([]);
+const requestAreaLsit = async () => {
+	const res = await requestApi({
+		op: 'area',
+		classify: route.query.classify,
+		city: '重庆',
+	});
+	areaList.value = res.area;
+	areaId.value = res.area[1].id;
+};
+
+// 获取推荐列表
+// const recommendList = ref([]);
+const requestRecommendList = async () => {
+	const res = await requestApi({
+		op: 'h4',
+		type: route.query.classify, //1酒店 2餐饮 3景点 4医院
+		areaid: areaId.value,
+	});
+	recommendList.value = res.hotel;
+	console.log('recommendList.value :>> ', recommendList.value);
+};
+
+onMounted(() => {
+	requestAreaLsit().then(() => {
+		requestRecommendList();
+	});
+});
 </script>
 
 <style lang="less" scoped>
@@ -163,9 +158,9 @@ const handleLinkDetail = () => {
 		padding: 8px;
 		box-sizing: border-box;
 		align-items: center;
-		.iconfont {
-			font-size: 28px;
-			opacity: 0.47;
+		img {
+			width: 29px;
+			height: 28px;
 			margin-right: 20px;
 			margin-left: 25px;
 		}
@@ -201,8 +196,8 @@ const handleLinkDetail = () => {
 			align-items: center;
 			margin-bottom: 34px;
 			margin-top: 42px;
-			height: 30px;
-			overflow: auto;
+			height: 40px;
+			overflow-y: auto;
 			padding-left: 40px;
 			width: auto;
 		}
@@ -231,7 +226,7 @@ const handleLinkDetail = () => {
 				position: absolute;
 				left: 0;
 				right: 0;
-				bottom: -11px;
+				bottom: -6px;
 				z-index: 2;
 			}
 		}

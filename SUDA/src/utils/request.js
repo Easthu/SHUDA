@@ -22,6 +22,10 @@ const service = axios.create({
 // 添加请求拦截器
 service.interceptors.request.use(
 	(config) => {
+		if (config.method === 'get') {
+			config.url = config.url + '?' + config.data;
+			delete config.data;
+		}
 		// 在发送请求之前做些什么  校验token等用户登录权限
 		if (localStorage.getItem('localStorageToken')) { //请求头添加token
 			config.headers['Authorization'] = localStorage.getItem('localStorageToken');
