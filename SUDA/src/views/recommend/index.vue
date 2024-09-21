@@ -3,13 +3,13 @@
 		<img :src="homeBg" alt="" class="home-bg-fix" />
 		<div class="page-title" v-if="route.query.classify == 1">推荐酒店</div>
 		<div class="page-title" v-if="route.query.classify == 2">推荐餐饮</div>
-		<div class="page-title" v-if="route.query.classify == 2">推荐景点</div>
-		<div class="page-title" v-if="route.query.classify == 3">推荐医院</div>
+		<div class="page-title" v-if="route.query.classify == 3">推荐景点</div>
+		<div class="page-title" v-if="route.query.classify == 4">推荐医院</div>
 
 		<div class="search-box">
 			<img src="@/assets/images/icons/home-search.png" alt="" />
-			<input type="text" placeholder="搜索兼职 / 向导" />
-			<div class="search-submit">搜索</div>
+			<input type="text" placeholder="搜索兼职 / 向导" v-model="searchValue" />
+			<div class="search-submit" @click="handleSearch">搜索</div>
 		</div>
 		<div class="nav-list">
 			<div class="nav-list-content">
@@ -30,31 +30,99 @@
 			class="recommend-item"
 			v-for="(item, index) in recommendList"
 			:key="index"
-			@click="handleLinkDetail"
+			@click="handleLinkDetail(item)"
 		>
 			<img :src="item.url" alt="" class="recommend-img" />
-			<div class="recommend-info">
+			<!-- 酒店 -->
+			<div class="recommend-info classify1" v-if="route.query.classify == 1">
 				<div class="recommend-name">
-					{{ item.name }} <span>{{ item.title }}</span>
+					{{ item.name }}
 				</div>
 				<div class="secondary-name">
-					{{ item.secondaryName }}
+					{{ item.fullname }}
+				</div>
+				<div class="ranking">
+					<div class="ranking-left">
+						{{ item.level }}
+					</div>
+
+					<div class="ranking-right">
+						<div class="ranking-item van-ellipsis">{{ item.label }}</div>
+					</div>
+				</div>
+				<div class="skilled">
+					<div class="skilled-right">{{ item.dis }}</div>
+				</div>
+				<div class="recommend-time">
+					<span v-for="tips in item.tip.split('、')" :key="tips">{{ tips }}</span>
+				</div>
+			</div>
+			<!-- 餐饮 -->
+			<div class="recommend-info classify2" v-if="route.query.classify == 2">
+				<div class="recommend-name">
+					{{ item.name }}
+				</div>
+				<div class="ranking">
+					<div class="ranking-right">
+						<div class="ranking-item">
+							营业时间：{{ item.opentime }} <span>{{ item.people }}</span>
+						</div>
+					</div>
+				</div>
+				<div class="skilled">
+					<div class="skilled-right van-ellipsis">{{ item.label }}</div>
+				</div>
+				<div class="recommend-time">
+					<span v-for="tips in item.tip.split('、')" :key="tips">{{ tips }}</span>
+				</div>
+			</div>
+			<!-- 景点 -->
+			<div class="recommend-info classify3" v-if="route.query.classify == 3">
+				<div class="recommend-name">
+					{{ item.name }} <span>{{ item.ja }}A</span>
+				</div>
+				<div class="secondary-name">
+					{{ item.fullname }}
+				</div>
+				<div class="ranking">
+					<div class="ranking-left">
+						{{ item.level }}
+					</div>
+					<div class="ranking-right">
+						<div class="ranking-item van-ellipsis">{{ item.label }}</div>
+					</div>
+				</div>
+				<div class="skilled">
+					<div class="skilled-right">{{ item.dis }}</div>
+				</div>
+				<div class="recommend-time">
+					<span v-for="tips in item.tip.split('、')" :key="tips">{{ tips }}</span>
+				</div>
+			</div>
+			<!-- 医院 -->
+			<div class="recommend-info classify4" v-if="route.query.classify == 4">
+				<div class="recommend-name">
+					{{ item.name }} <span>{{ item.level }}</span>
+				</div>
+				<div class="secondary-name">
+					{{ item.fullname }}
 				</div>
 				<div class="ranking">
 					<div class="ranking-left">排行榜</div>
+
 					<div class="ranking-right">
-						<div class="ranking-item">{{ item.ranking1 }}</div>
-						<div class="ranking-item">{{ item.ranking2 }}</div>
+						<div class="ranking-item van-ellipsis">{{ item.js1 }}</div>
+						<div class="ranking-item">{{ item.js2 }}</div>
 					</div>
 				</div>
 				<div class="skilled">
 					<div class="skilled-left"><span>擅</span><span>长</span></div>
 					<div class="skilled-right">
-						<div class="skilled-item">{{ item.skilled }}</div>
+						<div class="skilled-item van-multi-ellipsis--l2">{{ item.adept }}</div>
 					</div>
 				</div>
 				<div class="recommend-time">
-					营业时间 <span>{{ item.time }}</span>
+					营业时间 <span>{{ item.opening }}</span>
 				</div>
 			</div>
 		</div>
@@ -71,14 +139,16 @@ import { requestApi } from 'api/home';
 const router = useRouter();
 const route = useRoute();
 const areaId = ref('');
+
 const handleActiveRecommend = (item) => {
 	areaId.value = item.id;
 	requestRecommendList();
 };
 
 const recommendList = ref([]);
-const handleLinkDetail = () => {
-	router.push('/recommendDetail');
+const handleLinkDetail = (item) => {
+	sessionStorage.setItem('recommendDetail', JSON.stringify(item));
+	router.push('/recommendDetail' + '?classify=' + route.query.classify);
 };
 
 // 区域选择
@@ -89,20 +159,27 @@ const requestAreaLsit = async () => {
 		classify: route.query.classify,
 		city: '重庆',
 	});
-	areaList.value = res.area;
-	areaId.value = res.area[1].id;
+	areaList.value = res.data;
+	areaId.value = res.data[0].id;
 };
 
+const searchValue = ref('');
+const currentPage = ref(1);
 // 获取推荐列表
-// const recommendList = ref([]);
 const requestRecommendList = async () => {
+	const opList = ['', 'hotel', 'repast', 'scenic', 'hospital'];
 	const res = await requestApi({
-		op: 'h4',
-		type: route.query.classify, //1酒店 2餐饮 3景点 4医院
-		areaid: areaId.value,
+		op: opList[route.query.classify],
+		classify: route.query.classify,
+		currentPage: currentPage.value,
+		name: searchValue.value,
 	});
-	recommendList.value = res.hotel;
+	recommendList.value = res[opList[route.query.classify]];
 	console.log('recommendList.value :>> ', recommendList.value);
+};
+const handleSearch = () => {
+	currentPage.value = 1;
+	requestRecommendList();
 };
 
 onMounted(() => {
@@ -233,27 +310,29 @@ onMounted(() => {
 	}
 	.recommend-item {
 		display: flex;
-		width: 750px;
-		height: 325px;
-		padding: 40px;
+		width: 724px;
+		height: 234px;
+		padding: 10px 6px;
 		box-sizing: border-box;
 		margin: 0 auto 16px;
 		position: relative;
 		z-index: 2;
 		background: #fff;
+		border-radius: 15px;
 		.recommend-img {
-			width: 160px;
-			height: 250px;
+			width: 182px;
+			height: 211px;
+			margin-right: 14px;
+			border-radius: 15px;
 		}
 		.recommend-info {
 			display: flex;
 			flex-direction: column;
-			margin-left: 10px;
-			justify-content: space-between;
+			flex: 1;
 			.recommend-name {
-				font-weight: bold;
-				font-size: 30px;
-				color: #061710;
+				font-weight: 400;
+				font-size: 34px;
+				color: #000000;
 				display: flex;
 				align-content: center;
 				span {
@@ -277,26 +356,23 @@ onMounted(() => {
 			}
 			.ranking {
 				display: flex;
+				align-items: center;
 				.ranking-left {
 					background: #93f582;
 					border-radius: 10px;
-					border: 2px solid #000000;
 					font-weight: 500;
 					font-size: 24px;
-					width: 100px;
-					height: 42px;
 					color: #000000;
 					display: flex;
 					align-items: center;
 					justify-content: center;
 				}
 				.ranking-right {
-					font-weight: 500;
+					font-weight: 400;
 					font-size: 20px;
 					color: #000000;
-					margin-left: 26px;
 					line-height: 24px;
-					width: 327px;
+					width: 400px;
 				}
 			}
 			.skilled {
@@ -314,7 +390,6 @@ onMounted(() => {
 					font-weight: 500;
 					font-size: 20px;
 					color: #000000;
-					margin-left: 26px;
 					line-height: 24px;
 					width: 327px;
 				}
@@ -323,10 +398,144 @@ onMounted(() => {
 				font-weight: 500;
 				font-size: 22px;
 				color: #000000;
-				margin-bottom: 13px;
 				span {
 					display: inline-block;
-					margin-left: 26px;
+				}
+			}
+		}
+		.classify1 {
+			.recommend-name {
+				margin-top: 10px;
+			}
+			.secondary-name {
+				margin-top: 16px;
+			}
+			.skilled {
+				margin-top: 14px;
+				.skilled-right {
+					margin-left: 0;
+					font-weight: 400;
+					font-size: 20px;
+					color: #000000;
+				}
+			}
+			.ranking {
+				margin-top: 16px;
+				.ranking-left {
+					font-weight: bold;
+					font-size: 22px;
+					color: #000000;
+					padding: 6px;
+					border: none;
+				}
+			}
+			.recommend-time {
+				margin-top: 20px;
+				span {
+					font-weight: 400;
+					font-size: 18px;
+					color: #000000;
+					padding: 4px 8px;
+					margin-left: 0;
+					margin-right: 6px;
+					border: 1px solid #000000;
+				}
+			}
+		}
+		.classify2 {
+			.ranking {
+				margin-top: 20px;
+				.ranking-item {
+					font-weight: 400;
+					font-size: 22px;
+					color: #061710;
+					span {
+						margin-left: 43px;
+					}
+				}
+			}
+			.skilled {
+				margin-top: 20px;
+				.skilled-right {
+					margin-left: 0;
+					font-weight: 400;
+					font-size: 20px;
+					color: #000000;
+				}
+			}
+			.recommend-time {
+				margin-top: 20px;
+				span {
+					font-weight: 400;
+					font-size: 18px;
+					color: #000000;
+					padding: 4px 8px;
+					margin-left: 0;
+					margin-right: 6px;
+					border: 1px solid #000000;
+				}
+			}
+		}
+		.classify3 {
+			.recommend-name {
+				margin-top: 10px;
+			}
+			.secondary-name {
+				margin-top: 16px;
+			}
+			.ranking {
+				margin-top: 16px;
+				.ranking-left {
+					font-weight: bold;
+					font-size: 22px;
+					color: #000000;
+					padding: 6px;
+					border: none;
+				}
+			}
+			.skilled {
+				margin-top: 14px;
+				.skilled-right {
+					margin-left: 0;
+					font-weight: 400;
+					font-size: 20px;
+					color: #000000;
+				}
+			}
+			.recommend-time {
+				margin-top: 20px;
+				span {
+					font-weight: 400;
+					font-size: 18px;
+					color: #000000;
+					padding: 4px 8px;
+					margin-left: 0;
+					margin-right: 6px;
+					border: 1px solid #000000;
+				}
+			}
+		}
+		.classify4 {
+			.secondary-name {
+				margin-top: 10px;
+			}
+			.ranking {
+				margin-top: 17px;
+				.ranking-left {
+					width: 90px;
+					height: 42px;
+					background: #93f582;
+					border-radius: 10px;
+					border: 2px solid #000000;
+					margin-right: 25px;
+				}
+			}
+			.skilled {
+				margin-top: 14px;
+				.skilled-item {
+					margin-left: 25px;
+					height: 51px;
+					line-height: 25px;
 				}
 			}
 		}

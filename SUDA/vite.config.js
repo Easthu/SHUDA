@@ -56,7 +56,7 @@ export default defineConfig({
   // 服务
   server: {
     host: '0.0.0.0',
-    // https: false,
+    https: false,
     // cors: true,
     open: true,
     port: '8000',

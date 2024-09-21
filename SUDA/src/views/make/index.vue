@@ -63,47 +63,27 @@
 				<div class="sift-content">
 					<div class="sift-title">景点选择</div>
 					<div class="sift-attractions">
-						<van-collapse v-model="activeNames">
-							<van-collapse-item name="1">
-								<template #title>
-									<div class="collapse active-collapse">
-										<img src="@/assets/images/icons/make-position.png" alt="" />
-										渝中区4
-									</div>
-								</template>
-								<div class="place-list">
-									<p class="active">临江门附二院</p>
-									<p>七星岗妇幼保健院</p>
-									<p>中山医院</p>
-									<p>儿童医院</p>
-								</div>
-							</van-collapse-item>
-							<van-collapse-item name="2">
+						<van-collapse v-model="clickAreaId" accordion @change="handleClickArea">
+							<van-collapse-item
+								:name="item.id"
+								v-for="item in areaLsit"
+								:key="item.id"
+							>
 								<template #title>
 									<div class="collapse">
 										<img src="@/assets/images/icons/make-position.png" alt="" />
-										江北区
+										<span :class="{ activeCollapse: item.id == clickAreaId }">
+											{{ item.area }}
+										</span>
 									</div>
 								</template>
-								<div class="place-list">
-									<p>临江门附二院</p>
-									<p>七星岗妇幼保健院</p>
-									<p>中山医院</p>
-									<p>儿童医院</p>
-								</div>
-							</van-collapse-item>
-							<van-collapse-item name="3">
-								<template #title>
-									<div class="collapse">
-										<img src="@/assets/images/icons/make-position.png" alt="" />
-										南岸区
-									</div>
-								</template>
-								<div class="place-list">
-									<p>临江门附二院</p>
-									<p>七星岗妇幼保健院</p>
-									<p>中山医院</p>
-									<p>儿童医院</p>
+								<div class="place-list" v-for="row in twoareaList" :key="row.id">
+									<p
+										:class="{ active: row.name == searchForm.sys }"
+										@click.stop="searchForm.sys = row.name"
+									>
+										{{ row.name }}
+									</p>
 								</div>
 							</van-collapse-item>
 						</van-collapse>
@@ -123,13 +103,14 @@ import homeBg from '@/assets/images/home/home-bg.png';
 import GoodsList from '@/components/goodsList.vue';
 import { requestApi } from 'api/home';
 import { showLoadingToast, closeToast } from 'vant';
+import { ref } from 'vue';
 
 const searchForm = ref({
-	name: '', //名字查询
+	name: null, //名字查询
 	sex: null, //性别性别 1男 2女
-	agemin: '', //最小年龄
-	agemax: '', //最大年龄
-	sys: '', //医院或者景区名字查询
+	agemin: null, //最小年龄
+	agemax: null, //最大年龄
+	sys: null, //医院或者景区名字查询
 	type: 1, // 2陪诊就医        1本地向导
 	currentPage: 1,
 	op: 'yuyue',
@@ -143,8 +124,7 @@ const hanldeSearch = () => {
 
 // 筛选框
 const showSiftbBox = ref(false);
-// 选择景点或者以医院
-const activeNames = ref([]);
+
 // 筛选确认
 const handleConfirmSift = () => {
 	showSiftbBox.value = false;
@@ -152,15 +132,10 @@ const handleConfirmSift = () => {
 };
 // 筛选重置
 const handleReset = () => {
-	searchForm.value = {
-		name: '',
-		sex: null,
-		agemin: '',
-		agemax: '',
-		sys: '',
-		type: 1,
-		currentPage: 1,
-	};
+	searchForm.value.sex = null;
+	searchForm.value.agemin = null;
+	searchForm.value.agemax = null;
+	searchForm.value.sys = null;
 };
 
 // 切换预约类型
@@ -175,24 +150,41 @@ const makeList = ref([]);
 const handleApiMakeList = async () => {
 	const res = await requestApi(searchForm.value);
 	console.log(res);
-	makeList.value = res.people;
+	makeList.value = res.data;
 };
 
+const areaLsit = ref([]);
+const clickAreaId = ref(null);
+const twoareaList = ref([]);
 const requestRecommendList = async () => {
 	showLoadingToast();
 	const res = await requestApi({
-		op: 'h4',
-		type: 4, //1酒店 2餐饮 3景点 4医院
+		op: 'area',
+		classify: searchForm.value.type == 1 ? 3 : 4, //1酒店 2餐饮 3景点 4医院
+		city: '重庆',
 	}).finally(() => {
 		closeToast();
 	});
-	// recommendList.value = res.hotel;
-	console.log('res :>> ', res);
+	console.log('res :>> ', res.data);
+	areaLsit.value = res.data;
+};
+const handleClickArea = async (id) => {
+	if (!id) return;
+	clickAreaId.value = id;
+	twoareaList.value = [];
+	const res = await requestApi({
+		op: 'twoarea',
+		type: searchForm.value.type == 1 ? 3 : 4, //1酒店 2餐饮 3景点 4医院
+		areaid: id,
+	}).finally(() => {
+		closeToast();
+	});
+	twoareaList.value = res.data;
 };
 
 onMounted(() => {
 	handleApiMakeList();
-	// requestRecommendList();
+	requestRecommendList();
 });
 </script>
 
@@ -372,7 +364,7 @@ onMounted(() => {
 				margin-right: 14px;
 			}
 		}
-		.active-collapse {
+		.activeCollapse {
 			color: #93f582;
 			.iconfont {
 				color: #93f582;

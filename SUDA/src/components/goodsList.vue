@@ -61,13 +61,6 @@ const router = useRouter();
 const refreshing = ref(false);
 const loading = ref(false);
 const finished = ref(false);
-import zhouxingle from '@/assets/images/home/zhouxingle.png';
-import zhaoheng from '@/assets/images/home/zhaoheng.png';
-import zhangzhongke from '@/assets/images/home/zhangzhongke.png';
-import tuliaoning from '@/assets/images/home/tuliaoning.png';
-import wangli from '@/assets/images/home/wangli.png';
-import xiezhirong from '@/assets/images/home/xiezhirong.png';
-import qinhuilin from '@/assets/images/home/qinhuilin.png';
 
 const props = defineProps({
 	makeList: {
@@ -76,80 +69,7 @@ const props = defineProps({
 	},
 });
 
-const personList = [
-	{
-		img: zhouxingle,
-		name: '周兴乐',
-		project: '洪崖洞 李子坝 朝天门 ...',
-		comments: 178,
-		like: 236,
-		doneNum: 20,
-		score: 4.8,
-	},
-	{
-		img: zhaoheng,
-		name: '赵恒',
-		project: '洪崖洞 李子坝 朝天门 ...',
-		comments: 178,
-		like: 236,
-		doneNum: 20,
-		score: 4.8,
-	},
-	{
-		img: zhangzhongke,
-		name: '张重科',
-		project: '洪崖洞 李子坝 朝天门 ...',
-		comments: 178,
-		like: 236,
-		doneNum: 20,
-		score: 4.8,
-	},
-	{
-		img: xiezhirong,
-		name: '谢芝容',
-		project: '洪崖洞 李子坝 朝天门 ...',
-		comments: 178,
-		like: 236,
-		doneNum: 20,
-		score: 4.8,
-	},
-	{
-		img: wangli,
-		name: '王丽',
-		project: '洪崖洞 李子坝 朝天门 ...',
-		comments: 178,
-		like: 236,
-		doneNum: 20,
-		score: 4.8,
-	},
-	{
-		img: tuliaoning,
-		name: '凃辽林',
-		project: '洪崖洞 李子坝 朝天门 ...',
-		comments: 178,
-		like: 236,
-		doneNum: 20,
-		score: 4.8,
-	},
-	{
-		img: qinhuilin,
-		name: '秦慧琳',
-		project: '洪崖洞 李子坝 朝天门 ...',
-		comments: 178,
-		like: 236,
-		doneNum: 20,
-		score: 4.8,
-	},
-	{
-		img: zhouxingle,
-		name: '周兴乐',
-		project: '洪崖洞 李子坝 朝天门 ...',
-		comments: 178,
-		like: 236,
-		doneNum: 20,
-		score: 4.8,
-	},
-];
+const personList = [];
 const goodsList = ref([personList[0], personList[1]]);
 
 const onRefresh = () => {
@@ -176,7 +96,6 @@ const onLoad = () => {
 	}, 1000);
 };
 const handleLinkMakeDetail = (item) => {
-	console.log('item :>> ', item);
 	sessionStorage.setItem('makeDetailJson', JSON.stringify(item));
 	console.log('立即预约');
 	router.push('/makeDetail');

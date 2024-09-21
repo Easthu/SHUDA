@@ -2,7 +2,7 @@
 	<div class="order-detail">
 		<img :src="back" alt="" class="back-icon" @click="router.back()" />
 		<div class="make-info">
-			<img :src="zhouxingle" alt="" />
+			<img src="" alt="" />
 			<div class="name-score">
 				<div class="name">
 					张丹琼 <span><i class="iconfont">&#xe64b;</i>4.3</span>
@@ -63,7 +63,6 @@ import back from '@/assets/images/icons/back.png';
 import hongyadong from '@/assets/images/order/hongyadong.png';
 import jiefangbei from '@/assets/images/order/jiefangbei.png';
 import renmingdalitang from '@/assets/images/order/renmingdalitang.png';
-import zhouxingle from '@/assets/images/home/zhouxingle.png';
 const router = useRouter();
 
 const goodsList = ref([

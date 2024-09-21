@@ -45,14 +45,6 @@ service.interceptors.response.use(
 		const res = response.data;
 		// http状态码根据实际开发的项目进行调整
 		if (res.status == "ERROR") {
-			// 以下请求不进行Dialog.alert提示
-			let apiUrl = {
-				'/weChat/getsignature': false,
-			}
-			let showDialogState = Object.keys(apiUrl).some(url => {
-				return response.request.responseURL.includes(url)
-			})
-
 			setTimeout(() => {
 				showToast(res.errorMsg)
 			}, 1000);

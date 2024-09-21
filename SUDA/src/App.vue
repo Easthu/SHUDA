@@ -1,10 +1,22 @@
 <script setup>
-// // import { getUrlKey } from '@/utils/toolsValidate.js';
-// import { isWx } from '@/utils/weChatFunction';
-// const isWeChat = isWx();
-// if(isWeChat == 'wx'){
-
-// }
+// import { getUrlKey } from '@/utils/toolsValidate.js';
+import { isWx } from '@/utils/weChatFunction';
+import { getUrlKey } from '@/utils/toolsValidate.js';
+const code = getUrlKey('code');
+if (code) {
+	console.log('code :>> ', code);
+	localStorage.setItem('wxCode', code);
+}
+if (!code && !localStorage.getItem('wxCode')) {
+	isWx().then((isWeChat) => {
+		console.log('isWeChat :>> ', isWeChat);
+		if (isWeChat == 'wx') {
+			let redirectUri = window.location.origin + window.location.pathname;
+			const wxUrl = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxaa5f6f6ed39d9a7f&redirect_uri=${redirectUri}&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect`;
+			window.location.href = wxUrl;
+		}
+	});
+}
 </script>
 
 <template>

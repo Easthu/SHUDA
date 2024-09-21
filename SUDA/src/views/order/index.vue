@@ -16,7 +16,7 @@
 				<div class="item-top">
 					<div class="shop-name">
 						{{ item.goodsName }}
-						<img src="@/assets/images/icons/make-women.png" alt="" />
+						<img src="" alt="" />
 						<span class="age">25岁</span>
 					</div>
 					<div class="order-status">{{ item.orderState }}</div>
@@ -46,9 +46,7 @@
 <script setup>
 const active = ref('all');
 const router = useRouter();
-import orderImg from '@/assets/images/order/order-img.png';
-import zhouxingle from '@/assets/images/home/zhouxingle.png';
-import zhaoheng from '@/assets/images/home/zhaoheng.png';
+
 const stateList = [
 	{
 		name: '全部',
@@ -81,19 +79,16 @@ const stateList = [
 ];
 const orderListData = [
 	{
-		img: zhouxingle,
 		goodsName: '周兴乐',
 		orderState: '待服务',
 		type: '本地向导',
 	},
 	{
-		img: zhaoheng,
 		goodsName: '周奕航',
 		orderState: '服务中',
 		type: '本地向导',
 	},
 	{
-		img: orderImg,
 		goodsName: '重庆市西南医院',
 		orderState: '已完成',
 		type: '陪诊就医',

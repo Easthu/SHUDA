@@ -45,8 +45,8 @@ export default function useHome(params) {
                 op: 'home',
                 nature
             })
-            console.log(res)
-            dataSource.homeMakeList = res.staff
+            console.log('handleApiMakeInfoList', res.data)
+            dataSource.homeMakeList = res.data
             // dataSource.staffInfoList = res.staff.map((item) => {
             //     item.scenicspot = JSON.parse(item.scenicspot)
             //     item.hospital = JSON.parse(item.hospital)
@@ -56,15 +56,15 @@ export default function useHome(params) {
         // 分类切换
         handleChangeNav: (active) => {
             dataSource.active = active
-            request.getHomeInfo(active)
+            request.handleApiMakeInfoList(active)
         },
         // 获取首页轮播图
         handleApiBanner: async () => {
             const res = await requestApi({
                 op: 'banner',
             })
-            console.log('res :>> ', res);
-            dataSource.bannerList = res.banner
+            console.log('res handleApiBanner:>> ', res);
+            dataSource.bannerList = res.data
         },
         init: () => {
             showLoadingToast()

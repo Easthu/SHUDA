@@ -39,8 +39,8 @@
 			>
 		</div>
 		<div class="specification-list">
-			<div class="specification-item" v-for="(item, index) in goodsList" :key="index">
-				<img :src="item.img" alt="" class="specification-img" />
+			<div class="specification-item" v-for="(item, index) in scenicspotList" :key="index">
+				<img :src="item.url" alt="" class="specification-img" />
 				<div class="specification-info">
 					<div class="spe-name">{{ item.name }}</div>
 					<div class="spe-suggestion">
@@ -49,9 +49,10 @@
 						}}
 					</div>
 					<div class="spe-time">
-						<img src="@/assets/images/icons/make-detail-diamond.png" alt="" />{{
-							item.time
-						}}
+						<img
+							src="@/assets/images/icons/make-detail-diamond.png"
+							alt=""
+						/>开放时间：{{ item.tell }}
 					</div>
 				</div>
 				<div class="item-right">
@@ -63,7 +64,11 @@
 			</div>
 		</div>
 		<div class="bottom-btn">
-			<div class="bottom-btn-left">·至少选择三个景点进行游玩，已选择2处景点</div>
+			<div class="bottom-btn-left">
+				·至少选择三个景点进行游玩，已选择{{
+					scenicspotList.filter((item) => item.checked).length
+				}}处景点
+			</div>
 			<div class="bottom-btn-right" @click="handleLinkOrderConfirm">结算</div>
 		</div>
 	</div>
@@ -73,10 +78,8 @@
 import back from '@/assets/images/icons/back.png';
 import checkedIcon from '@/assets/images/icons/make-detail-checked.png';
 import checkNotIcon from '@/assets/images/icons/make-detail-check-not.png';
+import { requestApi } from 'api/home';
 
-import hongyadong from '@/assets/images/order/hongyadong.png';
-import jiefangbei from '@/assets/images/order/jiefangbei.png';
-import renmingdalitang from '@/assets/images/order/renmingdalitang.png';
 const router = useRouter();
 
 const handleLinkOrderConfirm = () => {
@@ -84,39 +87,26 @@ const handleLinkOrderConfirm = () => {
 };
 
 const makeDetailInfo = ref(null);
-
-const goodsList = ref([
-	{
-		name: '洪崖洞',
-		img: hongyadong,
-		suggestion: '建议玩1-2小时',
-		time: '开放时间：全天',
-		price: '80',
-		checked: false,
-	},
-	{
-		name: '解放碑',
-		img: jiefangbei,
-		suggestion: '建议玩1-2小时',
-		time: '开放时间：全天',
-		price: '100',
-		checked: false,
-	},
-	{
-		name: '人民大礼堂',
-		img: renmingdalitang,
-		suggestion: '建议玩1-2小时',
-		time: '开放时间：全天',
-		price: '80',
-		checked: false,
-	},
-]);
+const scenicspotList = ref([]);
+const requestScenicspotList = async (id) => {
+	const params = {
+		op: 'scenicid',
+		id,
+	};
+	const { data } = await requestApi(params);
+	scenicspotList.value.push({ ...data, checked: false });
+};
 
 onMounted(() => {
 	const info = sessionStorage.getItem('makeDetailJson');
 	try {
 		makeDetailInfo.value = JSON.parse(info);
-		console.log('makeDetailInfo.value :>> ', makeDetailInfo.value);
+		makeDetailInfo.value.scenicspot = JSON.parse(makeDetailInfo.value.scenicspot);
+		if (makeDetailInfo.value.scenicspot.length > 0) {
+			makeDetailInfo.value.scenicspot.forEach((item) => {
+				requestScenicspotList(item.id);
+			});
+		}
 	} catch (error) {
 		router.go('/home');
 	}

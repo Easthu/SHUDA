@@ -16,7 +16,8 @@
 			<img src="@/assets/images/icons/make-detail-checked.png" alt="" />
 			<div class="license-content">
 				<p class="content-top">
-					实名认证通过 <span>身份证5000**********************</span>
+					实名认证通过
+					<!-- <span>身份证5000**********************</span> -->
 				</p>
 				<p class="content-bottom">所有兼职人员签约入驻平台时，身份信息均已通过核检</p>
 			</div>
@@ -28,10 +29,10 @@
 				<p class="content-bottom">所有兼职人员签约入驻平台时，身份信息均已通过核检</p>
 			</div>
 		</div>
-		<div class="id-card-img">
+		<!-- <div class="id-card-img">
 			<p>所属商家资质</p>
 			<img src="@/assets/images/home/zhouxingle.png" alt="" />
-		</div>
+		</div> -->
 	</div>
 </template>
 <script setup>

@@ -1,24 +1,56 @@
 <template>
-	<div class="recommend-detail-layout">
+	<div class="recommend-detail-layout" v-if="recommendDetail">
 		<img :src="homeBg" alt="" class="home-bg-fix" />
-		<div class="page-title">推荐医院</div>
-		<img :src="recommendDetail" alt="" class="detail-big-img" />
+		<div class="page-title" v-if="route.query.classify == 1">推荐酒店</div>
+		<div class="page-title" v-if="route.query.classify == 2">推荐餐饮</div>
+		<div class="page-title" v-if="route.query.classify == 3">推荐景点</div>
+		<div class="page-title" v-if="route.query.classify == 4">推荐医院</div>
+		<img :src="recommendDetail.urlxiang" alt="" class="detail-big-img" />
 		<div class="detail-introduce">
-			<div class="info-name">重庆西南医院<span>陆军军医大学第一附属医院</span></div>
-			<div class="info-adress">地址：沙坪坝高滩岩正街30号</div>
-			<div class="info-tel">电话：023-65318301</div>
-		</div>
-		<div class="introduce">
-			<div class="introduce-title">医院详情介绍</div>
-			<div class="introduce-content">
-				复旦版专科声誉排名前十的科室:烧伤科(1)、病理科(4)、检验医学(7)、康复医学(9)、运动医学(9)整形外科(10)
-				国家重点学科:感染病科、心血管内科、肝胆外科、骨科、骨科/运动医学、关节外科、泌尿外科、普外科、烧伤科、神经外科、心脏外科、整形外科、胸外科、乳腺甲状腺外科
-				国家重点(培育)学科:消化内科 国家中医药管理局重点学科:中医与风湿免疫科
-				军队医学专科中心:全军烧伤研究所、全军感染病研究所、全军神经外科研究所
+			<div class="info-name">
+				{{ recommendDetail.name }}
+				<span v-if="recommendDetail.ja" class="ja">{{ recommendDetail.ja }}A</span>
+				<span v-if="recommendDetail.fullname">{{ recommendDetail.fullname }}</span>
+			</div>
+			<div class="info-js" v-if="recommendDetail.js">{{ recommendDetail.js }}</div>
+			<div class="info-js" v-if="recommendDetail.opentime">
+				{{ recommendDetail.opentime }}
+			</div>
+			<div class="info-js" v-if="route.query.classify == 3">
+				{{ recommendDetail.tell }}
+			</div>
+			<div class="info-js" v-if="recommendDetail.tip">
+				<span v-for="tips in recommendDetail.tip.split('、')" :key="tips">{{ tips }}</span>
+			</div>
+			<div class="info-adress">地址：{{ recommendDetail.adress }}</div>
+			<div class="info-tel" v-if="route.query.classify != 3">
+				电话：{{ recommendDetail.tell }}
 			</div>
 		</div>
+		<div class="introduce" v-if="recommendDetail.sell">
+			<div class="introduce-title">卖点</div>
+			<div class="introduce-content">
+				{{ recommendDetail.sell }}
+			</div>
+		</div>
+		<div class="introduce" v-if="recommendDetail.introduce">
+			<div class="introduce-title" v-if="route.query.classify == 2">品牌故事</div>
+			<div class="introduce-title" v-if="route.query.classify == 3">购票须知</div>
+			<div class="introduce-title" v-if="route.query.classify == 4">医院详情介绍</div>
+
+			<div class="introduce-content" v-html="recommendDetail.introduce"></div>
+		</div>
+		<div class="introduce" v-if="recommendDetail.service">
+			<div class="introduce-title">设施服务</div>
+
+			<div class="introduce-content" v-html="recommendDetail.service"></div>
+		</div>
 		<div class="detail-btn">
-			<div class="call-business" :style="{ backgroundImage: `url(${callBusiness})` }">
+			<div
+				class="call-business"
+				:style="{ backgroundImage: `url(${callBusiness})` }"
+				v-if="route.query.classify != 3"
+			>
 				联系商家
 			</div>
 			<div
@@ -33,14 +65,26 @@
 
 <script setup>
 import homeBg from '@/assets/images/home/home-bg.png';
-import recommendDetail from '@/assets/images/recommend/recommend-detail.png';
 import callBusiness from '@/assets/images/icons/call-business.png';
 import navigationBusiness from '@/assets/images/icons/navigation-business.png';
 
 const router = useRouter();
+const route = useRoute();
+
 const hanldeBack = () => {
 	router.back();
 };
+
+const recommendDetail = ref(null);
+
+onMounted(() => {
+	try {
+		recommendDetail.value = JSON.parse(sessionStorage.getItem('recommendDetail'));
+		console.log('recommendDetail.value :>> ', recommendDetail.value);
+	} catch {
+		router.back();
+	}
+});
 </script>
 
 <style lang="less" scoped>
@@ -81,19 +125,29 @@ const hanldeBack = () => {
 	.detail-introduce {
 		display: flex;
 		flex-direction: column;
-		height: 153px;
 		margin-bottom: 12px;
 		padding: 20px 30px;
 		box-sizing: border-box;
 		position: relative;
 		top: 0;
 		justify-content: space-around;
+		background: #fff;
 		.info-name {
 			font-weight: bold;
 			font-size: 34px;
 			color: #000000;
 			display: flex;
 			align-items: center;
+			.ja {
+				width: 59px;
+				height: 34px;
+				background: #00c68f;
+				border-radius: 17px;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				margin-right: 12px;
+			}
 			span {
 				font-weight: bold;
 				font-size: 18px;
@@ -106,11 +160,28 @@ const hanldeBack = () => {
 			font-weight: bold;
 			font-size: 24px;
 			color: #000000;
+			margin-top: 12px;
+		}
+		.info-js {
+			margin-top: 16px;
+			font-weight: bold;
+			font-size: 24px;
+			color: #000000;
+			display: flex;
+			span {
+				font-weight: 400;
+				font-size: 18px;
+				color: #000000;
+				padding: 6px;
+				border: 1px solid #000000;
+				margin-right: 6px;
+			}
 		}
 		.info-tel {
 			font-weight: bold;
 			font-size: 24px;
 			color: #000000;
+			margin-top: 10px;
 		}
 	}
 	.introduce {
@@ -119,20 +190,21 @@ const hanldeBack = () => {
 		box-sizing: border-box;
 		position: relative;
 		z-index: 2;
+		background: #fff;
+		margin-bottom: 20px;
+
 		.introduce-title {
 			font-weight: bold;
 			font-size: 28px;
 			color: #000000;
-			margin-bottom: 26px;
+			margin-bottom: 22px;
 		}
 		.introduce-content {
-			font-weight: bold;
+			font-weight: 400;
 			font-size: 20px;
 			color: #000000;
 			line-height: 34px;
-			height: 300px;
 			overflow-y: scroll;
-			margin-bottom: 66px;
 		}
 	}
 	.detail-btn {
