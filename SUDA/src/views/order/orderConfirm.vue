@@ -1,29 +1,38 @@
 <template>
-	<div class="order-confirm">
+	<div class="order-confirm" v-if="orderConfirm">
 		<img :src="back" alt="" class="back-icon" @click="router.back()" />
 		<div class="make-info">
-			<img src="" alt="" />
+			<img :src="orderConfirm.picture" alt="" />
 			<div class="name-score">
 				<div class="name">
-					张丹琼 <span><img src="@/assets/images/icons/make-star.png" alt="" />4.3</span>
+					{{ orderConfirm.name }}
+					<span
+						><img src="@/assets/images/icons/make-star.png" alt="" />{{
+							orderConfirm.score
+						}}</span
+					>
 				</div>
-				<div class="done">已完成43单</div>
+				<div class="done">已完成{{ orderConfirm.odersum }}单</div>
 			</div>
 			<div class="order-state">待支付</div>
 		</div>
-		<div class="services-list">
-			<div class="specification-item" v-for="(item, index) in goodsList" :key="index">
-				<img :src="item.img" alt="" class="specification-img" />
+		<div class="services-list" v-if="orderConfirm.nature == 1">
+			<div
+				class="specification-item"
+				v-for="(item, index) in orderConfirm.confirmList"
+				:key="index"
+			>
+				<img :src="item.url" alt="" class="specification-img" />
 				<div class="specification-info">
 					<div class="spe-name">{{ item.name }}</div>
 					<div class="spe-suggestion">
-						<img src="@/assets/images/icons/make-detail-time.png" alt="" />
-						{{ item.suggestion }}
+						<img
+							src="@/assets/images/icons/make-detail-time.png"
+							alt=""
+						/>开放时间：全天
 					</div>
 					<div class="spe-time">
-						<img src="@/assets/images/icons/make-detail-diamond.png" alt="" />{{
-							item.time
-						}}
+						<img src="@/assets/images/icons/make-detail-diamond.png" alt="" />已售：1000
 					</div>
 				</div>
 				<div class="item-right">
@@ -31,16 +40,31 @@
 				</div>
 			</div>
 		</div>
+		<div class="services-list-2" v-if="orderConfirm.nature == 2">
+			<div
+				class="specification-item"
+				v-for="(item, index) in orderConfirm.confirmList"
+				:key="index"
+			>
+				<div class="specification-info">
+					<div class="spe-name">{{ item.name }}</div>
+					<div class="spe-price">￥{{ item.price }}</div>
+				</div>
+				<div class="item-right">
+					{{ item.introduce }}
+				</div>
+			</div>
+		</div>
 		<div class="prcie-detail">
 			<!-- <div class="price-title">费用明细</div> -->
 			<div class="detail-item">
 				<span class="left">费用明细</span>
-				<span>￥120</span>
+				<span>￥{{ totlePrice }}</span>
 			</div>
 			<div class="detail-item">
 				<span class="left">备注</span>
 				<van-field
-					v-model="message"
+					v-model="remark"
 					rows="2"
 					autosize
 					type="textarea"
@@ -53,45 +77,53 @@
 		</div>
 		<div class="bottom-btn">
 			<span>合计</span>
-			<span class="price">￥120</span>
-			<div class="confirm">去支付</div>
+			<span class="price">￥{{ totlePrice }}</span>
+			<div class="confirm" @click="handleOrderConfirm">立即支付</div>
 		</div>
 	</div>
 </template>
 
 <script setup>
 import back from '@/assets/images/icons/back.png';
-import hongyadong from '@/assets/images/order/hongyadong.png';
-import jiefangbei from '@/assets/images/order/jiefangbei.png';
-import renmingdalitang from '@/assets/images/order/renmingdalitang.png';
+import { requestApi } from 'api/home';
+
 const router = useRouter();
-const message = ref('');
-const goodsList = ref([
-	{
-		name: '洪崖洞',
-		img: hongyadong,
-		suggestion: '建议玩1-2小时',
-		time: '开放时间：全天',
-		price: '80',
-		checked: false,
-	},
-	{
-		name: '解放碑',
-		img: jiefangbei,
-		suggestion: '建议玩1-2小时',
-		time: '开放时间：全天',
-		price: '100',
-		checked: false,
-	},
-	{
-		name: '人民大礼堂',
-		img: renmingdalitang,
-		suggestion: '建议玩1-2小时',
-		time: '开放时间：全天',
-		price: '80',
-		checked: false,
-	},
-]);
+const remark = ref('');
+
+const orderConfirm = ref(null);
+const userInfo = ref(null);
+const totlePrice = ref(0);
+
+const handleOrderConfirm = async () => {
+	const res = await requestApi({
+		op: 'order',
+		nameid: userInfo.value.id,
+		staffid: orderConfirm.value.staffid,
+		type: orderConfirm.value.nature,
+		oederitem: orderConfirm.value.confirmList.map((item) => item.id).join(','),
+		other: remark.value ? remark.value : ' ',
+		hsid: orderConfirm.value.hsid ? orderConfirm.value.hsid : 0,
+	});
+	router.push('/order');
+	console.log('res :>> ', res);
+};
+
+onMounted(() => {
+	try {
+		orderConfirm.value = JSON.parse(sessionStorage.getItem('orderConfirm'));
+		userInfo.value = JSON.parse(localStorage.getItem('userInfo'));
+		console.log('orderConfirm.value :>> ', orderConfirm.value);
+		totlePrice.value = orderConfirm.value.confirmList.reduce((pre, cur) => {
+			console.log('pre :>> ', pre);
+			console.log('cur.price :>> ', cur.price);
+
+			return pre + Number(cur.price);
+		}, 0);
+	} catch (err) {
+		console.log('err :>> ', err);
+		router.go(-1);
+	}
+});
 </script>
 
 <style lang="less" scoped>
@@ -222,6 +254,30 @@ const goodsList = ref([
 					margin: 20px 0;
 				}
 			}
+		}
+	}
+	.services-list-2 {
+		background: #fff;
+		padding: 43px 27px;
+		width: 716px;
+		box-sizing: border-box;
+		.specification-item {
+			margin-bottom: 40px;
+		}
+		.specification-info {
+			display: flex;
+			font-weight: 400;
+			font-size: 26px;
+			color: #010000;
+			align-items: center;
+			justify-content: space-between;
+		}
+		.item-right {
+			font-weight: 300;
+			font-size: 22px;
+			color: #a6a3a3;
+			line-height: 36px;
+			margin-top: 20px;
 		}
 	}
 	.prcie-detail {

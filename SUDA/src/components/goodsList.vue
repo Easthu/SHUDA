@@ -9,8 +9,8 @@
 					<span class="name">
 						{{ item.name }}
 					</span>
-					<img src="@/assets/images/icons/make-man.png" alt="" v-if="item.Sex == 1" />
-					<img src="@/assets/images/icons/make-women.png" alt="" v-if="item.Sex == 2" />
+					<img src="@/assets/images/icons/make-man.png" alt="" v-if="item.sex == 1" />
+					<img src="@/assets/images/icons/make-women.png" alt="" v-if="item.sex == 2" />
 					<span class="age">{{ item.age }}岁</span>
 				</div>
 				<div class="goods-license" v-if="item.ifbusiness">
@@ -45,7 +45,7 @@
 			<div class="done-make-btn">
 				<div class="score">
 					<img src="@/assets/images/icons/make-star.png" alt="" />
-					{{ item.Score }}
+					{{ item.score }}
 				</div>
 				<div class="done-num">已完成{{ item.odersum }}单</div>
 				<div class="make-right" @click="handleLinkMakeDetail(item)">立即预约</div>
@@ -66,6 +66,10 @@ const props = defineProps({
 	makeList: {
 		type: Array,
 		default: () => [],
+	},
+	nature: {
+		type: Number,
+		default: 1,
 	},
 });
 
@@ -98,7 +102,7 @@ const onLoad = () => {
 const handleLinkMakeDetail = (item) => {
 	sessionStorage.setItem('makeDetailJson', JSON.stringify(item));
 	console.log('立即预约');
-	router.push('/makeDetail');
+	router.push('/makeDetail?nature=' + props.nature);
 };
 </script>
 

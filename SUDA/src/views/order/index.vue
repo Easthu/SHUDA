@@ -3,7 +3,7 @@
 		<div class="state-list">
 			<div
 				class="state-item"
-				@click="active = item.value"
+				@click="handleChangeState(item.value)"
 				:class="{ active: active == item.value }"
 				v-for="item in stateList"
 				:key="item.value"
@@ -11,23 +11,26 @@
 				<span>{{ item.name }}</span>
 			</div>
 		</div>
-		<div class="order-list">
+		<div class="order-list" v-if="orderListData.length > 0">
 			<div class="order-list-item" v-for="(item, index) in orderListData" :key="index">
 				<div class="item-top">
 					<div class="shop-name">
-						{{ item.goodsName }}
+						{{ item.staffname }}
 						<img src="" alt="" />
 						<span class="age">25岁</span>
 					</div>
 					<div class="order-status">{{ item.orderState }}</div>
 				</div>
-				<div class="item-content" @click="router.push('/orderDetail')">
+				<div class="item-content" @click="handleLinkOrderDetail(item)">
 					<img :src="item.img" alt="" class="shop-img" />
 					<div class="shop-info">
-						<div class="goods-name">{{ item.type }}</div>
-						<div class="order-id">订单编号：4564654654564564564654</div>
-						<div class="order-time">下单时间：2024-8-8 19:44:41</div>
-						<div class="order-price">实付：￥360.00</div>
+						<div class="goods-name">{{ item.type == 1 ? '本地向导' : '陪诊就医' }}</div>
+						<div class="order-id">订单编号：{{ item.ordernum }}</div>
+						<div class="order-time">
+							下单时间：{{ item.createtime.split(', ')[1].split(' ')[0] }}
+							{{ item.createtime.split(', ')[1].split(' ')[1] }}
+						</div>
+						<div class="order-price">实付：￥{{ item.price }}</div>
 						<div class="item-btn">
 							<div v-if="item.orderState == '待服务'">扫码服务</div>
 							<div v-if="item.orderState == '待服务'">取消订单</div>
@@ -44,56 +47,72 @@
 </template>
 
 <script setup>
-const active = ref('all');
+const active = ref('999');
 const router = useRouter();
+import { requestApi } from 'api/home';
 
 const stateList = [
 	{
 		name: '全部',
-		value: 'all',
+		value: '999',
 	},
 	{
 		name: '待支付',
-		value: 'toBePaid',
+		value: '0',
+	},
+	{
+		name: '已支付',
+		value: '1',
 	},
 	{
 		name: '待服务',
-		value: 'toBeServed',
-	},
-	{
-		name: '取消中',
-		value: 'canceling',
-	},
-	{
-		name: '已取消',
-		value: 'cancelled',
-	},
-	{
-		name: '服务中',
-		value: 'serveing',
+		value: '2',
 	},
 	{
 		name: '已完成',
-		value: 'completed',
+		value: '3',
+	},
+	{
+		name: '已评价',
+		value: '4',
 	},
 ];
-const orderListData = [
-	{
-		goodsName: '周兴乐',
-		orderState: '待服务',
-		type: '本地向导',
-	},
-	{
-		goodsName: '周奕航',
-		orderState: '服务中',
-		type: '本地向导',
-	},
-	{
-		goodsName: '重庆市西南医院',
-		orderState: '已完成',
-		type: '陪诊就医',
-	},
-];
+
+const handleChangeState = (value) => {
+	active.value = value;
+	fecthhOrderList();
+};
+const orderListData = ref([]);
+
+const userInfo = ref(null);
+
+const fecthhOrderList = async () => {
+	const parmas = {
+		op: 'lookorder',
+		nameid: userInfo.value.id,
+		currentPage: 1,
+	};
+	if (active.value != '999') {
+		parmas.status = active.value;
+	} else {
+		delete parmas.status;
+	}
+	const res = await requestApi(parmas);
+	orderListData.value = res.data;
+	console.log(res);
+};
+
+const handleLinkOrderDetail = (item) => {
+	sessionStorage.setItem('orderDetail', JSON.stringify(item));
+	router.push({
+		path: '/orderDetail',
+	});
+};
+
+onMounted(() => {
+	userInfo.value = JSON.parse(localStorage.getItem('userInfo'));
+	fecthhOrderList();
+});
 </script>
 
 <style lang="less" scoped>

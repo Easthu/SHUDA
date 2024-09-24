@@ -5,11 +5,15 @@
 			<van-image
 				round
 				class="avatar-img"
-				src="https://fastly.jsdelivr.net/npm/@vant/assets/cat.jpeg"
+				:src="
+					userInfo
+						? userInfo.head
+						: 'https://fastly.jsdelivr.net/npm/@vant/assets/cat.jpeg'
+				"
 			/>
 			<div class="user-name-id">
-				<div class="user-name">陌搭陪伴</div>
-				<div class="user-id">ID:122344556654654</div>
+				<div class="user-name">{{ userInfo ? userInfo.nickname : '' }}</div>
+				<div class="user-id">ID:{{ userInfo ? userInfo.id : '' }}</div>
 			</div>
 		</div>
 		<div class="mine-btn">
@@ -75,6 +79,11 @@ const handleLinkPartTime = () => {
 const handleLinkAgents = () => {
 	router.push('/agents');
 };
+
+const userInfo = ref(null);
+if (JSON.parse(localStorage.getItem('userInfo'))) {
+	userInfo.value = JSON.parse(localStorage.getItem('userInfo'));
+}
 
 const menuList = ref([
 	{

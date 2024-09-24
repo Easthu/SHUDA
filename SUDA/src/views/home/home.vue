@@ -4,6 +4,7 @@ import GoodsList from '@/components/goodsList.vue';
 import homeBg from '@/assets/images/home/home-bg.png';
 
 const router = useRouter();
+
 const {
 	position,
 	positionList,
@@ -14,6 +15,7 @@ const {
 	bannerList,
 	homeMakeList,
 	handleChangeNav,
+	nature,
 } = useHome();
 onMounted(() => {
 	init.value();
@@ -59,7 +61,7 @@ onMounted(() => {
 				<span> 陪诊就医 </span>
 			</div>
 		</div>
-		<GoodsList :makeList="homeMakeList" />
+		<GoodsList :makeList="homeMakeList" :nature="active" />
 	</div>
 </template>
 <style lang="less" scoped>

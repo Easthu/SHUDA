@@ -44,11 +44,10 @@ service.interceptors.response.use(
 		// 对响应数据做点什么
 		const res = response.data;
 		// http状态码根据实际开发的项目进行调整
-		if (res.status == "ERROR") {
+		if (res.code != 0) {
 			setTimeout(() => {
 				showToast(res.errorMsg)
 			}, 1000);
-
 		} else {
 			return res;
 		}

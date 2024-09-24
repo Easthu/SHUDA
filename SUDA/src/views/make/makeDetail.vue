@@ -13,7 +13,9 @@
 				<div class="name-score">
 					<div class="name">{{ makeDetailInfo.name }}</div>
 					<div class="score">
-						<img src="@/assets/images/icons/make-star.png" alt="" />4.9
+						<img src="@/assets/images/icons/make-star.png" alt="" />{{
+							makeDetailInfo.score
+						}}
 					</div>
 				</div>
 				<div class="done-list">已完成{{ makeDetailInfo.odersum }}单</div>
@@ -38,21 +40,20 @@
 				}}</span
 			>
 		</div>
-		<div class="specification-list">
+		<!-- 景点 -->
+		<div class="specification-list" v-if="nature == 1">
 			<div class="specification-item" v-for="(item, index) in scenicspotList" :key="index">
 				<img :src="item.url" alt="" class="specification-img" />
 				<div class="specification-info">
 					<div class="spe-name">{{ item.name }}</div>
 					<div class="spe-suggestion">
-						<img src="@/assets/images/icons/make-detail-time.png" alt="" />{{
-							item.suggestion
-						}}
+						<img
+							src="@/assets/images/icons/make-detail-time.png"
+							alt=""
+						/>开放时间：全天
 					</div>
 					<div class="spe-time">
-						<img
-							src="@/assets/images/icons/make-detail-diamond.png"
-							alt=""
-						/>开放时间：{{ item.tell }}
+						<img src="@/assets/images/icons/make-detail-diamond.png" alt="" />已售：1000
 					</div>
 				</div>
 				<div class="item-right">
@@ -63,11 +64,47 @@
 				</div>
 			</div>
 		</div>
+		<!-- 医院 -->
+		<div class="specification-list-hospital" v-if="nature == 2">
+			<div class="make-category">
+				<div
+					class="category-item"
+					@click="handleHospitalChange(index)"
+					v-for="(item, index) in makeDetailInfo.hospital"
+					:class="{ active: clickHospital == index }"
+					:key="item.id"
+				>
+					<span>{{ item.name }}</span>
+				</div>
+				<div
+					v-for="(row, index) in makeDetailInfo.hospital[clickHospital].list"
+					:key="index"
+					class="hospital-server-list"
+				>
+					<div class="list-name">{{ row.name }}</div>
+					<div class="list-price">￥{{ row.price }}/次</div>
+					<div class="list-introduce" @click="handleLinkIntroduce(row)">服务详情</div>
+					<div class="spe-sel" @click="handleClickHospitalServer(row)">
+						<img
+							:src="
+								clickHospitalDetail && clickHospitalDetail.id == row.id
+									? checkedIcon
+									: checkNotIcon
+							"
+							alt=""
+						/>
+					</div>
+				</div>
+			</div>
+		</div>
 		<div class="bottom-btn">
-			<div class="bottom-btn-left">
+			<div class="bottom-btn-left" v-if="nature == 1">
 				·至少选择三个景点进行游玩，已选择{{
 					scenicspotList.filter((item) => item.checked).length
 				}}处景点
+			</div>
+			<div class="bottom-btn-left" v-if="nature == 2">
+				·已选{{ clickHospitalDetail ? clickHospitalDetail.name : '无' }}
 			</div>
 			<div class="bottom-btn-right" @click="handleLinkOrderConfirm">结算</div>
 		</div>
@@ -79,10 +116,36 @@ import back from '@/assets/images/icons/back.png';
 import checkedIcon from '@/assets/images/icons/make-detail-checked.png';
 import checkNotIcon from '@/assets/images/icons/make-detail-check-not.png';
 import { requestApi } from 'api/home';
-
+import { showToast } from 'vant';
 const router = useRouter();
+const route = useRoute();
 
 const handleLinkOrderConfirm = () => {
+	const orderConfirm = {
+		picture: makeDetailInfo.value.picture,
+		name: makeDetailInfo.value.name,
+		odersum: makeDetailInfo.value.odersum,
+		score: makeDetailInfo.value.score,
+		nature: nature.value,
+		staffid: makeDetailInfo.value.id,
+		hsid: nature.value == 2 ? makeDetailInfo.value.hospital[clickHospital.value].id : 0,
+	};
+	if (nature.value == 1) {
+		let confirmList = scenicspotList.value.filter((item) => item.checked);
+		// if (confirmList.length < 3) {
+		// 	return showToast('z至少选择三个景点进行游玩');
+		// } else {
+		// }
+		orderConfirm.confirmList = confirmList;
+	}
+	if (nature.value == 2) {
+		if (!clickHospitalDetail.value) {
+			return showToast('请选择服务');
+		} else {
+			orderConfirm.confirmList = [clickHospitalDetail.value];
+		}
+	}
+	sessionStorage.setItem('orderConfirm', JSON.stringify(orderConfirm));
 	router.push('/orderConfirm');
 };
 
@@ -95,16 +158,57 @@ const requestScenicspotList = async (id) => {
 	};
 	const { data } = await requestApi(params);
 	scenicspotList.value.push({ ...data, checked: false });
+	console.log('scenicspotList.value :>> ', scenicspotList.value);
+};
+const requesHospitalList = async (id, index) => {
+	const params = {
+		op: 'gethospitalitem',
+		id,
+		currentPage: 1,
+	};
+	const { data } = await requestApi(params);
+	makeDetailInfo.value.hospital[index].list = [];
+	makeDetailInfo.value.hospital[index].list = data;
+};
+
+const nature = ref(1);
+
+// 医院服务选择
+const clickHospital = ref(0);
+const clickHospitalDetail = ref(null);
+const handleHospitalChange = (id) => {
+	clickHospital.value = id;
+	clickHospitalDetail.value = null;
+};
+const handleClickHospitalServer = (item) => {
+	clickHospitalDetail.value = item;
+};
+const handleLinkIntroduce = (item) => {
+	router.push({
+		path: '/detailedServices',
+		query: {
+			price: item.price,
+			introduce: item.introduce,
+		},
+	});
 };
 
 onMounted(() => {
 	const info = sessionStorage.getItem('makeDetailJson');
+	nature.value = route.query.nature;
 	try {
 		makeDetailInfo.value = JSON.parse(info);
+		console.log('makeDetailInfo.value :>> ', makeDetailInfo.value);
 		makeDetailInfo.value.scenicspot = JSON.parse(makeDetailInfo.value.scenicspot);
-		if (makeDetailInfo.value.scenicspot.length > 0) {
+		if ((makeDetailInfo.value.scenicspot.length > 0) & (nature.value == 1)) {
 			makeDetailInfo.value.scenicspot.forEach((item) => {
 				requestScenicspotList(item.id);
+			});
+		}
+		makeDetailInfo.value.hospital = JSON.parse(makeDetailInfo.value.hospital);
+		if ((makeDetailInfo.value.hospital.length > 0) & (nature.value == 2)) {
+			makeDetailInfo.value.hospital.forEach((item, index) => {
+				requesHospitalList(item.id, index);
 			});
 		}
 	} catch (error) {
@@ -298,6 +402,88 @@ onMounted(() => {
 			}
 		}
 	}
+	.specification-list-hospital {
+		width: 716px;
+		height: 529px;
+		background: #ffffff;
+		border-radius: 31px;
+		padding: 20px;
+		box-sizing: border-box;
+		.make-category {
+			display: flex;
+			// align-items: center;
+			flex-wrap: wrap;
+			position: relative;
+			margin-bottom: 22px;
+			.category-item {
+				font-weight: 500;
+				font-size: 29px;
+				color: #010000;
+				// margin-left: 22px;
+				margin-right: 56px;
+				position: relative;
+				z-index: 3;
+				margin-bottom: 30px;
+				span {
+					position: relative;
+					z-index: 3;
+				}
+			}
+			.active {
+				&::after {
+					content: '';
+					width: 100%;
+					height: 16px;
+					background: #93f582;
+					border-radius: 8px;
+					position: absolute;
+					left: 0;
+					bottom: -11px;
+					z-index: 2;
+				}
+			}
+			.hospital-server-list {
+				width: 100%;
+				font-weight: 500;
+				font-size: 24px;
+				color: #010000;
+				display: flex;
+				align-items: center;
+				margin-bottom: 30px;
+				.list-name {
+					font-weight: 300;
+					font-size: 24px;
+					color: #010000;
+					margin-right: 20px;
+				}
+				.list-price {
+					font-weight: 300;
+					font-size: 24px;
+					color: #010000;
+					margin-right: 20px;
+				}
+				.list-introduce {
+					margin-left: auto;
+					font-weight: 300;
+					font-size: 18px;
+					color: #1f993f;
+				}
+				.spe-sel {
+					margin-left: 81px;
+					img {
+						width: 33px;
+						height: 33px;
+					}
+				}
+			}
+		}
+		.specification-item-hospital {
+			display: flex;
+			font-weight: 300;
+			font-size: 24px;
+			color: #010000;
+		}
+	}
 	.bottom-btn {
 		position: fixed;
 		bottom: 0;
@@ -312,11 +498,11 @@ onMounted(() => {
 		.bottom-btn-left {
 			flex: 1;
 			display: flex;
-			justify-content: center;
+			// justify-content: center;
 			align-items: center;
-			font-weight: bold;
 			font-size: 22px;
 			color: #20241f;
+			margin-left: 49px;
 		}
 		.bottom-btn-right {
 			width: 175px;

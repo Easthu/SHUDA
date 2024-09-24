@@ -1,11 +1,11 @@
 <template>
-	<div class="order-detail">
+	<div class="order-detail" v-if="orderDetail">
 		<img :src="back" alt="" class="back-icon" @click="router.back()" />
 		<div class="make-info">
 			<img src="" alt="" />
 			<div class="name-score">
 				<div class="name">
-					张丹琼 <span><i class="iconfont">&#xe64b;</i>4.3</span>
+					{{ orderDetail.staffname }} <span><i class="iconfont">&#xe64b;</i>4.3</span>
 				</div>
 				<div class="done">已完成43单</div>
 			</div>
@@ -105,6 +105,18 @@ const handleCancelOrder = () => {
 			// on cancel
 		});
 };
+
+const orderDetail = ref(null);
+
+onMounted(() => {
+	try {
+		orderDetail.value = JSON.parse(sessionStorage.getItem('orderDetail'));
+		console.log('orderDetail.value :>> ', orderDetail.value);
+	} catch (e) {
+		console.log('e :>> ', e);
+		router.go(-1);
+	}
+});
 </script>
 
 <style lang="less" scoped>

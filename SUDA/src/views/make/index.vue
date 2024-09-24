@@ -29,7 +29,7 @@
 				<span> 陪诊就医 </span>
 			</div>
 		</div>
-		<GoodsList :makeList="makeList" />
+		<GoodsList :makeList="makeList" :nature="searchForm.type" />
 		<!-- 筛选 -->
 		<van-overlay :show="showSiftbBox" z-index="9999">
 			<div class="sift-wrapper" @click.stop>

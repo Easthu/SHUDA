@@ -2,6 +2,14 @@ import { createRouter, createWebHistory, createWebHashHistory } from 'vue-router
 import { useUserStore } from 'store/modules/user'
 const routes = [
   {
+    path: '/login',
+    name: 'login',
+    component: () => import('@/views/login.vue'),
+    meta: {
+      title: '登录',
+    },
+  },
+  {
     path: '/',
     // 懒加载路由
     component: () => import('@/views/index/index.vue'),

@@ -2,19 +2,24 @@
 	<div class="detailed-services">
 		<NavBar showLeftBack />
 		<div class="services-introduce">
-			<div class="service-title">代取结果</div>
+			<div class="service-title">服务详情</div>
 			<p>
-				1.可反反复复反反复复反反复复凤飞飞发发发发发发发发发发发发发发代发给代发给合法高挥发国际法个户籍那地方即可拉伸副科级阿萨达发哈久啊苏卡达发哈锅巴了好几送达方刚
+				{{ introduce }}
 			</p>
-		</div>
-		<div class="services-introduce">
-			<div class="service-title">服务内容</div>
-			<img src="https://picsum.photos/670/1500" alt="" />
+			<p class="price">{{ price }}元/次</p>
 		</div>
 	</div>
 </template>
 
-<script setup></script>
+<script setup>
+const route = useRoute();
+const price = ref(0);
+const introduce = ref('');
+onMounted(() => {
+	price.value = route.query.price;
+	introduce.value = route.query.introduce;
+});
+</script>
 
 <style lang="less" scoped>
 .detailed-services {
@@ -41,9 +46,11 @@
 			color: #666;
 			line-height: 1.5;
 		}
-		img {
-			width: 670px;
-			height: 1500px;
+		.price {
+			font-weight: 400;
+			font-size: 26px;
+			color: #93f582;
+			margin: 30px 0 40px 0;
 		}
 	}
 }
