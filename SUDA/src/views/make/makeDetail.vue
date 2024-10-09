@@ -121,6 +121,10 @@ const router = useRouter();
 const route = useRoute();
 
 const handleLinkOrderConfirm = () => {
+	const userInfo = localStorage.getItem('userInfo');
+	if (!userInfo) {
+		router.replace('/login');
+	}
 	const orderConfirm = {
 		picture: makeDetailInfo.value.picture,
 		name: makeDetailInfo.value.name,
@@ -150,6 +154,7 @@ const handleLinkOrderConfirm = () => {
 };
 
 const makeDetailInfo = ref(null);
+// 景点列表
 const scenicspotList = ref([]);
 const requestScenicspotList = async (id) => {
 	const params = {
@@ -160,6 +165,7 @@ const requestScenicspotList = async (id) => {
 	scenicspotList.value.push({ ...data, checked: false });
 	console.log('scenicspotList.value :>> ', scenicspotList.value);
 };
+// 医院列表
 const requesHospitalList = async (id, index) => {
 	const params = {
 		op: 'gethospitalitem',

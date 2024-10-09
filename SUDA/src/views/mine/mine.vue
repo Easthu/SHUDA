@@ -124,7 +124,7 @@ const handleLinkMenu = (item) => {
 .mine-layout {
 	min-width: 100vw;
 	min-height: 100vh;
-	background: #f7f7f7;
+	background: #f2f3f7;
 	box-sizing: border-box;
 	position: relative;
 	padding-top: 40px;

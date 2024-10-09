@@ -11,38 +11,50 @@
 				<span>{{ item.name }}</span>
 			</div>
 		</div>
-		<div class="order-list" v-if="orderListData.length > 0">
-			<div class="order-list-item" v-for="(item, index) in orderListData" :key="index">
-				<div class="item-top">
-					<div class="shop-name">
-						{{ item.staffname }}
-						<img src="" alt="" />
-						<span class="age">25岁</span>
-					</div>
-					<div class="order-status">{{ item.orderState }}</div>
-				</div>
-				<div class="item-content" @click="handleLinkOrderDetail(item)">
-					<img :src="item.img" alt="" class="shop-img" />
-					<div class="shop-info">
-						<div class="goods-name">{{ item.type == 1 ? '本地向导' : '陪诊就医' }}</div>
-						<div class="order-id">订单编号：{{ item.ordernum }}</div>
-						<div class="order-time">
-							下单时间：{{ item.createtime.split(', ')[1].split(' ')[0] }}
-							{{ item.createtime.split(', ')[1].split(' ')[1] }}
+		<van-list v-model:loading="loading" :finished="finished" @load="onLoad">
+			<div class="order-list" v-if="orderListData.length > 0">
+				<div class="order-list-item" v-for="(item, index) in orderListData" :key="index">
+					<div class="item-top">
+						<div class="shop-name">
+							{{ item.staffname }}
+							<img
+								src="@/assets/images/icons/make-man.png"
+								alt=""
+								v-if="item.sex == 1"
+							/>
+							<img
+								src="@/assets/images/icons/make-women.png"
+								alt=""
+								v-if="item.sex == 2"
+							/>
+							<span class="age">25岁</span>
 						</div>
-						<div class="order-price">实付：￥{{ item.price }}</div>
-						<div class="item-btn">
-							<div v-if="item.orderState == '待服务'">扫码服务</div>
-							<div v-if="item.orderState == '待服务'">取消订单</div>
-							<div v-if="item.orderState == '服务中'">联系客服</div>
-							<div v-if="item.orderState == '服务中'">扫码结束</div>
-							<div v-if="item.orderState == '服务中'">续单</div>
-							<div v-if="item.orderState == '已完成'">评价</div>
+						<div class="order-status">{{ status(item) }}</div>
+					</div>
+					<div class="item-content" @click="handleLinkOrderDetail(item)">
+						<img :src="item.staffheadurl" alt="" class="shop-img" />
+						<div class="shop-info">
+							<div class="goods-name">
+								{{ item.type == 1 ? '本地向导' : '陪诊就医' }}
+							</div>
+							<div class="order-id">订单编号：{{ item.ordernum }}</div>
+							<div class="order-time">下单时间：{{ item.createtime }}</div>
+							<div class="order-price">实付：￥{{ item.price }}</div>
+							<div class="item-btn">
+								<div v-if="item.status == 1" @click.stop="handleCustomerService">
+									联系客服
+								</div>
+								<div v-if="item.orderState == '待服务'">取消订单</div>
+								<div v-if="item.orderState == '服务中'">联系客服</div>
+								<div v-if="item.orderState == '服务中'">扫码结束</div>
+								<div v-if="item.orderState == '服务中'">续单</div>
+								<div v-if="item.orderState == '已完成'">评价</div>
+							</div>
 						</div>
 					</div>
 				</div>
 			</div>
-		</div>
+		</van-list>
 	</div>
 </template>
 
@@ -78,6 +90,16 @@ const stateList = [
 	},
 ];
 
+const loading = ref(false);
+const finished = ref(false);
+const page = ref(1);
+const onLoad = () => {
+	fecthhOrderList();
+	page.value++;
+	// 异步更新数据
+};
+
+// 订单状态切换
 const handleChangeState = (value) => {
 	active.value = value;
 	fecthhOrderList();
@@ -86,11 +108,12 @@ const orderListData = ref([]);
 
 const userInfo = ref(null);
 
+// 获取订单列表
 const fecthhOrderList = async () => {
 	const parmas = {
 		op: 'lookorder',
 		nameid: userInfo.value.id,
-		currentPage: 1,
+		currentPage: page.value,
 	};
 	if (active.value != '999') {
 		parmas.status = active.value;
@@ -98,10 +121,20 @@ const fecthhOrderList = async () => {
 		delete parmas.status;
 	}
 	const res = await requestApi(parmas);
+	if (res.data.length == 0) {
+		// finished.value = false;
+	}
 	orderListData.value = res.data;
+	loading.value = false;
+	finished.value = true;
 	console.log(res);
 };
 
+const status = (item) => {
+	return stateList.find((row) => row.value == item.status).name;
+};
+
+// 订单详情
 const handleLinkOrderDetail = (item) => {
 	sessionStorage.setItem('orderDetail', JSON.stringify(item));
 	router.push({
@@ -109,13 +142,21 @@ const handleLinkOrderDetail = (item) => {
 	});
 };
 
+// 联系客服
+const handleCustomerService = () => {
+	window.location.href = 'https://work.weixin.qq.com/kfid/kfc14772150a656b3a6';
+};
+
 onMounted(() => {
 	userInfo.value = JSON.parse(localStorage.getItem('userInfo'));
-	fecthhOrderList();
+	// fecthhOrderList();
 });
 </script>
 
 <style lang="less" scoped>
+.order-layout {
+	min-height: 100vh;
+}
 .state-list {
 	display: flex;
 	align-items: center;

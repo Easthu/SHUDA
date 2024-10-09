@@ -10,9 +10,28 @@
 			<van-list v-model:loading="loading" :finished="finished" @load="onLoad">
 				<div v-for="item in listData" :key="item" class="list-item">
 					<div class="list-info">
-						<div class="list-time">申请时间：2024-08-08 14:00:00</div>
+						<div class="list-time">申请时间：{{ item.cratetime }}</div>
 						<div class="list-price">
-							提现金额 <span style="color: #ff0000">66.00</span>
+							提现金额 <span style="color: #ff0000">{{ item.money }}</span>
+							<div
+								class="state"
+								:style="{
+									color:
+										item.status == 0
+											? '#0A79F6'
+											: item.status == 1
+												? '#26DF1D'
+												: '#FC1616',
+								}"
+							>
+								{{
+									item.status == 0
+										? '提现中'
+										: item.status == 1
+											? '提现成功'
+											: '提现失败'
+								}}
+							</div>
 						</div>
 					</div>
 				</div>
@@ -28,30 +47,53 @@ const loading = ref(false);
 const finished = ref(false);
 const refreshing = ref(false);
 
+const currentPage = ref(1);
+
+import { requestApi } from 'api/home';
+
+const fecthList = async () => {
+	const res = await requestApi({
+		op: 'moneylog',
+		vxid: JSON.parse(localStorage.getItem('userInfo')).id,
+		currentPage: currentPage.value,
+	});
+	if (res.code == 0) {
+		listData.value = res.data;
+	}
+	if (res.data.length > 0) {
+		finished.value = true;
+	}
+	loading.value = false;
+	console.log(res);
+};
+
 const onLoad = () => {
+	fecthList();
+	currentPage.value++;
 	// 异步更新数据
-	// setTimeout 仅做示例，真实场景中一般为 ajax 请求
-	setTimeout(() => {
-		if (refreshing.value) {
-			listData.value = [];
-			refreshing.value = false;
-		}
+	// // setTimeout 仅做示例，真实场景中一般为 ajax 请求
+	// setTimeout(() => {
+	// 	if (refreshing.value) {
+	// 		listData.value = [];
+	// 		refreshing.value = false;
+	// 	}
 
-		for (let i = 0; i < 10; i++) {
-			listData.value.push(listData.value.length + 1);
-		}
+	// 	for (let i = 0; i < 10; i++) {
+	// 		listData.value.push(listData.value.length + 1);
+	// 	}
 
-		// 加载状态结束
-		loading.value = false;
+	// 	// 加载状态结束
+	// 	loading.value = false;
 
-		// 数据全部加载完成
-		if (listData.value.length >= 20) {
-			finished.value = true;
-		}
-	}, 1000);
+	// 	// 数据全部加载完成
+	// 	if (listData.value.length >= 20) {
+	// 		finished.value = true;
+	// 	}
+	// }, 1000);
 };
 
 const onRefresh = () => {
+	currentPage.value = 1;
 	// 清空列表数据
 	listData.value = [];
 	finished.value = false;
@@ -101,11 +143,17 @@ const onRefresh = () => {
 				font-size: 28px;
 				color: #999;
 				margin-top: 18px;
+				display: flex;
 				span {
 					font-weight: 400;
 					font-size: 30px;
 					color: #fc1616;
 					margin-left: 33px;
+				}
+				.state {
+					font-weight: 300;
+					font-size: 24px;
+					margin-left: auto;
 				}
 			}
 		}

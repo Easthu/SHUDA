@@ -42,10 +42,9 @@
 		</div>
 		<div class="order-number">
 			<div @click="handleLinkPartTimeOrderList">
-				<img src="@/assets/images/icons/part-time-order.png" alt="" />
+				<img src="@/assets/images/icons/my-customer.png" alt="" />
 				<div class="name-number">
-					<p>兼职订单</p>
-					<p class="number">120笔</p>
+					<p>联系客服</p>
 				</div>
 			</div>
 			<div @click="handleLinkPartTimeNumber">
@@ -86,7 +85,7 @@ const handleLinkPartTimeNumber = () => {
 	padding: 24px;
 	min-width: 100vw;
 	min-height: 100vh;
-	background-color: #fff;
+	background-color: #f2f3f7;
 	box-sizing: border-box;
 	padding-top: 0;
 	position: relative;

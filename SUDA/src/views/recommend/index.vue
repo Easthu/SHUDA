@@ -11,6 +11,7 @@
 			<input type="text" placeholder="搜索兼职 / 向导" v-model="searchValue" />
 			<div class="search-submit" @click="handleSearch">搜索</div>
 		</div>
+		<!-- 区域 -->
 		<div class="nav-list">
 			<div class="nav-list-content">
 				<div
@@ -173,6 +174,7 @@ const requestRecommendList = async () => {
 		classify: route.query.classify,
 		currentPage: currentPage.value,
 		name: searchValue.value,
+		areaid: areaId.value,
 	});
 	recommendList.value = res[opList[route.query.classify]];
 	console.log('recommendList.value :>> ', recommendList.value);

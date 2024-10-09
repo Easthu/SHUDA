@@ -194,6 +194,14 @@ const routes = [
       title: '营业执照',
     },
   },
+  {
+    path: '/payOuts',
+    name: 'payOuts',
+    component: () => import('@/views/agentsAndParttime/payOuts.vue'),
+    meta: {
+      title: '银行卡信息',
+    },
+  }
 
 
 

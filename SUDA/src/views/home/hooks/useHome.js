@@ -47,11 +47,6 @@ export default function useHome(params) {
             })
             console.log('handleApiMakeInfoList', res.data)
             dataSource.homeMakeList = res.data
-            // dataSource.staffInfoList = res.staff.map((item) => {
-            //     item.scenicspot = JSON.parse(item.scenicspot)
-            //     item.hospital = JSON.parse(item.hospital)
-            //     return item
-            // })
         },
         // 分类切换
         handleChangeNav: (active) => {

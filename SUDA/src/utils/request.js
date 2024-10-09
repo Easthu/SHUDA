@@ -46,11 +46,10 @@ service.interceptors.response.use(
 		// http状态码根据实际开发的项目进行调整
 		if (res.code != 0) {
 			setTimeout(() => {
-				showToast(res.errorMsg)
+				showToast(res.errormsg)
 			}, 1000);
-		} else {
-			return res;
 		}
+		return res;
 	},
 	(error) => {
 		closeToast()

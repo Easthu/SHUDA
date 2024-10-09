@@ -72,9 +72,9 @@ onMounted(() => {
 	min-height: 100vh;
 	padding-top: 40px;
 	background: #f7f7f7;
-	padding-bottom: 130px;
-	bottom: calc(130px + constant(safe-area-inset-bottom));
-	bottom: calc(130px + env(safe-area-inset-bottom));
+	padding-bottom: 170px;
+	bottom: calc(170px + constant(safe-area-inset-bottom));
+	bottom: calc(170px + env(safe-area-inset-bottom));
 	position: relative;
 	top: 0;
 	.home-bg-fix {

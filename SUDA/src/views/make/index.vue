@@ -31,7 +31,7 @@
 		</div>
 		<GoodsList :makeList="makeList" :nature="searchForm.type" />
 		<!-- 筛选 -->
-		<van-overlay :show="showSiftbBox" z-index="9999">
+		<van-overlay :show="showSiftbBox" z-index="9999" @click="showSiftbBox = false">
 			<div class="sift-wrapper" @click.stop>
 				<div class="sift-content">
 					<div class="sift-title">性别</div>

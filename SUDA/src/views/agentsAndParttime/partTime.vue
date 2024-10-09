@@ -2,14 +2,19 @@
 	<div class="part-time-layout">
 		<img :src="agentsBg" alt="" class="home-bg-fix" />
 		<div class="agents-info">
-			<van-image
-				round
-				class="agents-avatar"
-				src="https://fastly.jsdelivr.net/npm/@vant/assets/cat.jpeg"
-			/>
+			<van-image round class="agents-avatar" :src="userInfo.url" />
 			<div class="agents-name-place">
-				<div class="agents-name">用户姓名：钟基佬</div>
-				<div class="agents-place">朝天门来福士</div>
+				<div class="agents-name">用户姓名：{{ userInfo.name }}</div>
+				<!-- <div class="agents-place">朝天门来福士</div> -->
+			</div>
+			<div class="switch">
+				<van-switch
+					active-color="#02B98C"
+					inactive-color="#dcdee0"
+					:model-value="checked"
+					@update:model-value="onUpdateValue"
+				/>
+				{{ checked ? '开启' : '关闭' }}接单
 			</div>
 		</div>
 
@@ -17,37 +22,34 @@
 			<div class="can-payouts-records">
 				<div class="can-payouts" @click="handleLinkCanPayouts">
 					<p>订单数量</p>
-					<p class="money">999</p>
+					<p class="money">{{ userInfo.ordersum }}</p>
 				</div>
 				<div class="payouts-records" @click="handleLinkPayoutsRecords">提现记录</div>
 			</div>
 			<div class="payouts-type">
 				<div>
 					<p>积累佣金(元)</p>
-					<p class="money">999.00</p>
+					<p class="money">{{ userInfo.money1 }}</p>
 				</div>
 				<div>
 					<p>提现中(元)</p>
-					<p class="money">999.00</p>
+					<p class="money">{{ userInfo.money2 }}</p>
 				</div>
 				<div>
 					<p>已经提现(元)</p>
-					<p class="money">999.00</p>
+					<p class="money">{{ userInfo.money3 }}</p>
 				</div>
 			</div>
-			<div class="payouts-btn">
-				<!-- <van-button type="primary" block round>立即提现</van-button> -->
-				立即提现
-			</div>
+			<div class="payouts-btn" @click="handleLinkPayOuts">立即提现</div>
 		</div>
 		<div class="order-number">
-			<div @click="handleLinkPartTimeOrderList">
+			<!-- <div @click="handleLinkPartTimeOrderList">
 				<img src="@/assets/images/icons/location-check-in.png" alt="" />
 				<div class="name-number">
 					<p>兼职订单</p>
 				</div>
-			</div>
-			<div @click="handleLinkPartTimeNumber">
+			</div> -->
+			<div @click="handleCustomerService">
 				<img src="@/assets/images/icons/my-customer.png" alt="" />
 				<div class="name-number">
 					<p>客服</p>
@@ -59,6 +61,12 @@
 					<p>订单</p>
 				</div>
 			</div>
+			<div @click="handleLinkPartTimeNumber">
+				<img src="@/assets/images/icons/my-agreement.png" alt="" />
+				<div class="name-number">
+					<p>提现管理</p>
+				</div>
+			</div>
 		</div>
 	</div>
 </template>
@@ -66,6 +74,13 @@
 <script setup>
 const router = useRouter();
 import agentsBg from '@/assets/images/home/agents-bg.png';
+import { requestApi } from 'api/home';
+import { showToast } from 'vant';
+
+const handleLinkPayOuts = () => {
+	console.log('跳转提现');
+	router.push('/payOuts');
+};
 
 const handleLinkPayoutsRecords = () => {
 	console.log('跳转提现记录');
@@ -75,8 +90,40 @@ const handleLinkPartOrder = () => {
 	console.log('跳转可提现');
 	router.push('/partOrderList');
 };
+// 联系客服
+const handleCustomerService = () => {
+	window.location.href = 'https://work.weixin.qq.com/kfid/kfc14772150a656b3a6';
+};
 
 const checked = ref(false);
+const userInfo = ref(null);
+userInfo.value = localStorage.getItem('userInfo')
+	? JSON.parse(localStorage.getItem('userInfo'))
+	: null;
+if (userInfo) {
+	requestApi({
+		op: 'staffmoney',
+		vxid: userInfo.value.id,
+	}).then((res) => {
+		console.log('res :>> ', res);
+		userInfo.value = res.data;
+		checked.value = res.data.online == 1 ? true : false;
+	});
+}
+
+const onUpdateValue = (value) => {
+	console.log('value :>> ', value);
+	requestApi({
+		op: 'openonline',
+		vxid: userInfo.value.id,
+		type: value ? 1 : 2,
+	}).then((res) => {
+		if (res.code == 0) {
+			checked.value = value;
+			showToast(`${checked.value ? '开启' : '关闭'}成功`);
+		}
+	});
+};
 </script>
 
 <style lang="less" scoped>
@@ -84,7 +131,7 @@ const checked = ref(false);
 	padding: 24px;
 	min-width: 100vw;
 	min-height: 100vh;
-	background-color: #fff;
+	background-color: #f2f3f7;
 	box-sizing: border-box;
 	padding-top: 0;
 	position: relative;
@@ -123,6 +170,16 @@ const checked = ref(false);
 				color: #010000;
 				margin-top: 12px;
 			}
+		}
+		.switch {
+			display: flex;
+			flex-direction: column;
+			font-weight: 300;
+			font-size: 24px;
+			color: #000000;
+			align-items: center;
+			justify-content: center;
+			margin-left: auto;
 		}
 	}
 	.payouts-detail {

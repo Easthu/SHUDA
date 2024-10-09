@@ -66,9 +66,14 @@ const handelActiveChange = (name) => {
 			});
 			break;
 		case 'mine':
-			router.push({
-				name,
-			});
+			const userInfo = localStorage.getItem('userInfo');
+			if (!userInfo) {
+				router.replace('/login');
+			} else {
+				router.push({
+					name,
+				});
+			}
 	}
 };
 onMounted(() => {
