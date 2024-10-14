@@ -167,7 +167,7 @@ const routes = [
     name: 'partTimeOrderList',
     component: () => import('@/views/agentsAndParttime/partTimeOrderList.vue'),
     meta: {
-      title: '销售额',
+      title: '兼职订单',
     },
   },
   {
@@ -200,6 +200,14 @@ const routes = [
     component: () => import('@/views/agentsAndParttime/payOuts.vue'),
     meta: {
       title: '银行卡信息',
+    },
+  },
+  {
+    path: '/qrcode',
+    name: 'qrcode',
+    component: () => import('@/views/qrcode/index.vue'),
+    meta: {
+      title: '扫码开始服务',
     },
   }
 

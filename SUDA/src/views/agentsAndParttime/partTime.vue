@@ -1,6 +1,6 @@
 <template>
 	<div class="part-time-layout">
-		<img :src="agentsBg" alt="" class="home-bg-fix" />
+		<!-- <img :src="agentsBg" alt="" class="home-bg-fix" /> -->
 		<div class="agents-info">
 			<van-image round class="agents-avatar" :src="userInfo.url" />
 			<div class="agents-name-place">
@@ -13,8 +13,9 @@
 					inactive-color="#dcdee0"
 					:model-value="checked"
 					@update:model-value="onUpdateValue"
+					style="margin-bottom: 10px"
 				/>
-				{{ checked ? '开启' : '关闭' }}接单
+				{{ checked ? '关闭' : '开启' }}接单
 			</div>
 		</div>
 
@@ -61,19 +62,18 @@
 					<p>订单</p>
 				</div>
 			</div>
-			<div @click="handleLinkPartTimeNumber">
+			<!-- <div @click="handleLinkPartTimeNumber">
 				<img src="@/assets/images/icons/my-agreement.png" alt="" />
 				<div class="name-number">
 					<p>提现管理</p>
 				</div>
-			</div>
+			</div> -->
 		</div>
 	</div>
 </template>
 
 <script setup>
 const router = useRouter();
-import agentsBg from '@/assets/images/home/agents-bg.png';
 import { requestApi } from 'api/home';
 import { showToast } from 'vant';
 
@@ -86,10 +86,12 @@ const handleLinkPayoutsRecords = () => {
 	console.log('跳转提现记录');
 	router.push('/payoutsRecords');
 };
-const handleLinkPartOrder = () => {
-	console.log('跳转可提现');
+
+const handleLinkPartTimeNumber = () => {
+	console.log('跳转订单');
 	router.push('/partOrderList');
 };
+
 // 联系客服
 const handleCustomerService = () => {
 	window.location.href = 'https://work.weixin.qq.com/kfid/kfc14772150a656b3a6';
@@ -131,11 +133,13 @@ const onUpdateValue = (value) => {
 	padding: 24px;
 	min-width: 100vw;
 	min-height: 100vh;
-	background-color: #f2f3f7;
+	// background-color: #f2f3f7;
 	box-sizing: border-box;
-	padding-top: 0;
-	position: relative;
+	// padding-top: 0;
+	// position: relative;
 	padding-top: 94px;
+	background: #f2f3f7 url('@/assets/images/home/agents-bg.png') no-repeat;
+	background-size: 100%;
 	.home-bg-fix {
 		position: absolute;
 		z-index: 0;
@@ -147,8 +151,9 @@ const onUpdateValue = (value) => {
 	.agents-info {
 		display: flex;
 		height: 158px;
-		position: relative;
+		// position: relative;
 		padding-left: 55px;
+
 		.agents-avatar {
 			width: 158px;
 			height: 158px;
@@ -183,7 +188,7 @@ const onUpdateValue = (value) => {
 		}
 	}
 	.payouts-detail {
-		position: relative;
+		// position: relative;
 		border-radius: 8px;
 		padding: 43px 21px;
 		margin: 42px auto 0;
@@ -260,7 +265,7 @@ const onUpdateValue = (value) => {
 	.order-number {
 		display: flex;
 		align-items: center;
-		position: relative;
+		// position: relative;
 		width: 677px;
 		background: #fefeff;
 		border-radius: 15px;

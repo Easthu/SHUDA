@@ -22,7 +22,7 @@ import { Lazyload } from 'vant';
 app.use(Lazyload, {
   lazyComponent: true,
 });
-
+console.log('import.meta.env :>> ', import.meta.env);
 //引入vant样式
 import 'vant/lib/index.css';
 import 'vant/es/toast/style';
@@ -37,11 +37,6 @@ globalComponents(app)
 // 全局挂载方法
 import globalProperties from './utils/globalProperties'
 globalProperties(app)
-
-if (import.meta.env.MODE == "development") {
-  console.log('import.meta.env>>', import.meta.env);
-}
-
 
 // pinia
 app.use(pinia)

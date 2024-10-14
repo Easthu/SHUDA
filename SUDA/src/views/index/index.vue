@@ -20,7 +20,7 @@
 			</template>
 		</van-tabbar-item>
 		<van-tabbar-item icon="other-pay" name="order">
-			<span class="tab-text">消息</span>
+			<span class="tab-text">订单</span>
 			<template #icon="props">
 				<img :src="!props.active ? messageIcon : messageIconActive" class="tab-icon" />
 			</template>
@@ -86,6 +86,8 @@ onMounted(() => {
 	padding-bottom: 130px;
 	padding-bottom: calc(130px + constant(safe-area-inset-bottom));
 	padding-bottom: calc(130px + env(safe-area-inset-bottom));
+	min-height: 100vh;
+	height: auto;
 	.tab-text {
 		font-weight: 400;
 		font-size: 24px;

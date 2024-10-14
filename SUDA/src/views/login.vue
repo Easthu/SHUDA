@@ -40,7 +40,7 @@ const handleLogin = async () => {
 		encryptioncode: localStorage.getItem('encryptioncode'),
 	});
 	localStorage.setItem('userInfo', JSON.stringify(res.data));
-	router.push('/home');
+	router.go(-1);
 };
 
 const setTimeOut = () => {

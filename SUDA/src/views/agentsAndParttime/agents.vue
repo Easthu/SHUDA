@@ -1,15 +1,11 @@
 <template>
 	<div class="agents-layout">
-		<img :src="agentsBg" alt="" class="home-bg-fix" />
+		<!-- <img :src="agentsBg" alt="" class="home-bg-fix" /> -->
 		<div class="agents-info">
-			<van-image
-				round
-				class="agents-avatar"
-				src="https://fastly.jsdelivr.net/npm/@vant/assets/cat.jpeg"
-			/>
+			<van-image round class="agents-avatar" :src="userInfo.url" />
 			<div class="agents-name-place">
-				<div class="agents-name">用户姓名：钟基佬</div>
-				<div class="agents-place">朝天门来福士</div>
+				<div class="agents-name">代理姓名：{{ userInfo.name }}</div>
+				<!-- <div class="agents-place">朝天门来福士</div> -->
 			</div>
 		</div>
 
@@ -17,31 +13,28 @@
 			<div class="can-payouts-records">
 				<div class="can-payouts" @click="handleLinkCanPayouts">
 					<p>佣金可提现(元) <img src="@/assets/images/icons/arrow.png" alt="" /></p>
-					<p class="money">999.00</p>
+					<p class="money">{{ userInfo.money1 }}</p>
 				</div>
 				<div class="payouts-records" @click="handleLinkPayoutsRecords">提现记录</div>
 			</div>
 			<div class="payouts-type">
 				<div>
 					<p>积累佣金(元)</p>
-					<p class="money">999.00</p>
+					<p class="money">{{ userInfo.money4 }}</p>
 				</div>
 				<div>
 					<p>提现中(元)</p>
-					<p class="money">999.00</p>
+					<p class="money">{{ userInfo.money2 }}</p>
 				</div>
 				<div>
 					<p>已经提现(元)</p>
-					<p class="money">999.00</p>
+					<p class="money">{{ userInfo.money3 }}</p>
 				</div>
 			</div>
-			<div class="payouts-btn">
-				<!-- <van-button type="primary" block round>立即提现</van-button> -->
-				立即提现
-			</div>
+			<div class="payouts-btn" @click="handleLinkPayOuts">立即提现</div>
 		</div>
 		<div class="order-number">
-			<div @click="handleLinkPartTimeOrderList">
+			<div @click="handleCustomerService">
 				<img src="@/assets/images/icons/my-customer.png" alt="" />
 				<div class="name-number">
 					<p>联系客服</p>
@@ -51,7 +44,7 @@
 				<img src="@/assets/images/icons/part-time-number.png" alt="" />
 				<div class="name-number">
 					<p>兼职人数</p>
-					<p class="number">120人</p>
+					<p class="number">{{ userInfo.ordersum }}人</p>
 				</div>
 			</div>
 		</div>
@@ -60,20 +53,39 @@
 
 <script setup>
 import agentsBg from '@/assets/images/home/agents-bg.png';
-
+import { requestApi } from 'api/home';
+import { showToast } from 'vant';
 const router = useRouter();
-const handleLinkPartTimeOrderList = () => {
-	console.log('跳转兼职订单列表');
-	router.push('/partTimeOrderList');
+
+// 登录信息
+const userInfo = ref(null);
+userInfo.value = localStorage.getItem('userInfo')
+	? JSON.parse(localStorage.getItem('userInfo'))
+	: null;
+if (userInfo) {
+	requestApi({
+		op: 'proxy',
+		vxid: userInfo.value.id,
+	}).then((res) => {
+		console.log('res :>> ', res);
+		userInfo.value = res.data;
+	});
+}
+
+const handleLinkPayOuts = () => {
+	console.log('跳转提现');
+	router.push('/payOuts');
 };
 const handleLinkPayoutsRecords = () => {
 	console.log('跳转提现记录');
 	router.push('/payoutsRecords');
 };
-const handleLinkCanPayouts = () => {
-	console.log('跳转可提现');
-	router.push('/canPayouts');
+
+// 联系客服
+const handleCustomerService = () => {
+	window.location.href = 'https://work.weixin.qq.com/kfid/kfc14772150a656b3a6';
 };
+
 const handleLinkPartTimeNumber = () => {
 	console.log('跳转兼职人数');
 	router.push('/partTimeNumber');
@@ -87,9 +99,10 @@ const handleLinkPartTimeNumber = () => {
 	min-height: 100vh;
 	background-color: #f2f3f7;
 	box-sizing: border-box;
-	padding-top: 0;
-	position: relative;
+	// position: relative;
 	padding-top: 94px;
+	background: #f2f3f7 url('@/assets/images/home/agents-bg.png') no-repeat;
+	background-size: 100%;
 	.home-bg-fix {
 		position: absolute;
 		z-index: 0;
@@ -101,7 +114,7 @@ const handleLinkPartTimeNumber = () => {
 	.agents-info {
 		display: flex;
 		height: 158px;
-		position: relative;
+		// position: relative;
 		padding-left: 55px;
 		.agents-avatar {
 			width: 158px;
@@ -127,7 +140,7 @@ const handleLinkPartTimeNumber = () => {
 		}
 	}
 	.payouts-detail {
-		position: relative;
+		// position: relative;
 		border-radius: 8px;
 		padding: 43px 21px;
 		margin: 42px auto 0;
@@ -205,7 +218,7 @@ const handleLinkPartTimeNumber = () => {
 		display: flex;
 		justify-content: space-around;
 		align-items: center;
-		position: relative;
+		// position: relative;
 		width: 677px;
 		height: 116px;
 		background: #fefeff;

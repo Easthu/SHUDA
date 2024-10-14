@@ -6,40 +6,47 @@
 			class="back-icon"
 			@click="$router.go(-1)"
 		/>
-		<van-pull-refresh v-model="refreshing" @refresh="onRefresh">
-			<van-list v-model:loading="loading" :finished="finished" @load="onLoad">
-				<div v-for="item in listData" :key="item" class="list-item">
-					<div class="list-img">
-						<img src="@/assets/images/icons/part-time.png" alt="" class="goods-img" />
-						<div class="state1" v-if="item == 1">休息中</div>
-						<div class="state2" v-else-if="item == 2">服务中</div>
-						<div class="state3" v-else>可服务</div>
-					</div>
-					<div class="list-info">
-						<div class="goods-name">
-							子非鱼
-							<img src="@/assets/images/icons/make-man.png" alt="" />
-							<span>27岁</span>
-						</div>
-						<div class="list-price">陪诊就医</div>
-					</div>
-					<div class="list-right">
-						<p>评分：50</p>
-						<p class="frequency">服务次数：2</p>
-					</div>
+		<!-- <van-pull-refresh v-model="refreshing" @refresh="onRefresh">
+			<van-list v-model:loading="loading" :finished="finished" @load="onLoad"> -->
+		<div
+			v-for="item in listData"
+			:key="item"
+			class="list-item"
+			@click="handleLinkpartTimeDetail(item)"
+		>
+			<div class="list-img">
+				<img :src="item.picture" alt="" class="goods-img" />
+				<div class="state1" v-if="item.online == 0">不可服务</div>
+				<!-- <div class="state2" v-else-if="item == 2">服务中</div> -->
+				<div class="state3" v-if="item.online == 1">可服务</div>
+			</div>
+			<div class="list-info">
+				<div class="goods-name">
+					{{ item.name }}
+					<img src="@/assets/images/icons/make-man.png" alt="" v-if="item.sex == 1" />
+					<img src="@/assets/images/icons/make-women.png" alt="" v-if="item.sex == 2" />
+					<span>{{ item.age }}岁</span>
 				</div>
-			</van-list>
-		</van-pull-refresh>
+				<div class="list-price">{{ item.nature == 2 ? '本地向导' : '陪诊就医' }}</div>
+			</div>
+			<div class="list-right">
+				<p>评分：{{ item.score }}</p>
+				<p class="frequency">服务次数：{{ item.odersum }}</p>
+			</div>
+		</div>
+		<!-- </van-list> -->
+		<!-- </van-pull-refresh> -->
 	</div>
 </template>
 
 <script setup>
+import { requestApi } from 'api/home';
 const router = useRouter();
 
 const listData = ref([]);
-const loading = ref(false);
-const finished = ref(false);
-const refreshing = ref(false);
+// const loading = ref(false);
+// const finished = ref(false);
+// const refreshing = ref(false);
 
 const onLoad = () => {
 	// 异步更新数据
@@ -73,6 +80,30 @@ const onRefresh = () => {
 	// 将 loading 设置为 true，表示处于加载状态
 	loading.value = true;
 	onLoad();
+};
+
+// 登录信息
+const userInfo = ref(null);
+userInfo.value = localStorage.getItem('userInfo')
+	? JSON.parse(localStorage.getItem('userInfo'))
+	: null;
+
+requestApi({
+	op: 'staffproxy',
+	vxid: userInfo.value.id,
+	currentPage: 1,
+}).then((res) => {
+	console.log('res :>> ', res);
+	listData.value = res.data;
+});
+
+const handleLinkpartTimeDetail = (item) => {
+	router.push({
+		path: '/partTimeOrderList',
+		query: {
+			partTimeInfo: JSON.stringify(item),
+		},
+	});
 };
 </script>
 

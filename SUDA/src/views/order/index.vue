@@ -156,6 +156,8 @@ onMounted(() => {
 <style lang="less" scoped>
 .order-layout {
 	min-height: 100vh;
+	display: flex;
+	flex-direction: column;
 }
 .state-list {
 	display: flex;
@@ -192,7 +194,6 @@ onMounted(() => {
 }
 .order-list {
 	width: 715px;
-	height: 271px;
 	background: #ffffff;
 	display: flex;
 	flex-direction: column;
