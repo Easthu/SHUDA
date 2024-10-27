@@ -1,7 +1,7 @@
 <template>
 	<div class="qrcode">
 		<img src="@/assets/images/home/rocode-bg.png" alt="" />
-		<p>服务正式开始</p>
+		<p>扫码绑定</p>
 		<div class="button" @click="getQrcode">确认</div>
 	</div>
 </template>
@@ -12,18 +12,17 @@ import { showToast } from 'vant';
 
 const router = useRouter();
 const route = useRoute();
-const { ordernum, staffid } = route.query;
+const { bdvxid } = route.query;
 const getQrcode = async () => {
 	const res = await requestApi({
-		op: 'scancodes',
-		staffid,
-		ordernum,
-		nameid: JSON.parse(localStorage.getItem('userInfo')).id,
+		op: 'bindingproxy',
+		bdvxid,
+		staffvxid: JSON.parse(localStorage.getItem('userInfo')).id,
 	});
 	if (res.code == 0) {
-		showToast('开始服务');
+		showToast('绑定成功');
 		setTimeout(() => {
-			router.push('/home');
+			router.push('/partTime');
 		}, 2000);
 	}
 };

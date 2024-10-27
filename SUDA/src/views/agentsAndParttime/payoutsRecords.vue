@@ -7,7 +7,12 @@
 			@click="$router.go(-1)"
 		/>
 		<van-pull-refresh v-model="refreshing" @refresh="onRefresh">
-			<van-list v-model:loading="loading" :finished="finished" @load="onLoad">
+			<van-list
+				v-model:loading="loading"
+				:finished="finished"
+				@load="onLoad"
+				v-if="listData.length > 0"
+			>
 				<div v-for="item in listData" :key="item" class="list-item">
 					<div class="list-info">
 						<div class="list-time">申请时间：{{ item.cratetime }}</div>

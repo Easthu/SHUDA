@@ -209,6 +209,14 @@ const routes = [
     meta: {
       title: '扫码开始服务',
     },
+  },
+  {
+    path: '/qrcodeAgents',
+    name: 'qrcodeAgents',
+    component: () => import('@/views/qrcode/agents.vue'),
+    meta: {
+      title: '扫码绑定',
+    },
   }
 
 

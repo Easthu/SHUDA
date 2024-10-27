@@ -13,18 +13,18 @@
 					<img src="@/assets/images/icons/make-women.png" alt="" v-if="item.sex == 2" />
 					<span class="age">{{ item.age }}岁</span>
 				</div>
-				<div class="goods-license" v-if="item.ifbusiness">
+				<div class="goods-license" @click="router.push('/personalBusinessLicense')">
 					<img src="@/assets/images/icons/home-detail-license.png" alt="" />
-					营业执照个人营业执照
+					个人营业执照
 				</div>
-				<div class="goods-project" v-if="item.scenicspot && item.nature == 1">
+				<div class="goods-project van-ellipsis" v-if="item.scenicspot && item.nature == 1">
 					{{
 						JSON.parse(item.scenicspot)
 							.map((item) => item.name)
 							.join(',')
 					}}
 				</div>
-				<div class="goods-project" v-if="item.hospital && item.nature == 2">
+				<div class="goods-project van-ellipsis" v-if="item.hospital && item.nature == 2">
 					{{
 						JSON.parse(item.hospital)
 							.map((item) => item.name)
@@ -142,7 +142,7 @@ const handleLinkMakeDetail = (item) => {
 					color: #010000;
 				}
 				img {
-					width: 22px;
+					width: 30px;
 					height: 30px;
 				}
 				.age {
@@ -166,6 +166,7 @@ const handleLinkMakeDetail = (item) => {
 				}
 			}
 			.goods-project {
+				width: 270px;
 				font-weight: 400;
 				font-size: 22px;
 				color: #010000;

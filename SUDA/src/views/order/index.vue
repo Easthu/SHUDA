@@ -41,14 +41,12 @@
 							<div class="order-time">下单时间：{{ item.createtime }}</div>
 							<div class="order-price">实付：￥{{ item.price }}</div>
 							<div class="item-btn">
-								<div v-if="item.status == 1" @click.stop="handleCustomerService">
-									联系客服
-								</div>
-								<div v-if="item.orderState == '待服务'">取消订单</div>
+								<div @click.stop="handleCustomerService">联系客服</div>
+								<!-- <div v-if="item.orderState == '待服务'">取消订单</div>
 								<div v-if="item.orderState == '服务中'">联系客服</div>
 								<div v-if="item.orderState == '服务中'">扫码结束</div>
 								<div v-if="item.orderState == '服务中'">续单</div>
-								<div v-if="item.orderState == '已完成'">评价</div>
+								<div v-if="item.orderState == '已完成'">评价</div> -->
 							</div>
 						</div>
 					</div>
@@ -69,24 +67,21 @@ const stateList = [
 		value: '999',
 	},
 	{
-		name: '待支付',
+		name: '未支付',
 		value: '0',
 	},
 	{
 		name: '已支付',
 		value: '1',
 	},
+
 	{
-		name: '待服务',
+		name: '已完成',
 		value: '2',
 	},
 	{
-		name: '已完成',
-		value: '3',
-	},
-	{
 		name: '已评价',
-		value: '4',
+		value: '3',
 	},
 ];
 
@@ -102,7 +97,10 @@ const onLoad = () => {
 // 订单状态切换
 const handleChangeState = (value) => {
 	active.value = value;
-	fecthhOrderList();
+	page.value = 1;
+	orderListData.value = [];
+	finished.value = false;
+	onLoad();
 };
 const orderListData = ref([]);
 
@@ -122,11 +120,11 @@ const fecthhOrderList = async () => {
 	}
 	const res = await requestApi(parmas);
 	if (res.data.length == 0) {
-		// finished.value = false;
+		finished.value = true;
 	}
-	orderListData.value = res.data;
+	orderListData.value = [...orderListData.value, ...res.data];
 	loading.value = false;
-	finished.value = true;
+	// finished.value = true;
 	console.log(res);
 };
 
@@ -194,7 +192,6 @@ onMounted(() => {
 }
 .order-list {
 	width: 715px;
-	background: #ffffff;
 	display: flex;
 	flex-direction: column;
 	margin: 0 auto 10px;
@@ -221,7 +218,7 @@ onMounted(() => {
 			font-size: 30px;
 			color: #010000;
 			img {
-				width: 22px;
+				width: 30px;
 				height: 30px;
 				margin: 0 10px;
 			}

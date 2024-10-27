@@ -53,11 +53,19 @@
 			>
 				联系商家
 			</div>
-			<div
+			<!-- <div
 				class="navigation-business"
 				:style="{ backgroundImage: `url(${navigationBusiness})` }"
 			>
 				一键导航
+			</div> -->
+			<div
+				class="navigation-business"
+				:style="{ backgroundImage: `url(${navigationBusiness})` }"
+				v-if="route.query.classify == 4 || route.query.classify == 3"
+				@click="contactPartTime"
+			>
+				联系兼职
 			</div>
 		</div>
 	</div>
@@ -66,7 +74,7 @@
 <script setup>
 import homeBg from '@/assets/images/home/home-bg.png';
 import callBusiness from '@/assets/images/icons/call-business.png';
-import navigationBusiness from '@/assets/images/icons/navigation-business.png';
+import navigationBusiness from '@/assets/images/icons/call-paytime.png';
 
 const router = useRouter();
 const route = useRoute();
@@ -76,6 +84,18 @@ const hanldeBack = () => {
 };
 
 const recommendDetail = ref(null);
+
+const contactPartTime = () => {
+	let recommendDetail = JSON.parse(sessionStorage.getItem('recommendDetail'));
+	console.log('recommendDetail :>> ', recommendDetail);
+	router.push({
+		path: '/make',
+		query: {
+			sys: recommendDetail.name,
+			type: route.query.classify == 3 ? 1 : 2, // 2陪诊就医        1本地向导
+		},
+	});
+};
 
 onMounted(() => {
 	try {
@@ -98,6 +118,7 @@ onMounted(() => {
 	top: 0;
 	box-sizing: border-box;
 	padding-top: 36px;
+	// padding-bottom: 170px;
 	.home-bg-fix {
 		position: absolute;
 		z-index: 0;
@@ -208,10 +229,10 @@ onMounted(() => {
 		}
 	}
 	.detail-btn {
-		position: relative;
+		// position: relative;
 		z-index: 2;
 		margin-top: auto;
-		bottom: 66px;
+		margin-bottom: 66px;
 		display: flex;
 		justify-content: space-around;
 		div {
@@ -226,6 +247,10 @@ onMounted(() => {
 			font-size: 34px;
 			color: #fefefe;
 		}
+		// .navigation-business {
+		// 	background: linear-gradient(90deg, #e18a00, #f5e20c);
+
+		// }
 	}
 }
 </style>

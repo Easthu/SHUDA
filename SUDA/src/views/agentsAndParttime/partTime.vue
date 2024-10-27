@@ -4,7 +4,7 @@
 		<div class="agents-info">
 			<van-image round class="agents-avatar" :src="userInfo.url" />
 			<div class="agents-name-place">
-				<div class="agents-name">用户姓名：{{ userInfo.name }}</div>
+				<div class="agents-name">{{ userInfo.name }}</div>
 				<!-- <div class="agents-place">朝天门来福士</div> -->
 			</div>
 			<div class="switch">
@@ -241,8 +241,8 @@ const onUpdateValue = (value) => {
 					color: #010000;
 				}
 				.money {
-					font-weight: 400;
-					font-size: 36px;
+					font-weight: 600;
+					font-size: 40px;
 					color: #010000;
 					margin-top: 9px;
 				}

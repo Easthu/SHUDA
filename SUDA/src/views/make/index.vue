@@ -29,7 +29,75 @@
 				<span> 陪诊就医 </span>
 			</div>
 		</div>
-		<GoodsList :makeList="makeList" :nature="searchForm.type" />
+		<div class="goods-loyout">
+			<van-list v-model:loading="loading" :finished="finished" @load="onLoad" ref="listRef">
+				<div v-for="item in makeList" :key="item" class="goods-item">
+					<img :src="item.picture" alt="" class="goods-img" />
+					<div class="goods-info">
+						<div class="goods-name">
+							<span class="name">
+								{{ item.name }}
+							</span>
+							<img
+								src="@/assets/images/icons/make-man.png"
+								alt=""
+								v-if="item.sex == 1"
+							/>
+							<img
+								src="@/assets/images/icons/make-women.png"
+								alt=""
+								v-if="item.sex == 2"
+							/>
+							<span class="age">{{ item.age }}岁</span>
+						</div>
+						<div class="goods-license" @click="router.push('/personalBusinessLicense')">
+							<img src="@/assets/images/icons/home-detail-license.png" alt="" />
+							个人营业执照
+						</div>
+						<div
+							class="goods-project van-ellipsis"
+							v-if="item.scenicspot && item.nature == 1"
+						>
+							{{
+								JSON.parse(item.scenicspot)
+									.map((item) => item.name)
+									.join(',')
+							}}
+						</div>
+						<div
+							class="goods-project van-ellipsis"
+							v-if="item.hospital && item.nature == 2"
+						>
+							{{
+								JSON.parse(item.hospital)
+									.map((item) => item.name)
+									.join(',')
+							}}
+						</div>
+						<div class="goods-comments-like">
+							<div class="comments">
+								<img src="@/assets/images/icons/home-comments.png" alt="" />{{
+									item.appraise
+								}}
+							</div>
+							<div class="like">
+								<img src="@/assets/images/icons/make-like.png" alt="" />{{
+									item.lovesum
+								}}
+							</div>
+						</div>
+					</div>
+					<div class="done-make-btn">
+						<div class="score">
+							<img src="@/assets/images/icons/make-star.png" alt="" />
+							{{ item.score }}
+						</div>
+						<div class="done-num">已完成{{ item.odersum }}单</div>
+						<div class="make-right" @click="handleLinkMakeDetail(item)">立即预约</div>
+					</div>
+				</div>
+			</van-list>
+		</div>
 		<!-- 筛选 -->
 		<van-overlay :show="showSiftbBox" z-index="9999" @click="showSiftbBox = false">
 			<div class="sift-wrapper" @click.stop>
@@ -100,10 +168,11 @@
 
 <script setup>
 import homeBg from '@/assets/images/home/home-bg.png';
-import GoodsList from '@/components/goodsList.vue';
 import { requestApi } from 'api/home';
 import { showLoadingToast, closeToast } from 'vant';
-import { ref } from 'vue';
+
+const router = useRouter();
+const route = useRoute();
 
 const searchForm = ref({
 	name: null, //名字查询
@@ -115,11 +184,27 @@ const searchForm = ref({
 	currentPage: 1,
 	op: 'yuyue',
 });
+const loading = ref(false);
+const finished = ref(false);
+const listRef = ref(null);
+
+if (route.query.sys) {
+	searchForm.value.sys = route.query.sys;
+}
+if (route.query.type) {
+	searchForm.value.type = route.query.type;
+}
+
+const onLoad = () => {
+	handleApiMakeList();
+	searchForm.value.currentPage++;
+};
 
 // 顶部搜索
 const hanldeSearch = () => {
-	searchForm.currentPage = 1;
-	handleApiMakeList();
+	searchForm.value.currentPage = 1;
+	makeList.value = [];
+	finished.value = false;
 };
 
 // 筛选框
@@ -128,6 +213,9 @@ const showSiftbBox = ref(false);
 // 筛选确认
 const handleConfirmSift = () => {
 	showSiftbBox.value = false;
+	makeList.value = [];
+	searchForm.value.currentPage = 1;
+	finished.value = false;
 	handleApiMakeList();
 };
 // 筛选重置
@@ -141,7 +229,11 @@ const handleReset = () => {
 // 切换预约类型
 const handleTypeChange = (type) => {
 	searchForm.value.type = type;
-	handleApiMakeList();
+	makeList.value = [];
+	searchForm.value.currentPage = 1;
+	searchForm.value.sys = '';
+	finished.value = false;
+	// handleApiMakeList();
 };
 
 // 向导/陪诊人员数量数据
@@ -149,8 +241,15 @@ const makeList = ref([]);
 // 获取向导/陪诊人员数量
 const handleApiMakeList = async () => {
 	const res = await requestApi(searchForm.value);
-	console.log(res);
-	makeList.value = res.data;
+	makeList.value = [...makeList.value, ...res.data];
+	if (res.data.length == 0) {
+		finished.value = true;
+	}
+	loading.value = false;
+	// if (makeList.value.length <= 6 && res.data.length > 0) {
+	// 	searchForm.value.currentPage++;
+	// 	handleApiMakeList();
+	// }
 };
 
 const areaLsit = ref([]);
@@ -165,7 +264,6 @@ const requestRecommendList = async () => {
 	}).finally(() => {
 		closeToast();
 	});
-	console.log('res :>> ', res.data);
 	areaLsit.value = res.data;
 };
 const handleClickArea = async (id) => {
@@ -181,9 +279,13 @@ const handleClickArea = async (id) => {
 	});
 	twoareaList.value = res.data;
 };
+const handleLinkMakeDetail = (item) => {
+	sessionStorage.setItem('makeDetailJson', JSON.stringify(item));
+	router.push('/makeDetail?nature=' + item.nature);
+};
 
 onMounted(() => {
-	handleApiMakeList();
+	// handleApiMakeList();
 	requestRecommendList();
 });
 </script>
@@ -440,6 +542,141 @@ onMounted(() => {
 			left: 0;
 			bottom: -11px;
 			z-index: 2;
+		}
+	}
+}
+.goods-loyout {
+	display: flex;
+	flex-wrap: wrap;
+	position: relative;
+	z-index: 2;
+	.goods-item {
+		width: 715px;
+		height: 254px;
+		background: #ffffff;
+		background: #ffffff;
+		margin-bottom: 8px;
+		padding: 6px 20px 6px 14px;
+		box-sizing: border-box;
+		display: flex;
+		align-items: center;
+		.goods-img {
+			width: 232px;
+			height: 231px;
+			margin-right: 20px;
+		}
+		.goods-info {
+			display: flex;
+			flex-direction: column;
+			height: 100%;
+			.goods-name {
+				display: flex;
+				align-items: center;
+				margin: 26px 0;
+				.name {
+					margin-right: 10px;
+					font-weight: 500;
+					font-size: 30px;
+					color: #010000;
+				}
+				img {
+					width: 30px;
+					height: 30px;
+				}
+				.age {
+					font-weight: 500;
+					font-size: 22px;
+					color: #010000;
+					margin-left: 8px;
+				}
+			}
+			.goods-license {
+				font-weight: 400;
+				font-size: 22px;
+				color: #010000;
+				margin-bottom: 14px;
+				display: flex;
+				align-items: center;
+				img {
+					width: 19px;
+					height: 30px;
+					margin-right: 10px;
+				}
+			}
+			.goods-project {
+				font-weight: 400;
+				font-size: 22px;
+				color: #010000;
+				margin-bottom: 22px;
+				width: 270px;
+			}
+			.goods-comments-like {
+				display: flex;
+				align-items: center;
+				div {
+					margin-right: 55px;
+					display: flex;
+					align-items: center;
+					font-weight: 500;
+					font-size: 26px;
+					color: #010000;
+					.iconfont {
+						font-size: 22px;
+						margin-right: 8px;
+					}
+				}
+				.comments {
+					img {
+						width: 28px;
+						height: 29px;
+						margin-right: 13px;
+					}
+				}
+				.like {
+					img {
+						width: 31px;
+						height: 26px;
+						margin-right: 7px;
+					}
+				}
+			}
+		}
+		.done-make-btn {
+			display: flex;
+			flex-direction: column;
+			align-items: flex-end;
+			height: 100%;
+			margin-left: auto;
+			.score {
+				font-weight: 500;
+				font-size: 22px;
+				color: #010000;
+				margin-top: 22px;
+				img {
+					width: 22px;
+					height: 21px;
+				}
+			}
+			.done-num {
+				font-weight: 400;
+				font-size: 22px;
+				color: #b2b0b0;
+				margin-top: 30px;
+			}
+			.make-right {
+				width: 142px;
+				height: 52px;
+				background: #93f582;
+				border-radius: 26px;
+				font-weight: 400;
+				font-size: 24px;
+				color: #061710;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				margin-top: 46px;
+				padding-top: 4px;
+			}
 		}
 	}
 }

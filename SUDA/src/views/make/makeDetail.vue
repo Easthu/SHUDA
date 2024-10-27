@@ -1,6 +1,8 @@
 <template>
 	<div class="make-detail-layout" v-if="makeDetailInfo">
-		<img :src="makeDetailInfo.picture" alt="" class="detail-big-img" />
+		<div class="detail-big-img">
+			<img :src="makeDetailInfo.picture" alt="" class="detail-big-img-item" />
+		</div>
 		<img :src="back" alt="" class="back-icon" @click="router.back()" />
 		<div class="make-detail-content-title">
 			<span>绝对绿色</span>
@@ -28,7 +30,7 @@
 				<img src="@/assets/images/icons/make-detail-license.png" alt="" />个人营业执照
 			</div>
 		</div>
-		<div class="comments-like">
+		<!-- <div class="comments-like">
 			<span class="border-line"
 				><img src="@/assets/images/icons/make-detail-message.png" alt="" />{{
 					makeDetailInfo.appraise
@@ -39,7 +41,7 @@
 					makeDetailInfo.lovesum
 				}}</span
 			>
-		</div>
+		</div> -->
 		<!-- 景点 -->
 		<div class="specification-list" v-if="nature == 1">
 			<div class="specification-item" v-for="(item, index) in scenicspotList" :key="index">
@@ -136,11 +138,11 @@ const handleLinkOrderConfirm = () => {
 	};
 	if (nature.value == 1) {
 		let confirmList = scenicspotList.value.filter((item) => item.checked);
-		// if (confirmList.length < 3) {
-		// 	return showToast('z至少选择三个景点进行游玩');
-		// } else {
-		// }
-		orderConfirm.confirmList = confirmList;
+		if (confirmList.length < 3) {
+			return showToast('z至少选择三个景点进行游玩');
+		} else {
+			orderConfirm.confirmList = confirmList;
+		}
 	}
 	if (nature.value == 2) {
 		if (!clickHospitalDetail.value) {
@@ -233,7 +235,15 @@ onMounted(() => {
 	bottom: calc(130px + env(safe-area-inset-bottom));
 	.detail-big-img {
 		width: 750px;
-		height: 412px;
+		height: 450px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		background: f2f3f7;
+		img {
+			width: 450px;
+			height: 450px;
+		}
 	}
 	.back-icon {
 		position: absolute;
@@ -415,6 +425,7 @@ onMounted(() => {
 		border-radius: 31px;
 		padding: 20px;
 		box-sizing: border-box;
+		margin: 0 auto;
 		.make-category {
 			display: flex;
 			// align-items: center;

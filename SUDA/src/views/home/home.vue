@@ -30,9 +30,10 @@ onMounted(() => {
 				<img src="@/assets/images/icons/home-position.png" alt="" />
 				<span>重庆</span>
 			</div>
-			<div class="search-box">
+			<div class="search-box" @click.stop="router.push('/make')">
 				<img src="@/assets/images/icons/home-search.png" alt="" />
-				<input type="text" placeholder="搜索兼职 / 向导" />
+				<!-- <input type="text" placeholder="搜索兼职 / 向导" disabled /> -->
+				<p class="input">搜索兼职 / 向导</p>
 				<div class="search-submit">搜索</div>
 			</div>
 		</div>
@@ -125,7 +126,7 @@ onMounted(() => {
 				margin-right: 20px;
 				margin-left: 25px;
 			}
-			input {
+			.input {
 				flex: 1;
 				font-weight: bold;
 				font-size: 24px;

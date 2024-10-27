@@ -4,8 +4,11 @@
 		<div class="agents-info">
 			<van-image round class="agents-avatar" :src="userInfo.url" />
 			<div class="agents-name-place">
-				<div class="agents-name">代理姓名：{{ userInfo.name }}</div>
-				<!-- <div class="agents-place">朝天门来福士</div> -->
+				<div class="agents-name">{{ userInfo.name }}</div>
+			</div>
+			<div class="qrcode" @click="handleOpenQrcode">
+				<img src="@/assets/images/icons/qrcode-icons.png" alt="" />
+				展示二维码
 			</div>
 		</div>
 
@@ -48,6 +51,9 @@
 				</div>
 			</div>
 		</div>
+		<van-popup v-model:show="qrcodeOpen">
+			<vue-qr :text="qrcode" class="vueQrStyle"></vue-qr>
+		</van-popup>
 	</div>
 </template>
 
@@ -55,6 +61,7 @@
 import agentsBg from '@/assets/images/home/agents-bg.png';
 import { requestApi } from 'api/home';
 import { showToast } from 'vant';
+import vueQr from 'vue-qr/src/packages/vue-qr.vue';
 const router = useRouter();
 
 // 登录信息
@@ -89,6 +96,16 @@ const handleCustomerService = () => {
 const handleLinkPartTimeNumber = () => {
 	console.log('跳转兼职人数');
 	router.push('/partTimeNumber');
+};
+
+const qrcodeOpen = ref(false);
+const qrcode = ref('');
+const handleOpenQrcode = (item) => {
+	qrcodeOpen.value = true;
+	qrcode.value =
+		import.meta.env.VITE_NODE_APP_BASE +
+		'/momoda/qrcodeAgents?bdvxid=' +
+		JSON.parse(localStorage.getItem('userInfo')).id;
 };
 </script>
 
@@ -138,6 +155,25 @@ const handleLinkPartTimeNumber = () => {
 				margin-top: 12px;
 			}
 		}
+		.qrcode {
+			width: 197px;
+			height: 52px;
+			background: #ffc886;
+			border-radius: 26px;
+			margin-left: auto;
+			font-weight: 300;
+			font-size: 24px;
+			color: #010000;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			margin-top: 60px;
+			img {
+				width: 29px;
+				height: 29px;
+				margin-right: 6px;
+			}
+		}
 	}
 	.payouts-detail {
 		// position: relative;
@@ -167,8 +203,8 @@ const handleLinkPartTimeNumber = () => {
 					}
 				}
 				.money {
-					font-weight: 400;
-					font-size: 36px;
+					font-weight: 600;
+					font-size: 40px;
 					color: #010000;
 					margin-top: 9px;
 				}
@@ -193,8 +229,8 @@ const handleLinkPartTimeNumber = () => {
 					color: #010000;
 				}
 				.money {
-					font-weight: 400;
-					font-size: 36px;
+					font-weight: 600;
+					font-size: 40px;
 					color: #010000;
 					margin-top: 9px;
 				}

@@ -72,8 +72,8 @@
 		</div>
 		<div class="bottom-btn">
 			<div @click="handleCustomerService">联系客服</div>
-			<div>扫码服务</div>
-			<div @click="handleCancelOrder" class="cancel">取消订单</div>
+			<!-- <div>扫码服务</div> -->
+			<!-- <div @click="handleCancelOrder" class="cancel">取消订单</div> -->
 		</div>
 	</div>
 </template>
