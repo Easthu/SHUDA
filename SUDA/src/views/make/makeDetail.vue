@@ -22,11 +22,7 @@
 				</div>
 				<div class="done-list">已完成{{ makeDetailInfo.odersum }}单</div>
 			</div>
-			<div
-				class="person-right"
-				@click="router.push('/personalBusinessLicense')"
-				v-if="makeDetailInfo.ifbusiness"
-			>
+			<div class="person-right" @click="router.push('/personalBusinessLicense')">
 				<img src="@/assets/images/icons/make-detail-license.png" alt="" />个人营业执照
 			</div>
 		</div>
