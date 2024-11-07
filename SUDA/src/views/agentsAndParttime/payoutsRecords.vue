@@ -59,7 +59,7 @@ import { requestApi } from 'api/home';
 const fecthList = async () => {
 	const res = await requestApi({
 		op: 'moneylog',
-		vxid: JSON.parse(localStorage.getItem('userInfo')).id,
+		vxid: JSON.parse(sessionStorage.getItem('userInfo')).id,
 		currentPage: currentPage.value,
 	});
 	if (res.code == 0) {

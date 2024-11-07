@@ -71,18 +71,26 @@ import examination from '@/assets/images/icons/my-examination.png';
 import agreement from '@/assets/images/icons/my-agreement.png';
 import customer from '@/assets/images/icons/my-customer.png';
 import about from '@/assets/images/icons/my-about.png';
-
+import { showToast } from 'vant';
 const router = useRouter();
 const handleLinkPartTime = () => {
-	router.push('/partTime');
+	if (userInfo.value.ifproxy == 2) {
+		router.push('/partTime');
+	} else {
+		showToast('您不是兼职，无法使用此功能');
+	}
 };
 const handleLinkAgents = () => {
-	router.push('/agents');
+	if (userInfo.value.ifproxy == 1) {
+		router.push('/agents');
+	} else {
+		showToast('您不是代理，无法使用此功能');
+	}
 };
 
 const userInfo = ref(null);
-if (JSON.parse(localStorage.getItem('userInfo'))) {
-	userInfo.value = JSON.parse(localStorage.getItem('userInfo'));
+if (JSON.parse(sessionStorage.getItem('userInfo'))) {
+	userInfo.value = JSON.parse(sessionStorage.getItem('userInfo'));
 }
 
 const menuList = ref([
@@ -115,6 +123,10 @@ const menuList = ref([
 	},
 ]);
 const handleLinkMenu = (item) => {
+	if (item.name == '联系客服') {
+		window.location.href = 'https://work.weixin.qq.com/kfid/kfc14772150a656b3a6';
+		return;
+	}
 	if (item.path) {
 		router.push(item.path);
 	}

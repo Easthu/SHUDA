@@ -84,8 +84,8 @@ const onRefresh = () => {
 
 // 登录信息
 const userInfo = ref(null);
-userInfo.value = localStorage.getItem('userInfo')
-	? JSON.parse(localStorage.getItem('userInfo'))
+userInfo.value = sessionStorage.getItem('userInfo')
+	? JSON.parse(sessionStorage.getItem('userInfo'))
 	: null;
 
 requestApi({

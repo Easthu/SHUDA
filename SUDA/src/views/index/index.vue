@@ -66,7 +66,7 @@ const handelActiveChange = (name) => {
 			});
 			break;
 		case 'mine':
-			const userInfo = localStorage.getItem('userInfo');
+			const userInfo = sessionStorage.getItem('userInfo');
 			if (!userInfo) {
 				router.replace('/login');
 			} else {

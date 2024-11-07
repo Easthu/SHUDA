@@ -42,7 +42,7 @@ const handleSubmit = () => {
 		ybank: ybank.value,
 		opencard: opencard.value,
 		op: 'stafftixian',
-		vxid: JSON.parse(localStorage.getItem('userInfo')).id,
+		vxid: JSON.parse(sessionStorage.getItem('userInfo')).id,
 	}).then((res) => {
 		if (res.code == 0) {
 			router.back();

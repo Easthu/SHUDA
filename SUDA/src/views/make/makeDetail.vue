@@ -119,7 +119,8 @@ const router = useRouter();
 const route = useRoute();
 
 const handleLinkOrderConfirm = () => {
-	const userInfo = localStorage.getItem('userInfo');
+	// return showToast('功能暂未开通...');
+	const userInfo = sessionStorage.getItem('userInfo');
 	if (!userInfo) {
 		router.replace('/login');
 	}
@@ -135,7 +136,7 @@ const handleLinkOrderConfirm = () => {
 	if (nature.value == 1) {
 		let confirmList = scenicspotList.value.filter((item) => item.checked);
 		if (confirmList.length < 3) {
-			return showToast('z至少选择三个景点进行游玩');
+			return showToast('至少选择三个景点进行游玩');
 		} else {
 			orderConfirm.confirmList = confirmList;
 		}

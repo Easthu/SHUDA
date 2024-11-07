@@ -37,9 +37,9 @@ const handleLogin = async () => {
 		op: 'yzcode',
 		pctell: phone.value,
 		pccode: code.value,
-		encryptioncode: localStorage.getItem('encryptioncode'),
+		encryptioncode: sessionStorage.getItem('encryptioncode'),
 	});
-	localStorage.setItem('userInfo', JSON.stringify(res.data));
+	sessionStorage.setItem('userInfo', JSON.stringify(res.data));
 	router.go(-1);
 };
 
@@ -62,7 +62,7 @@ const checked = ref(false);
 			}}</span>
 		</div>
 		<div class="code-box">
-			<input type="tel" placeholder="请输入用户名" v-model="code" maxlength="6" />
+			<input type="tel" placeholder="请输入验证码" v-model="code" maxlength="6" />
 		</div>
 		<div class="login-btn" @click="handleLogin">登录</div>
 		<div class="spe-sel">

@@ -267,7 +267,7 @@ onMounted(() => {
 		}
 	}
 	.nav-list {
-		min-width: 100vw;
+		width: 100%;
 		position: relative;
 		z-index: 3;
 		.nav-list-content {
@@ -312,7 +312,7 @@ onMounted(() => {
 	}
 	.recommend-item {
 		display: flex;
-		width: 724px;
+		width: 710px;
 		height: 234px;
 		padding: 10px 6px;
 		box-sizing: border-box;

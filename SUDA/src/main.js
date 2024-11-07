@@ -8,7 +8,11 @@ import { createPinia } from 'pinia'
 import VConsole from 'vconsole';
 import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
 
-new VConsole();
+const consoleState = true;
+if (consoleState) {
+  new VConsole();
+}
+
 
 const app = createApp(App)
 

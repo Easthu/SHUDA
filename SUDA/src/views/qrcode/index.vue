@@ -18,7 +18,7 @@ const getQrcode = async () => {
 		op: 'scancodes',
 		staffid,
 		ordernum,
-		nameid: JSON.parse(localStorage.getItem('userInfo')).id,
+		nameid: JSON.parse(sessionStorage.getItem('userInfo')).id,
 	});
 	if (res.code == 0) {
 		showToast('开始服务');

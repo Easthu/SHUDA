@@ -6,16 +6,16 @@ import { requestApi } from 'api/home';
 
 const router = useRouter();
 const code = getUrlKey('code');
-const userInfo = localStorage.getItem('userInfo');
+const userInfo = sessionStorage.getItem('userInfo');
 if (import.meta.env.VITE_NODE_ENV == 'dev') {
 	requestApi({
 		op: 'login',
 		encryptioncode: '6b106171d8c4a06e55d01a374e0e5782',
 	}).then((res) => {
 		if (res.code == 0) {
-			localStorage.setItem('userInfo', JSON.stringify(res.data));
+			sessionStorage.setItem('userInfo', JSON.stringify(res.data));
 		} else if (res.code == 3) {
-			localStorage.setItem('encryptioncode', res.encryptioncode);
+			sessionStorage.setItem('encryptioncode', res.encryptioncode);
 			router.replace('/login');
 		}
 	});
@@ -33,9 +33,9 @@ if (import.meta.env.VITE_NODE_ENV == 'dev') {
 				}).then((res) => {
 					console.log('login', res);
 					if (res.code == 0) {
-						localStorage.setItem('userInfo', JSON.stringify(res.data));
+						sessionStorage.setItem('userInfo', JSON.stringify(res.data));
 					} else if (res.code == 3) {
-						localStorage.setItem('encryptioncode', res.encryptioncode);
+						sessionStorage.setItem('encryptioncode', res.encryptioncode);
 						router.replace('/login');
 					}
 				});

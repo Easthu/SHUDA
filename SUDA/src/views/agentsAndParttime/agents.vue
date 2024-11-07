@@ -66,8 +66,8 @@ const router = useRouter();
 
 // 登录信息
 const userInfo = ref(null);
-userInfo.value = localStorage.getItem('userInfo')
-	? JSON.parse(localStorage.getItem('userInfo'))
+userInfo.value = sessionStorage.getItem('userInfo')
+	? JSON.parse(sessionStorage.getItem('userInfo'))
 	: null;
 if (userInfo) {
 	requestApi({
@@ -105,7 +105,7 @@ const handleOpenQrcode = (item) => {
 	qrcode.value =
 		import.meta.env.VITE_NODE_APP_BASE +
 		'/momoda/qrcodeAgents?bdvxid=' +
-		JSON.parse(localStorage.getItem('userInfo')).id;
+		JSON.parse(sessionStorage.getItem('userInfo')).id;
 };
 </script>
 

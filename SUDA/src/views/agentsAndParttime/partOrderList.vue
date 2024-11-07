@@ -81,7 +81,7 @@ const staffid = ref('');
 const fecthStaffId = async () => {
 	const res = await requestApi({
 		op: 'getstaffid',
-		uid: JSON.parse(localStorage.getItem('userInfo')).id,
+		uid: JSON.parse(sessionStorage.getItem('userInfo')).id,
 	});
 	staffid.value = res.data.id;
 	fecthhOrderList();

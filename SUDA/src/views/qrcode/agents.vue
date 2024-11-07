@@ -17,7 +17,7 @@ const getQrcode = async () => {
 	const res = await requestApi({
 		op: 'bindingproxy',
 		bdvxid,
-		staffvxid: JSON.parse(localStorage.getItem('userInfo')).id,
+		staffvxid: JSON.parse(sessionStorage.getItem('userInfo')).id,
 	});
 	if (res.code == 0) {
 		showToast('绑定成功');

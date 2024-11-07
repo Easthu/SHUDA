@@ -20,7 +20,7 @@
 		</div>
 		<div class="services-list" v-if="orderDetail.type == 1">
 			<div class="specification-item" v-for="(item, index) in scenicspotList" :key="index">
-				<img :src="item.url" alt="" class="specification-img" />
+				<img :src="item.url" alt="" class="specification-img" v-if="item.url" />
 				<div class="specification-info">
 					<div class="spe-name">{{ item.name }}</div>
 					<div class="spe-suggestion">
@@ -51,27 +51,31 @@
 		<div class="prcie-detail">
 			<div class="detail-item">
 				<p class="left">实付款</p>
-				<p>￥120</p>
+				<p>￥{{ orderDetail.price }}</p>
 			</div>
 			<div class="detail-item">
 				<p class="left">清单编号</p>
-				<p>257986486528674 <span @click="handleClipboard('257986486528674')">复制</span></p>
+				<p>
+					{{ orderDetail.ordernum
+					}}<span @click="handleClipboard(orderDetail.ordernum)">复制</span>
+				</p>
 			</div>
 			<div class="detail-item">
 				<p class="left">创建时间</p>
-				<p>2024-08-07 14:22:55</p>
+				<p>{{ orderDetail.createtime }}</p>
 			</div>
-			<div class="detail-item">
+			<!-- <div class="detail-item">
 				<p class="left">付款时间</p>
-				<p>2024-08-07 14:22:55</p>
-			</div>
+				<p>{{ orderDetail. }}</p>
+			</div> -->
 			<div class="detail-item">
 				<p class="left">备注</p>
-				<p>给你恰到好处的陪伴</p>
+				<p>{{ orderDetail.other }}</p>
 			</div>
 		</div>
 		<div class="bottom-btn">
 			<div @click="handleCustomerService">联系客服</div>
+			<div @click="weixinPay" v-if="orderDetail.status == 0">立即支付</div>
 			<!-- <div>扫码服务</div> -->
 			<!-- <div @click="handleCancelOrder" class="cancel">取消订单</div> -->
 		</div>
@@ -129,6 +133,63 @@ const handleCancelOrder = () => {
 		});
 };
 
+const weixinPay = async () => {
+	const payRes = await requestApi({
+		op: 'getorderPay',
+		ordernum: orderDetail.value.ordernum,
+		openid: JSON.parse(sessionStorage.getItem('userInfo')).openid,
+	});
+	console.log('payRes :>> ', payRes);
+	// 微信内置浏览器支付
+	// 下面是解决WeixinJSBridge is not defined 报错的方法
+	if (typeof WeixinJSBridge === 'undefined') {
+		// 微信浏览器内置对象。参考微信官方文档
+		if (document.addEventListener) {
+			document.addEventListener(
+				'WeixinJSBridgeReady',
+				handle.onBridgeReady(payRes.data),
+				false
+			);
+		} else if (document.attachEvent) {
+			document.attachEvent('WeixinJSBridgeReady', handle.onBridgeReady(payRes.data));
+			document.attachEvent('onWeixinJSBridgeReady', handle.onBridgeReady(payRes.data));
+		}
+	} else {
+		onBridgeReady(payRes.data);
+	}
+	console.log('payRes :>> ', payRes);
+};
+
+const onBridgeReady = (res) => {
+	// eslint-disable-next-line
+	WeixinJSBridge.invoke(
+		'getBrandWCPayRequest',
+		{
+			appId: res.appId, //公众号名称，由商户传入
+			nonceStr: res.nonceStr, //随机串
+			package: res.package, // prepay_id=xxx
+			timeStamp: res.timeStamp, //时间戳
+			signType: res.signType, //微信签名方式：
+			paySign: res.paySign, //微信签名
+		},
+		function (res) {
+			//android：支付成功、支付失败、取消支付  都能执行这个回调
+			//ios：支付失败、取消支付  能执行这个回调， 支付成功不执行这个回调
+			if (res.err_msg == 'get_brand_wcpay_request:ok') {
+				// 使用以上方式判断前端返回,微信团队郑重提示：
+				//res.err_msg将在用户支付成功后返回ok，但并不保证它绝对可靠。
+				showLoadingToast({
+					message: '加载中...',
+					forbidClick: true,
+					duration: 0,
+				});
+			} else {
+				console.log('res :>> ', res);
+			}
+		}
+	);
+};
+
 const orderDetail = ref(null);
 
 // 获取景点
@@ -140,6 +201,7 @@ const requestScenicspotList = async (id) => {
 	};
 	const { data } = await requestApi(params);
 	scenicspotList.value = [...scenicspotList.value, data];
+	scenicspotList.value = scenicspotList.value.filter((item) => item);
 	console.log('scenicspotList.value :>> ', scenicspotList.value);
 };
 
@@ -170,6 +232,7 @@ onMounted(() => {
 				requestScenicspotList(item);
 			});
 		}
+		console.log('orderDetail :>> ', orderDetail.value);
 		if (orderDetail.value.type == 2) {
 			requesHospitalList(orderDetail.value.hs, orderDetail.value.oederitem);
 		}

@@ -146,7 +146,7 @@ const handleCustomerService = () => {
 };
 
 onMounted(() => {
-	userInfo.value = JSON.parse(localStorage.getItem('userInfo'));
+	userInfo.value = JSON.parse(sessionStorage.getItem('userInfo'));
 	// fecthhOrderList();
 });
 </script>

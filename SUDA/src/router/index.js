@@ -233,10 +233,10 @@ router.beforeEach((to, from, next) => {
   // 当前访问的路由页面path，刷新微信定位专用
   useUserStore().fetchCurrentRoutePath(to.name)
   // 当前页面的标题
-  if (to.meta.title) {
-    document.title = to.meta.title;
-    useUserStore().fetchPageTitle(to.meta.title)
-  }
+  // if (to.meta.title) {
+  //   document.title = to.meta.title;
+  //   useUserStore().fetchPageTitle(to.meta.title)
+  // }
   next();
 });
 router.afterEach(() => { //这里不接收next

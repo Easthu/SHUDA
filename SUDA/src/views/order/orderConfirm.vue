@@ -86,37 +86,87 @@
 <script setup>
 import back from '@/assets/images/icons/back.png';
 import { requestApi } from 'api/home';
-
 const router = useRouter();
 const remark = ref('');
 
 const orderConfirm = ref(null);
 const userInfo = ref(null);
 const totlePrice = ref(0);
+const ordernum = ref(null);
 
 const handleOrderConfirm = async () => {
-	const res = await requestApi({
-		op: 'order',
-		nameid: userInfo.value.id,
-		staffid: orderConfirm.value.staffid,
-		type: orderConfirm.value.nature,
-		oederitem: orderConfirm.value.confirmList.map((item) => item.id).join(','),
-		other: remark.value ? remark.value : ' ',
-		hsid: orderConfirm.value.hsid ? orderConfirm.value.hsid : 0,
-	});
-	router.push('/order');
-	console.log('res :>> ', res);
+	if (!ordernum.value) {
+		const res = await requestApi({
+			op: 'order',
+			nameid: userInfo.value.id,
+			staffid: orderConfirm.value.staffid,
+			type: orderConfirm.value.nature,
+			oederitem: orderConfirm.value.confirmList.map((item) => item.id).join(','),
+			other: remark.value ? remark.value : ' ',
+			hsid: orderConfirm.value.hsid ? orderConfirm.value.hsid : 0,
+		});
+		console.log('res :>> ', res.data.ordernum);
+		ordernum.value = res.data.ordernum;
+	}
+	weixinPay();
 };
 
+const weixinPay = async () => {
+	const payRes = await requestApi({
+		op: 'getorderPay',
+		ordernum: ordernum.value,
+		openid: JSON.parse(sessionStorage.getItem('userInfo')).openid,
+	});
+	console.log('payRes :>> ', payRes);
+	// 微信内置浏览器支付
+	// 下面是解决WeixinJSBridge is not defined 报错的方法
+	if (typeof WeixinJSBridge === 'undefined') {
+		// 微信浏览器内置对象。参考微信官方文档
+		if (document.addEventListener) {
+			document.addEventListener(
+				'WeixinJSBridgeReady',
+				handle.onBridgeReady(payRes.data),
+				false
+			);
+		} else if (document.attachEvent) {
+			document.attachEvent('WeixinJSBridgeReady', handle.onBridgeReady(payRes.data));
+			document.attachEvent('onWeixinJSBridgeReady', handle.onBridgeReady(payRes.data));
+		}
+	} else {
+		onBridgeReady(payRes.data);
+	}
+	console.log('payRes :>> ', payRes);
+};
+
+const onBridgeReady = (res) => {
+	// eslint-disable-next-line
+	WeixinJSBridge.invoke(
+		'getBrandWCPayRequest',
+		{
+			appId: res.appId, //公众号名称，由商户传入
+			nonceStr: res.nonceStr, //随机串
+			package: res.package, // prepay_id=xxx
+			timeStamp: res.timeStamp, //时间戳
+			signType: res.signType, //微信签名方式：
+			paySign: res.paySign, //微信签名
+		},
+		function (res) {
+			//android：支付成功、支付失败、取消支付  都能执行这个回调
+			//ios：支付失败、取消支付  能执行这个回调， 支付成功不执行这个回调
+			if (res.err_msg == 'get_brand_wcpay_request:ok') {
+				// 使用以上方式判断前端返回,微信团队郑重提示：
+				router.push('/order');
+			} else {
+				console.log('res :>> ', res);
+			}
+		}
+	);
+};
 onMounted(() => {
 	try {
 		orderConfirm.value = JSON.parse(sessionStorage.getItem('orderConfirm'));
-		userInfo.value = JSON.parse(localStorage.getItem('userInfo'));
-		console.log('orderConfirm.value :>> ', orderConfirm.value);
+		userInfo.value = JSON.parse(sessionStorage.getItem('userInfo'));
 		totlePrice.value = orderConfirm.value.confirmList.reduce((pre, cur) => {
-			console.log('pre :>> ', pre);
-			console.log('cur.price :>> ', cur.price);
-
 			return pre + Number(cur.price);
 		}, 0);
 	} catch (err) {
