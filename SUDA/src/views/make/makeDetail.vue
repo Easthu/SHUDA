@@ -203,21 +203,25 @@ onMounted(() => {
 	nature.value = route.query.nature;
 	try {
 		makeDetailInfo.value = JSON.parse(info);
-		console.log('makeDetailInfo.value :>> ', makeDetailInfo.value);
-		makeDetailInfo.value.scenicspot = JSON.parse(makeDetailInfo.value.scenicspot);
-		if ((makeDetailInfo.value.scenicspot.length > 0) & (nature.value == 1)) {
-			makeDetailInfo.value.scenicspot.forEach((item) => {
-				requestScenicspotList(item.id);
-			});
+		if (makeDetailInfo.value.scenicspot) {
+			makeDetailInfo.value.scenicspot = JSON.parse(makeDetailInfo.value.scenicspot);
+			if ((makeDetailInfo.value.scenicspot.length > 0) & (nature.value == 1)) {
+				makeDetailInfo.value.scenicspot.forEach((item) => {
+					requestScenicspotList(item.id);
+				});
+			}
 		}
-		makeDetailInfo.value.hospital = JSON.parse(makeDetailInfo.value.hospital);
-		if ((makeDetailInfo.value.hospital.length > 0) & (nature.value == 2)) {
-			makeDetailInfo.value.hospital.forEach((item, index) => {
-				requesHospitalList(item.id, index);
-			});
+		if (makeDetailInfo.value.hospital) {
+			makeDetailInfo.value.hospital = JSON.parse(makeDetailInfo.value.hospital);
+			if ((makeDetailInfo.value.hospital.length > 0) & (nature.value == 2)) {
+				makeDetailInfo.value.hospital.forEach((item, index) => {
+					requesHospitalList(item.id, index);
+				});
+			}
 		}
 	} catch (error) {
-		router.go('/home');
+		console.log('error :>> ', error);
+		router.push('/home');
 	}
 });
 </script>

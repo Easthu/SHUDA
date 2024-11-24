@@ -224,15 +224,19 @@ const handleReset = () => {
 	searchForm.value.agemin = null;
 	searchForm.value.agemax = null;
 	searchForm.value.sys = null;
+	searchForm.value.name = null;
 };
 
 // 切换预约类型
 const handleTypeChange = (type) => {
+	handleReset();
 	searchForm.value.type = type;
 	makeList.value = [];
-	searchForm.value.currentPage = 1;
-	searchForm.value.sys = '';
-	finished.value = false;
+	requestRecommendList();
+	nextTick(() => {
+		searchForm.value.currentPage = 1;
+		finished.value = false;
+	});
 	// handleApiMakeList();
 };
 

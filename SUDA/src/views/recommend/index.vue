@@ -48,7 +48,7 @@
 					</div>
 
 					<div class="ranking-right">
-						<div class="ranking-item van-ellipsis">{{ item.label }}</div>
+						<div class="ranking-item van-ellipsis w380">{{ item.label }}</div>
 					</div>
 				</div>
 				<div class="skilled">
@@ -80,7 +80,8 @@
 			<!-- 景点 -->
 			<div class="recommend-info classify3" v-if="route.query.classify == 3">
 				<div class="recommend-name">
-					{{ item.name }} <span>{{ item.ja }}A</span>
+					{{ item.name }}
+					<!-- <span>{{ item.ja }}A</span> -->
 				</div>
 				<div class="secondary-name">
 					{{ item.fullname }}
@@ -90,7 +91,7 @@
 						{{ item.level }}
 					</div>
 					<div class="ranking-right">
-						<div class="ranking-item van-ellipsis">{{ item.label }}</div>
+						<div class="ranking-item van-ellipsis w380">{{ item.label }}</div>
 					</div>
 				</div>
 				<div class="skilled">
@@ -109,10 +110,10 @@
 					{{ item.fullname }}
 				</div>
 				<div class="ranking">
-					<div class="ranking-left">排行榜</div>
+					<div class="ranking-left"><span>简</span><span>介</span></div>
 
 					<div class="ranking-right">
-						<div class="ranking-item van-ellipsis">{{ item.js1 }}</div>
+						<div class="ranking-item van-ellipsis w380">{{ item.js1 }}</div>
 						<div class="ranking-item">{{ item.js2 }}</div>
 					</div>
 				</div>
@@ -123,7 +124,7 @@
 					</div>
 				</div>
 				<div class="recommend-time">
-					营业时间 <span>{{ item.opening }}</span>
+					门诊时间 <span>{{ item.opening }}</span>
 				</div>
 			</div>
 		</div>
@@ -326,6 +327,7 @@ onMounted(() => {
 			height: 211px;
 			margin-right: 14px;
 			border-radius: 15px;
+			flex-shrink: 0;
 		}
 		.recommend-info {
 			display: flex;
@@ -367,7 +369,7 @@ onMounted(() => {
 					color: #000000;
 					display: flex;
 					align-items: center;
-					justify-content: center;
+					justify-content: space-around;
 				}
 				.ranking-right {
 					font-weight: 400;
@@ -451,6 +453,7 @@ onMounted(() => {
 					font-weight: 400;
 					font-size: 22px;
 					color: #061710;
+					// width: 380px;
 					span {
 						margin-left: 43px;
 					}
@@ -540,6 +543,9 @@ onMounted(() => {
 					line-height: 25px;
 				}
 			}
+		}
+		.w380 {
+			width: 380px;
 		}
 	}
 }

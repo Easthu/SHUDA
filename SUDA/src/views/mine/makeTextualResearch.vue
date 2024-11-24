@@ -87,11 +87,14 @@ const onAgeConfirm = (value) => {
 	showAge.value = false;
 };
 const columns = [
-	{ text: '考证1', value: '1' },
-	{ text: '考证2', value: '2' },
-	{ text: '考证3', value: '3' },
-	{ text: '考证4', value: '4' },
-	{ text: '考证5', value: '5' },
+	{ text: '考证导游资格证书', value: '1' },
+	{ text: '驾驶证', value: '2' },
+	{ text: '陪诊师证', value: '3' },
+	{ text: '普通话证书', value: '4' },
+	{ text: '心理咨询师证', value: '5' },
+	{ text: '急救证', value: '6' },
+	{ text: '心理咨询师证书', value: '7' },
+	{ text: '英语等级证书', value: '8' },
 ];
 const sexColumns = [
 	{ text: '男', value: '1' },

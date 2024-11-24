@@ -10,7 +10,7 @@ const userInfo = sessionStorage.getItem('userInfo');
 if (import.meta.env.VITE_NODE_ENV == 'dev') {
 	requestApi({
 		op: 'login',
-		encryptioncode: '6b106171d8c4a06e55d01a374e0e5782',
+		encryptioncode: 'c964ac4a14eb7ecd739dca5b5c96eab5',
 	}).then((res) => {
 		if (res.code == 0) {
 			sessionStorage.setItem('userInfo', JSON.stringify(res.data));

@@ -140,6 +140,15 @@ const weixinPay = async () => {
 		openid: JSON.parse(sessionStorage.getItem('userInfo')).openid,
 	});
 	console.log('payRes :>> ', payRes);
+	if (payRes.errormsg == 121) {
+		return toast.fail('订单错误');
+	}
+	if (payRes.errormsg == 122) {
+		return toast.fail('签名错误');
+	}
+	if (payRes.errormsg == 123) {
+		return toast.fail('商户订单号重复');
+	}
 	// 微信内置浏览器支付
 	// 下面是解决WeixinJSBridge is not defined 报错的方法
 	if (typeof WeixinJSBridge === 'undefined') {

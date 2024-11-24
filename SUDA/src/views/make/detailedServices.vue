@@ -3,9 +3,7 @@
 		<NavBar showLeftBack />
 		<div class="services-introduce">
 			<div class="service-title">服务详情</div>
-			<p>
-				{{ introduce }}
-			</p>
+			<p v-html="introduce"></p>
 			<p class="price">{{ price }}元/次</p>
 		</div>
 	</div>
@@ -45,6 +43,8 @@ onMounted(() => {
 			font-size: 24px;
 			color: #666;
 			line-height: 1.5;
+			overflow-wrap: break-word;
+			white-space: pre-wrap;
 		}
 		.price {
 			font-weight: 400;

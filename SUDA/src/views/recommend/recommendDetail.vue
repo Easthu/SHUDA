@@ -35,7 +35,7 @@
 		</div>
 		<div class="introduce" v-if="recommendDetail.introduce">
 			<div class="introduce-title" v-if="route.query.classify == 2">品牌故事</div>
-			<div class="introduce-title" v-if="route.query.classify == 3">购票须知</div>
+			<div class="introduce-title" v-if="route.query.classify == 3">景点介绍</div>
 			<div class="introduce-title" v-if="route.query.classify == 4">医院详情介绍</div>
 
 			<div class="introduce-content" v-html="recommendDetail.introduce"></div>
@@ -46,13 +46,13 @@
 			<div class="introduce-content" v-html="recommendDetail.service"></div>
 		</div>
 		<div class="detail-btn">
-			<div
+			<!-- <div
 				class="call-business"
 				:style="{ backgroundImage: `url(${callBusiness})` }"
 				v-if="route.query.classify != 3"
 			>
 				联系商家
-			</div>
+			</div> -->
 			<!-- <div
 				class="navigation-business"
 				:style="{ backgroundImage: `url(${navigationBusiness})` }"

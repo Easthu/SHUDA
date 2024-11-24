@@ -39,8 +39,12 @@ const handleLogin = async () => {
 		pccode: code.value,
 		encryptioncode: sessionStorage.getItem('encryptioncode'),
 	});
-	sessionStorage.setItem('userInfo', JSON.stringify(res.data));
-	router.go(-1);
+	if (res.code == 0) {
+		sessionStorage.setItem('userInfo', JSON.stringify(res.data));
+		router.go(-1);
+	} else {
+		showToast(res.errormsg);
+	}
 };
 
 const setTimeOut = () => {
@@ -56,7 +60,7 @@ const checked = ref(false);
 <template>
 	<div class="loginBox">
 		<div class="phone-box">
-			<input type="tel" placeholder="请输入用户名" v-model="phone" />
+			<input type="tel" placeholder="请填写手机号" v-model="phone" />
 			<span @click="handleFecthCode">{{
 				timeOut == 300 ? '获取验证码' : `${timeOut}s后获取`
 			}}</span>
@@ -68,9 +72,9 @@ const checked = ref(false);
 		<div class="spe-sel">
 			<img :src="checked ? checkedIcon : checkNotIcon" alt="" @click="checked = !checked" />
 			已阅读同意
-			<span> 《用户服务协议》 </span>
+			<span @click="router.push('/aboutUs')"> 《用户服务协议》 </span>
 			和
-			<span> 《隐私政策》 </span>
+			<span @click="router.push('/aboutUs')"> 《隐私政策》 </span>
 		</div>
 	</div>
 </template>

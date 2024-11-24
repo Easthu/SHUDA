@@ -56,6 +56,7 @@ const routes = [
     component: () => import('@/views/recommend/index.vue'),
     meta: {
       title: '推荐',
+      // keepAlive: true
     },
   },
   {

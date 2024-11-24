@@ -106,6 +106,15 @@ const handleOrderConfirm = async () => {
 			hsid: orderConfirm.value.hsid ? orderConfirm.value.hsid : 0,
 		});
 		console.log('res :>> ', res.data.ordernum);
+		if (res.errormsg == 121) {
+			return toast.fail('订单错误');
+		}
+		if (res.errormsg == 122) {
+			return toast.fail('签名错误');
+		}
+		if (res.errormsg == 123) {
+			return toast.fail('商户订单号重复');
+		}
 		ordernum.value = res.data.ordernum;
 	}
 	weixinPay();
