@@ -72,9 +72,9 @@ const checked = ref(false);
 		<div class="spe-sel">
 			<img :src="checked ? checkedIcon : checkNotIcon" alt="" @click="checked = !checked" />
 			已阅读同意
-			<span @click="router.push('/aboutUs')"> 《用户服务协议》 </span>
+			<span @click="router.push('/userAgreement')"> 《用户服务协议》 </span>
 			和
-			<span @click="router.push('/aboutUs')"> 《隐私政策》 </span>
+			<span @click="router.push('/userAgreement')"> 《隐私政策》 </span>
 		</div>
 	</div>
 </template>

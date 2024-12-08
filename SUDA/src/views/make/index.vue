@@ -99,7 +99,12 @@
 			</van-list>
 		</div>
 		<!-- 筛选 -->
-		<van-overlay :show="showSiftbBox" z-index="9999" @click="showSiftbBox = false">
+		<van-overlay
+			:show="showSiftbBox"
+			z-index="9999"
+			@click="showSiftbBox = false"
+			:lock-scroll="false"
+		>
 			<div class="sift-wrapper" @click.stop>
 				<div class="sift-content">
 					<div class="sift-title">性别</div>
@@ -129,7 +134,7 @@
 					</div>
 				</div>
 				<div class="sift-content">
-					<div class="sift-title">景点选择</div>
+					<div class="sift-title">{{ searchForm.type == 1 ? '景点' : '医院' }}选择</div>
 					<div class="sift-attractions">
 						<van-collapse v-model="clickAreaId" accordion @change="handleClickArea">
 							<van-collapse-item
@@ -236,8 +241,8 @@ const handleTypeChange = (type) => {
 	nextTick(() => {
 		searchForm.value.currentPage = 1;
 		finished.value = false;
+		handleApiMakeList();
 	});
-	// handleApiMakeList();
 };
 
 // 向导/陪诊人员数量数据
@@ -245,7 +250,14 @@ const makeList = ref([]);
 // 获取向导/陪诊人员数量
 const handleApiMakeList = async () => {
 	const res = await requestApi(searchForm.value);
-	makeList.value = [...makeList.value, ...res.data];
+	console.log('res :>> ', res);
+	// makeList.value = [...makeList.value, ...res.data];
+	res.data.forEach((item) => {
+		const find = makeList.value.find((i) => i.id === item.id);
+		if (!find) {
+			makeList.value.push(item);
+		}
+	});
 	if (res.data.length == 0) {
 		finished.value = true;
 	}
@@ -385,7 +397,8 @@ onMounted(() => {
 .sift-wrapper {
 	margin-left: auto;
 	width: 60vw;
-	height: 100vh;
+	min-height: 100vh;
+	overflow-y: auto;
 	background-color: #fff;
 	font-size: 28px;
 	padding-top: 102px;

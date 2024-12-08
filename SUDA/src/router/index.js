@@ -1,5 +1,10 @@
 import { createRouter, createWebHistory, createWebHashHistory } from 'vue-router'
 import { useUserStore } from 'store/modules/user'
+import { getUrlKey } from '@/utils/toolsValidate.js';
+import { isWx } from '@/utils/weChatFunction';
+import { requestApi } from 'api/home';
+import { showToast } from 'vant';
+
 const routes = [
   {
     path: '/login',
@@ -237,7 +242,40 @@ router.beforeEach((to, from, next) => {
   // if (to.meta.title) {
   //   document.title = to.meta.title;
   //   useUserStore().fetchPageTitle(to.meta.title)
-  // }
+  // }、
+  if (to.path !== '/login') {
+    const userInfo = sessionStorage.getItem('userInfo');
+    const code = getUrlKey('code');
+    isWx().then((isWeChat) => {
+      if (isWeChat == 'wx') {
+        if (!code && !userInfo) {
+          let redirectUri = window.location.origin + window.location.pathname;
+          const wxUrl = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxaa5f6f6ed39d9a7f&redirect_uri=${redirectUri}&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect`;
+          window.location.href = wxUrl;
+        } else if (code && !userInfo) {
+          requestApi({
+            op: 'login',
+            co: code,
+          }).then((res) => {
+            console.log('login', res);
+            if (res.code == 0) {
+              sessionStorage.setItem('userInfo', JSON.stringify(res.data));
+              next();
+            } else if (res.code == 3) {
+              sessionStorage.setItem('encryptioncode', res.encryptioncode);
+              router.replace('/login');
+            }
+          });
+        } else {
+          next();
+        }
+      } else {
+        if (import.meta.env.VITE_NODE_ENV != 'dev') {
+          showToast('请在微信环境打开');
+        }
+      }
+    });
+  }
   next();
 });
 router.afterEach(() => { //这里不接收next
