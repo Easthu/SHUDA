@@ -3,6 +3,7 @@ import checkedIcon from '@/assets/images/icons/make-detail-checked.png';
 import checkNotIcon from '@/assets/images/icons/make-detail-check-not.png';
 import { requestApi } from 'api/home';
 import { showToast } from 'vant';
+import { onMounted } from 'vue';
 
 const router = useRouter();
 
@@ -56,6 +57,21 @@ const setTimeOut = () => {
 	}, 1000);
 };
 const checked = ref(false);
+onMounted(() => {
+	if (!sessionStorage.getItem('encryptioncode')) {
+		requestApi({
+			op: 'login',
+			co: code,
+		}).then((res) => {
+			if (res.code == 0) {
+				sessionStorage.setItem('userInfo', JSON.stringify(res.data));
+				router.replace('/');
+			} else if (res.code == 3) {
+				sessionStorage.setItem('encryptioncode', res.encryptioncode);
+			}
+		});
+	}
+});
 </script>
 <template>
 	<div class="loginBox">

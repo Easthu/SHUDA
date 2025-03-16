@@ -74,8 +74,8 @@ import about from '@/assets/images/icons/my-about.png';
 import { showToast } from 'vant';
 const router = useRouter();
 const handleLinkPartTime = () => {
-	router.push('/partTime');
 	if (userInfo.value.ifproxy == 2) {
+		router.push('/partTime');
 	} else {
 		showToast('您不是兼职，无法使用此功能');
 	}

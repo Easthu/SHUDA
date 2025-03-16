@@ -19,15 +19,15 @@
 				@click="handleTypeChange(1)"
 				:class="{ active: searchForm.type == 1 }"
 			>
-				<span>本地向导</span>
+				<span>线下伴游人员</span>
 			</div>
-			<div
+			<!-- <div
 				class="category-item"
 				@click="handleTypeChange(2)"
 				:class="{ active: searchForm.type == 2 }"
 			>
 				<span> 陪诊就医 </span>
-			</div>
+			</div> -->
 		</div>
 		<div class="goods-loyout">
 			<van-list v-model:loading="loading" :finished="finished" @load="onLoad" ref="listRef">
@@ -133,7 +133,7 @@
 						<input type="tel" v-model="searchForm.agemax" placeholder="最大" />
 					</div>
 				</div>
-				<div class="sift-content">
+				<div class="sift-content" v-if="false">
 					<div class="sift-title">{{ searchForm.type == 1 ? '景点' : '医院' }}选择</div>
 					<div class="sift-attractions">
 						<van-collapse v-model="clickAreaId" accordion @change="handleClickArea">
@@ -508,7 +508,7 @@ onMounted(() => {
 		}
 	}
 	.sift-btn {
-		margin-top: auto;
+		// margin-top: auto;
 		display: flex;
 		justify-content: space-around;
 		div {

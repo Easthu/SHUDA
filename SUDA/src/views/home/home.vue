@@ -44,7 +44,7 @@ onMounted(() => {
 				</van-swipe-item>
 			</van-swipe>
 		</div>
-		<div class="recommend-list">
+		<!-- <div class="recommend-list">
 			<div
 				v-for="(item, index) in recommendList"
 				:key="index"
@@ -53,14 +53,14 @@ onMounted(() => {
 				<img :src="item.src" alt="" />
 				{{ item.text }}
 			</div>
-		</div>
+		</div> -->
 		<div class="make-category">
 			<div class="category-item" @click="handleChangeNav(1)" :class="{ active: active == 1 }">
-				<span>本地向导</span>
+				<span>线下伴游人员</span>
 			</div>
-			<div class="category-item" @click="handleChangeNav(2)" :class="{ active: active == 2 }">
+			<!-- <div class="category-item" @click="handleChangeNav(2)" :class="{ active: active == 2 }">
 				<span> 陪诊就医 </span>
-			</div>
+			</div> -->
 		</div>
 		<GoodsList :makeList="homeMakeList" :nature="active" />
 	</div>

@@ -7,7 +7,7 @@
 				<div class="agents-name">{{ userInfo.name }}</div>
 				<!-- <div class="agents-place">朝天门来福士</div> -->
 			</div>
-			<div class="switch">
+			<div class="switch" v-if="isStaffPay == false">
 				<van-switch
 					active-color="#02B98C"
 					inactive-color="#dcdee0"
@@ -17,6 +17,7 @@
 				/>
 				{{ checked ? '关闭' : '开启' }}接单
 			</div>
+			<div v-if="isStaffPay" class="isStaffPay" @click="handlePayStaffMoney">支付押金</div>
 		</div>
 
 		<div class="payouts-detail">
@@ -113,6 +114,78 @@ if (userInfo) {
 	});
 }
 
+// 是否需要支付兼职押金
+const isStaffPay = ref(false);
+const staffid = ref(null);
+// 获取兼职详情
+const fecthStaffId = async () => {
+	const res = await requestApi({
+		op: 'getstaffid',
+		uid: JSON.parse(sessionStorage.getItem('userInfo')).id,
+	});
+	console.log('res :>> ', res);
+	if (res.data.ifopen == 1 && res.data.ifpay == 0) {
+		isStaffPay.value = true;
+	}
+	staffid.value = res.data.id;
+};
+const handlePayStaffMoney = async () => {
+	const res = await requestApi({
+		op: 'proxypay',
+		staffid: staffid.value,
+	});
+	if (res.code == 0) {
+		weixinPay(res.data.ordernum);
+	}
+};
+const weixinPay = async (ordernum) => {
+	const payRes = await requestApi({
+		op: 'getorderPay',
+		ordernum: ordernum,
+		openid: JSON.parse(sessionStorage.getItem('userInfo')).openid,
+	});
+	console.log('payRes :>> ', payRes);
+	// 微信内置浏览器支付
+	// 下面是解决WeixinJSBridge is not defined 报错的方法
+	if (typeof WeixinJSBridge === 'undefined') {
+		// 微信浏览器内置对象。参考微信官方文档
+		if (document.addEventListener) {
+			document.addEventListener('WeixinJSBridgeReady', onBridgeReady(payRes.data), false);
+		} else if (document.attachEvent) {
+			document.attachEvent('WeixinJSBridgeReady', onBridgeReady(payRes.data));
+			document.attachEvent('onWeixinJSBridgeReady', onBridgeReady(payRes.data));
+		}
+	} else {
+		onBridgeReady(payRes.data);
+	}
+	console.log('payRes :>> ', payRes);
+};
+
+const onBridgeReady = (res) => {
+	// eslint-disable-next-line
+	WeixinJSBridge.invoke(
+		'getBrandWCPayRequest',
+		{
+			appId: res.appId, //公众号名称，由商户传入
+			nonceStr: res.nonceStr, //随机串
+			package: res.package, // prepay_id=xxx
+			timeStamp: res.timeStamp, //时间戳
+			signType: res.signType, //微信签名方式：
+			paySign: res.paySign, //微信签名
+		},
+		function (res) {
+			//android：支付成功、支付失败、取消支付  都能执行这个回调
+			//ios：支付失败、取消支付  能执行这个回调， 支付成功不执行这个回调
+			if (res.err_msg == 'get_brand_wcpay_request:ok') {
+				// 使用以上方式判断前端返回,微信团队郑重提示：
+				window.location.reload();
+			} else {
+				console.log('res :>> ', res);
+			}
+		}
+	);
+};
+
 const onUpdateValue = (value) => {
 	console.log('value :>> ', value);
 	requestApi({
@@ -126,6 +199,7 @@ const onUpdateValue = (value) => {
 		}
 	});
 };
+fecthStaffId();
 </script>
 
 <style lang="less" scoped>
@@ -185,6 +259,20 @@ const onUpdateValue = (value) => {
 			align-items: center;
 			justify-content: center;
 			margin-left: auto;
+		}
+		.isStaffPay {
+			margin-left: auto;
+			margin-top: 40px;
+			width: 200px;
+			height: 60px;
+			background: #fee405;
+			border-radius: 30px;
+			font-weight: 400;
+			font-size: 26px;
+			color: #010000;
+			display: flex;
+			justify-content: center;
+			align-items: center;
 		}
 	}
 	.payouts-detail {
